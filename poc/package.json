@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "hardhat": "hardhat",
+    "token": "hardhat run --network localhost ./scripts/token-func.ts",
     "token:ether": "ts-node ./scripts/token-func.ethers.ts"
   },
   "author": "",
@@ -13,6 +15,6 @@
     "ethers": "^6.7.1"
   },
   "devDependencies": {
-    "hardhat": "^2.17.2"
+    "ts-node": "^10.9.1"
   }
 }
