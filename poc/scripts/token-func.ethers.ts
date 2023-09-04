@@ -205,7 +205,7 @@ const TOKEN_PROXY = '0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE';
   const modules = await compliance.getModules();
   console.log('Compliance.getModules', modules);
 
-  const countrySetBob = await identityRegistry.updateCountry(bobWallet.address, 10);
+  const countrySetBob = await identityRegistry.updateCountry(bobWallet.address, 42);
   await countrySetBob.wait();
   const getInvestorCountryBob = await identityRegistry.investorCountry(bobWallet.address);
   console.log('IdentityRegistry.updateCountry bobWallet.address', getInvestorCountryBob);
