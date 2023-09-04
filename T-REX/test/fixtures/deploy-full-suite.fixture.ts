@@ -4,10 +4,14 @@ import OnchainID from "@onchain-id/solidity";
 import {loadFixture} from "@nomicfoundation/hardhat-network-helpers";
 
 export async function deployIdentityProxy(implementationAuthority: Contract['address'], managementKey: string, signer: Signer) {
-  const identity = await new ethers.ContractFactory(OnchainID.contracts.IdentityProxy.abi, OnchainID.contracts.IdentityProxy.bytecode, signer).deploy(
-    implementationAuthority,
-    managementKey,
-  );
+  const identity = await new ethers.ContractFactory(
+      OnchainID.contracts.IdentityProxy.abi,
+      OnchainID.contracts.IdentityProxy.bytecode,
+      signer
+    ).deploy(
+      implementationAuthority,
+      managementKey,
+    );
 
   return ethers.getContractAt("Identity", identity.address, signer);
 }

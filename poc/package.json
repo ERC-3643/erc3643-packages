@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@onchain-id/solidity": "^2.1.0",
     "@tokenysolutions/t-rex": "^4.0.1",
     "ethers": "^6.7.1"
   },

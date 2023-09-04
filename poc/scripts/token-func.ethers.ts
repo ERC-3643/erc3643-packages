@@ -1,5 +1,6 @@
 import { contracts } from '@tokenysolutions/t-rex';
-import { Wallet, JsonRpcProvider, Contract, Interface } from "ethers";
+import { Wallet, JsonRpcProvider, Contract, Interface, id, keccak256, toUtf8Bytes } from "ethers";
+import OnchainID from "@onchain-id/solidity";
 // import { ethers } from 'hardhat';
 
 
@@ -249,7 +250,53 @@ const TOKEN_PROXY = '0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE';
 
   const isVerifiedAlice = await identityRegistry.isVerified(aliceWallet.address);
   console.log('IdentityRegistry.verified aliceWallet', isVerifiedAlice);
-  const isVerifiedAnotherWallet10 = await identityRegistry.isVerified(anotherWallet10.address);
-  console.log('IdentityRegistry.verified anotherWallet10', isVerifiedAnotherWallet10);
+  const identityAlice = await identityRegistry.identity(aliceWallet.address);
+  console.log('IdentityRegistry.identity aliceWallet', identityAlice);
+
+  const isVerifiedAnotherCharlieWallet = await identityRegistry.isVerified(charlieWallet.address);
+  console.log('IdentityRegistry.verified charlieWallet', isVerifiedAnotherCharlieWallet);
+  const identityCharly = await identityRegistry.identity(charlieWallet.address);
+  console.log('IdentityRegistry.identity charlieWallet', identityCharly);
+
+  const identityClaim: any = new Contract(
+    identityAlice,
+    OnchainID.contracts.Identity.abi,
+    aliceWallet
+  );
+
+  const topicsRegistryAddr = await identityRegistry.topicsRegistry();
+  console.log('IdentityRegistry.topicsRegistry', topicsRegistryAddr);
+
+  const topicsRegistry: any = new Contract(
+    topicsRegistryAddr,
+    contracts.ClaimTopicsRegistry.abi,
+    deployer
+  );
+
+  const claimTopics = await topicsRegistry.getClaimTopics();
+
+  for (const topic of claimTopics) {
+    const claimIds = await identityClaim.getClaimIdsByTopic(topic);
+    console.log('IdentityClaim.getClaimIdsByTopic', claimIds);
+
+    for(const claimId of claimIds) {
+
+      const claim = await identityClaim.getClaim(claimId);
+      console.log('IdentityClaim.getClaim', claim);
+      const claimIssuer: any = new Contract(
+        claim[2],
+        OnchainID.contracts.ClaimIssuer.abi,
+        deployer
+      );
+
+      const isClaimValid = await claimIssuer.isClaimValid(
+        identityAlice,
+        topic,
+        claim[3],
+        claim[4]
+      );
+      console.log('ClaimIssuer.isClaimValid', isClaimValid);
+    }
+  }
 
 })()

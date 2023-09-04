@@ -10,5 +10,8 @@ import { deploySuiteWithModularCompliancesModulesFixture } from '../test/fixture
   for(const [key, contract] of Object.entries(result.suite)) {
     console.log(key.padEnd(25, ' '), contract.address);
   }
+  for(const [key, contract] of Object.entries(result.identities)) {
+    console.log(key.padEnd(25, ' '), contract.address);
+  }
   // console.log('TokenAddress', result.suite.token.address);
 })()
