@@ -25,9 +25,15 @@ export const eligibilityVerification = async (
 
   const claimTopics = await claimTopicsRegistryContract.getClaimTopics();
 
+  const missingClaimTopics = [];
+
   for (const topic of claimTopics) {
     const claimIds = await identityContract.getClaimIdsByTopic(topic);
     console.log('IdentityClaim.getClaimIdsByTopic', claimIds);
+
+    if (!claimIds.length) {
+      missingClaimTopics.push(topic);
+    }
 
     for(const claimId of claimIds) {
       const claim = await identityContract.getClaim(claimId);
@@ -47,5 +53,9 @@ export const eligibilityVerification = async (
       );
       console.log('ClaimIssuer.isClaimValid', isClaimValid);
     }
+  }
+
+  if (missingClaimTopics.length) {
+    console.log(missingClaimTopics);
   }
 }
