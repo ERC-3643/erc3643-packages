@@ -1,8 +1,9 @@
 import { contracts } from '@tokenysolutions/t-rex';
 import { JsonRpcProvider, Contract, Interface } from "ethers";
 import OnchainID from "@onchain-id/solidity";
+
 import { getSigners } from './signers';
-import { eligibilityVerification } from './eligibility-verification';
+import { eligibilityVerification, getClaim, revokeClaim } from './eligibility-verification';
 
 const TOKEN_PROXY = '0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE';
 
@@ -13,6 +14,7 @@ const TOKEN_PROXY = '0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE';
     deployer,
     tokenAgent,
     aliceWallet,
+    claimIssuer,
     bobWallet,
     charlieWallet,
     anotherWallet10
@@ -159,14 +161,27 @@ const TOKEN_PROXY = '0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE';
   // console.log('\n', '-= Account verification =-');
 
   // Alice verified true
-  // const isVerifiedAlice = await identityRegistry.isVerified(aliceWallet.address);
-  // console.log('IdentityRegistry.verified aliceWallet', isVerifiedAlice);
-  // const identityAlice = await identityRegistry.identity(aliceWallet.address);
-  // console.log('IdentityRegistry.identity aliceWallet', identityAlice);
+  const isVerifiedAlice = await identityRegistry.isVerified(aliceWallet.address);
+  console.log('IdentityRegistry.verified aliceWallet', isVerifiedAlice);
+  const identityAlice = await identityRegistry.identity(aliceWallet.address);
+  console.log('IdentityRegistry.identity aliceWallet', identityAlice);
 
-  // if (!isVerifiedAlice) {
-  //   await eligibilityVerification(identityAlice, aliceWallet, identityRegistry, deployer);
-  // }
+  console.log('Performing eligibility before claim revokation ...');
+  if (!isVerifiedAlice) {
+    await eligibilityVerification(identityAlice, aliceWallet, identityRegistry, deployer);
+  }
+
+  const claim = await getClaim(identityAlice, aliceWallet, identityRegistry, deployer);
+  await revokeClaim(claim, claimIssuer);
+
+  console.log('Performing eligibility after claim revokation ...');
+
+  const isVerifiedAfterRevokationAlice = await identityRegistry.isVerified(aliceWallet.address);
+  console.log('IdentityRegistry.verified aliceWallet', isVerifiedAfterRevokationAlice);
+
+  if (!isVerifiedAfterRevokationAlice) {
+    await eligibilityVerification(identityAlice, aliceWallet, identityRegistry, deployer);
+  }
 
   // Bob verified true
   // const isVerifiedBob = await identityRegistry.isVerified(bobWallet.address);
@@ -179,19 +194,19 @@ const TOKEN_PROXY = '0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE';
   // }
 
   // Charlie verified false (identities must be registered)
-  if (!(await identityRegistry.contains(charlieWallet.address))) {
-    const charlieOnChainIDAddress = '0xa85233C63b9Ee964Add6F2cffe00Fd84eb32338f';
+  // if (!(await identityRegistry.contains(charlieWallet.address))) {
+  //   const charlieOnChainIDAddress = '0xa85233C63b9Ee964Add6F2cffe00Fd84eb32338f';
 
-    await identityRegistry.registerIdentity(charlieWallet.address, charlieOnChainIDAddress, 42)
-  }
+  //   await identityRegistry.registerIdentity(charlieWallet.address, charlieOnChainIDAddress, 42)
+  // }
 
-  const isVerifiedCharlie = await identityRegistry.isVerified(charlieWallet.address);
-  console.log('IdentityRegistry.verified charlieWallet', isVerifiedCharlie);
-  const identityCharly = await identityRegistry.identity(charlieWallet.address);
-  console.log('IdentityRegistry.identity charlieWallet', identityCharly);
+  // const isVerifiedCharlie = await identityRegistry.isVerified(charlieWallet.address);
+  // console.log('IdentityRegistry.verified charlieWallet', isVerifiedCharlie);
+  // const identityCharly = await identityRegistry.identity(charlieWallet.address);
+  // console.log('IdentityRegistry.identity charlieWallet', identityCharly);
 
-  if (!isVerifiedCharlie) {
-    await eligibilityVerification(identityCharly, charlieWallet, identityRegistry, deployer);
-  }
+  // if (!isVerifiedCharlie) {
+  //   await eligibilityVerification(identityCharly, charlieWallet, identityRegistry, deployer);
+  // }
 
 })()
