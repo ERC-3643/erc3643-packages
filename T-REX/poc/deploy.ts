@@ -1,4 +1,4 @@
-import { deploySuiteWithModularCompliancesFixture, deploySuiteWithModularCompliancesModulesFixture, deploySuiteWithModuleComplianceBoundToWallet } from '../test/fixtures/deploy-full-suite.fixture'
+import { deploySuiteWithModularCompliancesModulesFixture } from '../test/fixtures/deploy-full-suite.fixture'
 // import { inspect } from 'util';
 
 (async () => {

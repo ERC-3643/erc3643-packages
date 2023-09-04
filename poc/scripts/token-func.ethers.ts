@@ -114,7 +114,6 @@ const TOKEN_PROXY = '0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE';
   );
 
   const token: any = tokenContract.connect(tokenAgent);
-  const tokenDeployer: any = tokenContract.connect(deployer);
   const tokenAlice: any = tokenContract.connect(aliceWallet);
 
   console.log('\n', '-= Token info =-')
@@ -128,6 +127,7 @@ const TOKEN_PROXY = '0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE';
   console.log('Token.balanceOf Alice', await token.balanceOf(
     aliceWallet.address
   ));
+
   console.log('\n', '-= Pause manipulation =-')
   const pause = await token.pause();
   await pause.wait();
@@ -135,6 +135,7 @@ const TOKEN_PROXY = '0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE';
   const unpause = await token.unpause();
   await unpause.wait();
   console.log('Token is paused', await token.paused());
+
   console.log('\n', '-= Token transfers =-')
   console.log('Token.transfer aliceWallet -> bobWallet', 5);
   const transfer = await tokenAlice.transfer(bobWallet.address, 5);
@@ -171,7 +172,15 @@ const TOKEN_PROXY = '0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE';
   }
 
   console.log('\n', '-= Compliance =-');
-  const COMPLIANCE_BETA = '0xE6E340D132b5f46d1e472DebcD681B2aBc16e57E'; // <- Here is the key problem
+  const COMPLIANCE_BETA = '0xE6E340D132b5f46d1e472DebcD681B2aBc16e57E';
+
+  const identityRegistryAddress = await token.identityRegistry();
+  const identityRegistryContract = new Contract(
+    identityRegistryAddress,
+    contracts.IdentityRegistry.abi
+  );
+
+  const identityRegistry: any = identityRegistryContract.connect(tokenAgent);
 
   const complianceContract = new Contract(
     COMPLIANCE_BETA,
@@ -195,17 +204,14 @@ const TOKEN_PROXY = '0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE';
   const modules = await compliance.getModules();
   console.log('Compliance.getModules', modules);
 
-  const identityRegistryAddress = await token.identityRegistry();
-  const identityRegistryContract = new Contract(
-    identityRegistryAddress,
-    contracts.IdentityRegistry.abi
-  );
-
-  const identityRegistry: any = identityRegistryContract.connect(tokenAgent);
-  const countrySetBob = await identityRegistry.updateCountry(bobWallet.address, 42);
+  const countrySetBob = await identityRegistry.updateCountry(bobWallet.address, 10);
   await countrySetBob.wait();
   const getInvestorCountryBob = await identityRegistry.investorCountry(bobWallet.address);
   console.log('IdentityRegistry.updateCountry bobWallet.address', getInvestorCountryBob);
+
+  // Wait for correct nonce
+  console.log('\n', 'Manual delay', '\n')
+  await new Promise((resolve) => setTimeout(resolve, 2000));
 
   const countrySetAlice = await identityRegistry.updateCountry(aliceWallet.address, 42);
   await countrySetAlice.wait();
@@ -239,5 +245,11 @@ const TOKEN_PROXY = '0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE';
   const transferAnother = await compliance.canTransfer(aliceWallet.address, bobWallet.address, 5);
   console.log('Compliance.canTransfer aliceWallet -> bobWallet', transferAnother);
 
+  console.log('\n', '-= Account verification =-');
+
+  const isVerifiedAlice = await identityRegistry.isVerified(aliceWallet.address);
+  console.log('IdentityRegistry.verified aliceWallet', isVerifiedAlice);
+  const isVerifiedAnotherWallet10 = await identityRegistry.isVerified(anotherWallet10.address);
+  console.log('IdentityRegistry.verified anotherWallet10', isVerifiedAnotherWallet10);
 
 })()
