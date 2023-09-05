@@ -1,4 +1,4 @@
-import { Contract, Signature } from 'ethers';
+import { Contract } from 'ethers';
 import OnchainID from '@onchain-id/solidity';
 import {
   getOnChainIdAddressByWalletAddress,
@@ -6,14 +6,42 @@ import {
   getClaimTopicsRegistryContract,
   ZERO_ADDRESS
 } from './setup';
+import { getClaim } from './get-claim';
+import { revokeClaim } from './revoke-claim';
+import { registerCharlieIdentity } from './register-identity';
 
-export const verifyIdentity = async (
+export const verifyAllIdentities = async (
+  identityRegistryContract: any,
+  aliceWallet: any,
+  bobWallet: any,
+  charlieWallet: any,
+  claimIssuerWallet: any,
+  deployerWallet: any
+) => {
+  console.log('\n', '=== Account eligibility verification ===');
+  // Verify all identities
+  await verifyIdentity(identityRegistryContract, aliceWallet, deployerWallet);
+  await verifyIdentity(identityRegistryContract, bobWallet, deployerWallet);
+  await verifyIdentity(identityRegistryContract, charlieWallet, deployerWallet);
+
+  // Revoke a claim and verify Alice's identity again
+  const claim = await getClaim(identityRegistryContract, aliceWallet, deployerWallet);
+  await revokeClaim(claim, claimIssuerWallet);
+  await verifyIdentity(identityRegistryContract, aliceWallet, deployerWallet);
+
+  // Register Charlie's OnChainId if it is not not registered
+  await registerCharlieIdentity(identityRegistryContract, charlieWallet);
+
+  // Verify Charlie again
+  await verifyIdentity(identityRegistryContract, charlieWallet, deployerWallet);
+}
+
+const verifyIdentity = async (
   identityRegistryContract: any, // Identity Registry contract connected with token agent
   identityWallet: any, // Wallet that is associated with an OnChainID
   deployerWallet: any // Wallet that deployed the T-Rex contracts suite
 ) => {
   console.log(`Verifying ${identityWallet.address} ... `);
-
   const isVerified = await identityRegistryContract.isVerified(identityWallet.address);
   console.log(`Verification result for ${identityWallet.address}`, isVerified);
 
