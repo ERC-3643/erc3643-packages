@@ -1,14 +1,19 @@
-import { contracts } from '@tokenysolutions/t-rex';
-import { JsonRpcProvider, Contract, Interface } from "ethers";
-import OnchainID from "@onchain-id/solidity";
+import { JsonRpcProvider } from 'ethers';
 
+import {
+  getTokenContract,
+  getIdentityRegistryContract
+} from './setup';
 import { getSigners } from './signers';
-import { eligibilityVerification, getClaim, revokeClaim } from './eligibility-verification';
+import { getClaim } from './get-claim';
+import { verifyIdentity } from './verify-eligibility';
+import { revokeClaim } from './revoke-claim';
+import { registerCharlieIdentity } from './register-identity';
 
 const TOKEN_PROXY = '0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE';
 
 (async () => {
-  const rpc =  await new JsonRpcProvider( 'http://localhost:8545' );
+  const rpc =  new JsonRpcProvider('http://localhost:8545');
 
   const {
     deployer,
@@ -20,20 +25,8 @@ const TOKEN_PROXY = '0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE';
     anotherWallet10
   } = getSigners(rpc);
 
-  const tokenContract = new Contract(
-    TOKEN_PROXY,
-    contracts.Token.abi
-  );
-
-  const token: any = tokenContract.connect(tokenAgent);
-  
-  const identityRegistryAddress = await token.identityRegistry();
-  const identityRegistryContract = new Contract(
-    identityRegistryAddress,
-    contracts.IdentityRegistry.abi
-  );
-    
-  const identityRegistry: any = identityRegistryContract.connect(tokenAgent);
+  const token = getTokenContract(TOKEN_PROXY, tokenAgent);
+  const identityRegistry = await getIdentityRegistryContract(token, tokenAgent);
     
   // const tokenAlice: any = tokenContract.connect(aliceWallet);
 
@@ -158,55 +151,21 @@ const TOKEN_PROXY = '0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE';
   // const transferAnother = await compliance.canTransfer(aliceWallet.address, bobWallet.address, 5);
   // console.log('Compliance.canTransfer aliceWallet -> bobWallet', transferAnother);
 
-  // console.log('\n', '-= Account verification =-');
+  console.log('\n', '=== Account eligibility verification ===');
 
-  // Alice verified true
-  const isVerifiedAlice = await identityRegistry.isVerified(aliceWallet.address);
-  console.log('IdentityRegistry.verified aliceWallet', isVerifiedAlice);
-  const identityAlice = await identityRegistry.identity(aliceWallet.address);
-  console.log('IdentityRegistry.identity aliceWallet', identityAlice);
+  // Verify all identities
+  await verifyIdentity(identityRegistry, aliceWallet, deployer);
+  await verifyIdentity(identityRegistry, bobWallet, deployer);
+  await verifyIdentity(identityRegistry, charlieWallet, deployer);
 
-  console.log('Performing eligibility before claim revokation ...');
-  if (!isVerifiedAlice) {
-    await eligibilityVerification(identityAlice, aliceWallet, identityRegistry, deployer);
-  }
-
-  const claim = await getClaim(identityAlice, aliceWallet, identityRegistry, deployer);
+  // Revoke a claim and verify Alice's identity
+  const claim = await getClaim(identityRegistry, aliceWallet, deployer);
   await revokeClaim(claim, claimIssuer);
+  await verifyIdentity(identityRegistry, aliceWallet, deployer);
 
-  console.log('Performing eligibility after claim revokation ...');
+  // Register Charlie's OnChainId if it is not not registered
+  await registerCharlieIdentity(identityRegistry, charlieWallet);
 
-  const isVerifiedAfterRevokationAlice = await identityRegistry.isVerified(aliceWallet.address);
-  console.log('IdentityRegistry.verified aliceWallet', isVerifiedAfterRevokationAlice);
-
-  if (!isVerifiedAfterRevokationAlice) {
-    await eligibilityVerification(identityAlice, aliceWallet, identityRegistry, deployer);
-  }
-
-  // Bob verified true
-  // const isVerifiedBob = await identityRegistry.isVerified(bobWallet.address);
-  // console.log('IdentityRegistry.verified bobWallet', isVerifiedAlice);
-  // const identityBob = await identityRegistry.identity(bobWallet.address);
-  // console.log('IdentityRegistry.identity bobWallet', identityBob);
-
-  // if (!isVerifiedBob) {
-  //   await eligibilityVerification(identityBob, bobWallet, identityRegistry, deployer);
-  // }
-
-  // Charlie verified false (identities must be registered)
-  // if (!(await identityRegistry.contains(charlieWallet.address))) {
-  //   const charlieOnChainIDAddress = '0xa85233C63b9Ee964Add6F2cffe00Fd84eb32338f';
-
-  //   await identityRegistry.registerIdentity(charlieWallet.address, charlieOnChainIDAddress, 42)
-  // }
-
-  // const isVerifiedCharlie = await identityRegistry.isVerified(charlieWallet.address);
-  // console.log('IdentityRegistry.verified charlieWallet', isVerifiedCharlie);
-  // const identityCharly = await identityRegistry.identity(charlieWallet.address);
-  // console.log('IdentityRegistry.identity charlieWallet', identityCharly);
-
-  // if (!isVerifiedCharlie) {
-  //   await eligibilityVerification(identityCharly, charlieWallet, identityRegistry, deployer);
-  // }
-
+  // Verify Charlie again
+  await verifyIdentity(identityRegistry, charlieWallet, deployer);
 })()
