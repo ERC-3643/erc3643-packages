@@ -1,15 +1,15 @@
 export const transferTokens = async (tokenContract: any, from: any, to: any) => {
   console.log('\n', '=== Token transfers ===')
 
-  const tokenAlice = tokenContract.connect(from);
+  const tokenFrom = tokenContract.connect(from);
 
-  const bobWalletBalanceBefore = await tokenAlice.balanceOf(to.address);
-  console.log('Bob\'s balance before the transfer', bobWalletBalanceBefore);
+  const toWalletBalanceBefore = await tokenFrom.balanceOf(to.address);
+  console.log('Receiver\'s balance before the transfer', toWalletBalanceBefore);
 
-  console.log('Transferring 5 tokens aliceWallet -> bobWallet');
-  const transfer = await tokenAlice.transfer(to.address, 5);
+  console.log('Transferring 5 tokens from Sender to Receiver');
+  const transfer = await tokenFrom.transfer(to.address, 5);
   await transfer.wait();
 
-  const bobWalletBalanceAfter = await tokenAlice.balanceOf(to.address);
-  console.log('Bob\'s balance after the transfer', bobWalletBalanceAfter);
+  const toWalletBalanceAfter = await tokenFrom.balanceOf(to.address);
+  console.log('Receiver\'s balance after the transfer', toWalletBalanceAfter);
 }

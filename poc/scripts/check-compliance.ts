@@ -9,12 +9,7 @@ export const checkCompliance = async (
   receiverWallet: any
 ) => {
   console.log('\n', '=== Checking compliance ===');
-
-  const tokenContractFromDeployer = tokenContract.connect(deployerWallet);
-  const complianceBetaContract: any = getComplianceBetaContract(deployerWallet);
-  const complianceBetaContractAddress = await complianceBetaContract.getAddress();
-  const txSetCompliance = await tokenContractFromDeployer.setCompliance(complianceBetaContractAddress);
-  await txSetCompliance.wait();
+  const complianceBetaContract: any = await setComplianceToTokenAndReturnComplianceBeta(tokenContract, deployerWallet);
 
   const wallet1CountryCode = await identityRegistryContract.investorCountry(senderWallet.address);
   console.log('Sender country code', wallet1CountryCode);
@@ -22,11 +17,8 @@ export const checkCompliance = async (
   const wallet2CountryCode = await identityRegistryContract.investorCountry(receiverWallet.address);
   console.log('Receiver country code', wallet2CountryCode);
 
-  const transferAllowanceBeforeWhitelistingCountries = await complianceBetaContract.canTransfer(
-    senderWallet.address,
-    receiverWallet.address,
-    5
-  );
+  const transferAllowanceBeforeWhitelistingCountries = await complianceBetaContract
+    .canTransfer(senderWallet.address, receiverWallet.address, 5);
   console.log('Can Sender transfer 5 tokens to Receiver?', transferAllowanceBeforeWhitelistingCountries);
 
   if (transferAllowanceBeforeWhitelistingCountries) return;
@@ -69,12 +61,20 @@ export const checkCompliance = async (
     }
   }
 
-  const transferAllowanceAfterWhitelistingCountries = await complianceBetaContract.canTransfer(
-    senderWallet.address,
-    receiverWallet.address,
-    5
-  );
+  const transferAllowanceAfterWhitelistingCountries = await complianceBetaContract
+    .canTransfer(senderWallet.address, receiverWallet.address, 5);
   console.log('Can Sender transfer 5 tokens to Receiver?', transferAllowanceAfterWhitelistingCountries);
+}
+
+const setComplianceToTokenAndReturnComplianceBeta = async (tokenContract: any, deployerWallet: any) => {
+  const tokenContractFromDeployer = tokenContract.connect(deployerWallet);
+  const complianceBetaContract: any = getComplianceBetaContract(deployerWallet);
+
+  const complianceBetaContractAddress = await complianceBetaContract.getAddress();
+  const txSetCompliance = await tokenContractFromDeployer.setCompliance(complianceBetaContractAddress);
+  await txSetCompliance.wait();
+
+  return complianceBetaContract;
 }
 
 const isCountryCodeAllowed = async (
