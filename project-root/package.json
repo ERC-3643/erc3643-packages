@@ -1,0 +1,17 @@
+{
+  "name": "project-root",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "workspaces": [
+    "packages/@erc-3643/core",
+    "packages/@erc-3643/react-useDapp",
+    "packages/@erc-3643/vue-useDapp",
+    "apps/demo-vue"
+  ]
+}

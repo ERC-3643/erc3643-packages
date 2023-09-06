@@ -6,7 +6,7 @@ import { ethers } from 'ethers'
 import { createPinia } from 'pinia'
 import toast from '@k90mirzaei/vue-toast'
 import '@k90mirzaei/vue-toast/dist/index.css'
-import { AppFullscreen, Dialog, Notify, Quasar } from 'quasar'
+import { AppFullscreen, Dialog, Notify, Quasar, QuasarPluginOptions } from 'quasar'
 
 // Import icon libraries
 import '@quasar/extras/roboto-font-latin-ext/roboto-font-latin-ext.css'
@@ -32,12 +32,13 @@ app.use(Quasar, {
     Notify,
     Dialog
   }, // import Quasar plugins and add here
-})
+} as Partial<QuasarPluginOptions>)
 
 
 app.use(toast)
 
 app.config.errorHandler = function (err, vm, info) {
+  console.error(err);
   app.config.globalProperties.$toast.error(err.message);
 }
 

@@ -1,14 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useToken } from './../../composables'
+import { useToken } from '@erc-3643/vue-usedapp'
+import { ref, watch } from 'vue';
+import { useEthers } from 'vue-dapp';
 
-const {
-  paused,
-  unfreeze,
-  freeze,
-  pause,
-  run
-} = useToken('0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE');
+const { signer } = useEthers()
+
+const token = ref<{ [key: string]: any }>({});
+
+watch(signer, (signer) => {
+  if (signer) {
+    token.value = useToken('0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE', signer);
+  }
+})
 
 const BOB_WALLET = '0x976EA74026E726554dB657fA54763abd0C3a0aa9'
 
@@ -18,14 +21,14 @@ const addressUnfreeze = ref<string | null>(null);
 const walletFreeze = () => {
   console.log(addressFreeze.value)
   if (addressFreeze.value) {
-    freeze.value(addressFreeze.value)
+    token.value.freeze.value(addressFreeze.value)
   }
 }
 
 const walletUnfreeze = () => {
   console.log(addressUnfreeze.value)
   if (addressUnfreeze.value) {
-    unfreeze.value(addressUnfreeze.value)
+    token.value.unfreeze.value(addressUnfreeze.value)
   }
 }
 </script>
@@ -38,8 +41,8 @@ const walletUnfreeze = () => {
       <q-card-section>
         <p>
           Pause token:
-          <q-btn v-if="paused" color="positive" @click="run" label="Run" dense />
-          <q-btn v-else color="negative" @click="pause" label="Pause" dense />
+          <q-btn v-if="token.paused" color="positive" @click="token.run" label="Run" dense />
+          <q-btn v-else color="negative" @click="token.pause" label="Pause" dense />
         </p>
         <p>
           <q-input

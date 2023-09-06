@@ -1,5 +1,4 @@
 {
-  "extends": "@quasar/app-webpack/tsconfig-preset",
   "compilerOptions": {
     "target": "esnext",
     "useDefineForClassFields": true,
@@ -16,10 +15,12 @@
     ],
     "baseUrl": "."
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue"
-  ]
+  "paths": {
+    "@erc-3643/core": [
+      "./packages/@erc-3643/core/src/index"
+    ],
+    "@erc-3643/vue-usedapp": [
+      "./packages/@erc-3643/vue-useDapp/index"
+    ]
+  }
 }
