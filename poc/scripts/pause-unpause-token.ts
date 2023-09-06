@@ -1,4 +1,4 @@
-export const pausable = async (tokenContract: any) => {
+export const pauseUnpause = async (tokenContract: any) => {
   console.log('\n', '=== Pause manipulation ===');
 
   const pause = await tokenContract.pause();

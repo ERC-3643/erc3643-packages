@@ -1,13 +1,9 @@
 import { JsonRpcProvider } from 'ethers';
-
-import {
-  getTokenContract,
-  getIdentityRegistryContract
-} from './setup';
+import { getTokenContract, getIdentityRegistryContract } from './setup';
 import { getSigners } from './signers';
 import { verifyAllIdentities } from './verify-eligibility';
 import { showTokenInfo } from './token-info';
-import { pausable } from './pausable';
+import { pauseUnpause } from './pause-unpause-token';
 import { transferTokens } from './transfer-tokens';
 import { freezeTokens } from './freeze-tokens';
 import { freezeUnfreezeWallet } from './freeze-unfreeze-wallet';
@@ -31,7 +27,7 @@ const checkUseCases = async () => {
 
   await showTokenInfo(token);
 
-  await pausable(token);
+  await pauseUnpause(token);
   
   await transferTokens(token, aliceWallet, bobWallet);
 

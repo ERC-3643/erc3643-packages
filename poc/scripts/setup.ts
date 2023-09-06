@@ -9,10 +9,8 @@ export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export const getTokenContract = (signer: any) => new Contract(TOKEN_PROXY, contracts.Token.abi, signer);
 
-export const getIdentityContract = (
-  identityAddress: string,
-  signer: any
-) => new Contract(identityAddress, OnchainID.contracts.Identity.abi, signer);
+export const getIdentityContract = (identityAddress: string, signer: any) =>
+  new Contract(identityAddress, OnchainID.contracts.Identity.abi, signer);
 
 export const getIdentityRegistryContract = async (tokenContract: any, signer: any) => {
   const identityRegistryContractAddress = await tokenContract.identityRegistry();
@@ -34,12 +32,8 @@ export const getClaimTopicsRegistryContract = async (identityRegistryContract: a
   );
 }
 
-export const getOnChainIdAddressByWalletAddress = async (
-  identityRegistryContract: any,
-  walletAddress: string
-) => {
-  return await identityRegistryContract.identity(walletAddress);
-}
+export const getOnChainIdAddressByWalletAddress = async (identityRegistryContract: any, walletAddress: string) =>
+  await identityRegistryContract.identity(walletAddress);
 
 export const getClaimIssuerContract = (claimIssuerContractAddress: string, claimIssuerWallet: any) => new Contract(
   claimIssuerContractAddress,

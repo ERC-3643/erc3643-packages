@@ -1,7 +1,4 @@
-export const freezeTokens = async (
-  tokenContract: any,
-  wallet: any
-) => {
+export const freezeTokens = async (tokenContract: any, wallet: any) => {
   console.log('\n', '=== Freezing tokens ===');
 
   console.log('Freezing 10 of Bob\'s tokens');

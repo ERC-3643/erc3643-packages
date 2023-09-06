@@ -1,8 +1,4 @@
-export const transferTokens = async (
-  tokenContract: any,
-  from: any,
-  to: any
-) => {
+export const transferTokens = async (tokenContract: any, from: any, to: any) => {
   console.log('\n', '=== Token transfers ===')
 
   const tokenAlice = tokenContract.connect(from);

@@ -13,8 +13,8 @@ export const checkCompliance = async (
   const tokenContractFromDeployer = tokenContract.connect(deployerWallet);
   const complianceBetaContract: any = getComplianceBetaContract(deployerWallet);
   const complianceBetaContractAddress = await complianceBetaContract.getAddress();
-  const txAddCompliance = await tokenContractFromDeployer.setCompliance(complianceBetaContractAddress);
-  await txAddCompliance.wait();
+  const txSetCompliance = await tokenContractFromDeployer.setCompliance(complianceBetaContractAddress);
+  await txSetCompliance.wait();
 
   const wallet1CountryCode = await identityRegistryContract.investorCountry(senderWallet.address);
   console.log('Sender country code', wallet1CountryCode);
@@ -77,6 +77,20 @@ export const checkCompliance = async (
   console.log('Can Sender transfer 5 tokens to Receiver?', transferAllowanceAfterWhitelistingCountries);
 }
 
+const isCountryCodeAllowed = async (
+  countryAllowComplianceModuleContract: any,
+  complianceBetaContract: any,
+  countryCode: number
+) => {
+  const countryCodeAllowed = await countryAllowComplianceModuleContract.isCountryAllowed(
+    complianceBetaContract.target,
+    countryCode
+  );
+  console.log(`Is country code ${countryCode} allowed?`, countryCodeAllowed);
+
+  return countryCodeAllowed;
+}
+
 const allowCountryCode = async (
   complianceBetaContract: any,
   countryAllowComplianceModuleAddress: string,
@@ -97,18 +111,4 @@ const allowCountryCode = async (
     countryCodeToAllow
   );
   console.log(`Is country code ${countryCodeToAllow} allowed now?`, countryCodeCheck);
-}
-
-const isCountryCodeAllowed = async (
-  countryAllowComplianceModuleContract: any,
-  complianceBetaContract: any,
-  countryCode: number
-) => {
-  const countryCodeAllowed = await countryAllowComplianceModuleContract.isCountryAllowed(
-    complianceBetaContract.target,
-    countryCode
-  );
-  console.log(`Is country code ${countryCode} allowed?`, countryCodeAllowed);
-
-  return countryCodeAllowed;
 }

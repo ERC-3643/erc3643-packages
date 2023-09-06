@@ -1,7 +1,4 @@
-export const freezeUnfreezeWallet = async (
-  tokenContract: any,
-  wallet: any
-) => {
+export const freezeUnfreezeWallet = async (tokenContract: any, wallet: any) => {
   console.log('\n', '=== Freezing wallet ===');
 
   let isFrozen = await tokenContract.isFrozen(wallet.address);
