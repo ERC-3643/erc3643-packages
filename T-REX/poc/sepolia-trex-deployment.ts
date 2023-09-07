@@ -1,4 +1,4 @@
-import {BigNumber, Contract, Signer, utils} from "ethers";
+import {BigNumber, Contract, Signer, providers, utils} from "ethers";
 import {ethers} from "hardhat";
 import OnchainID from "@onchain-id/solidity";
 import {loadFixture} from "@nomicfoundation/hardhat-network-helpers";
@@ -17,9 +17,20 @@ export async function deployIdentityProxy(implementationAuthority: Contract['add
 }
 
 export async function deployFullSuiteFixture() {
-  const [deployer, tokenIssuer, tokenAgent, tokenAdmin, claimIssuer, aliceWallet, bobWallet, charlieWallet, davidWallet, anotherWallet] = await ethers.getSigners();
-  const claimIssuerSigningKey = ethers.Wallet.createRandom();
-  const aliceActionKey = ethers.Wallet.createRandom();
+  const [
+    deployer,
+    tokenIssuer,
+    tokenAgent,
+    tokenAdmin,
+    claimIssuer,
+    aliceWallet,
+    bobWallet,
+    charlieWallet,
+    davidWallet,
+    anotherWallet
+  ] = await ethers.getSigners();
+  const claimIssuerSigningKey = claimIssuer;
+  const aliceActionKey = aliceWallet;
 
   // Deploy implementations
   const claimTopicsRegistryImplementation = await ethers.deployContract('ClaimTopicsRegistry', deployer);
@@ -132,7 +143,12 @@ export async function deployFullSuiteFixture() {
   await identityRegistry.connect(deployer).addAgent(tokenAgent.address);
   await identityRegistry.connect(deployer).addAgent(token.address);
 
-  await identityRegistry.connect(tokenAgent).batchRegisterIdentity([aliceWallet.address, bobWallet.address], [aliceIdentity.address, bobIdentity.address], [42, 666]);
+  // .registerIdentity (adding Charlie here as well)
+  await identityRegistry.connect(tokenAgent).batchRegisterIdentity(
+    [aliceWallet.address, bobWallet.address, charlieWallet.address],
+    [aliceIdentity.address, bobIdentity.address, charlieIdentity.address],
+    [42, 666, 42]
+  );
 
   const claimForAlice = {
     data: ethers.utils.hexlify(ethers.utils.toUtf8Bytes("Some claim public data.")),
@@ -271,7 +287,7 @@ export async function deploySuiteWithModularCompliancesFixture() {
 }
 
 export async function deploySuiteWithModularCompliancesModulesFixture() {
-  const context = await deploySuiteWithModularCompliancesFixture();
+  const context = await loadFixture(deploySuiteWithModularCompliancesFixture);
 
   const complianceModuleA = await ethers.deployContract('CountryAllowModule');
   await context.suite.complianceBeta.addModule(complianceModuleA.address);
@@ -286,10 +302,9 @@ export async function deploySuiteWithModularCompliancesModulesFixture() {
       complianceModuleB,
     },
   };
-
 }
 
-export const deploySuiteWithSetComplianceAndAllowedCountries = async () => {
+export const deployTrexEcosystemToSepolia = async () => {
   const context = await loadFixture(deploySuiteWithModularCompliancesModulesFixture);
 
   // setComplianceToTokenAndReturnComplianceBeta
@@ -312,28 +327,4 @@ export const deploySuiteWithSetComplianceAndAllowedCountries = async () => {
   await txAllowCountryCodesModuleB.wait();
 
   return context;
-}
-
-export async function deploySuiteWithModuleComplianceBoundToWallet() {
-  const context = await loadFixture(deployFullSuiteFixture);
-
-  const compliance = await ethers.deployContract('ModularCompliance');
-  await compliance.init();
-
-  const complianceModuleA = await ethers.deployContract('CountryAllowModule');
-  await compliance.addModule(complianceModuleA.address);
-  const complianceModuleB = await ethers.deployContract('CountryAllowModule');
-  await compliance.addModule(complianceModuleB.address);
-
-  await compliance.bindToken(context.accounts.charlieWallet.address);
-
-  return {
-    ...context,
-    suite: {
-      ...context.suite,
-      compliance,
-      complianceModuleA,
-      complianceModuleB,
-    },
-  };
 }

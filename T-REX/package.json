@@ -25,6 +25,7 @@
     "test": "hardhat test",
     "hardhat:node": "hardhat node",
     "hardhat:deploy": "hardhat run --network localhost ./poc/deploy.ts",
+    "hardhat:deploy:sepolia": "hardhat run --network sepolia ./poc/sepolia-deploy.ts",
     "lint:js": "eslint \"test/*.js\"",
     "lint:js-fix": "eslint \"test/*.js\" --fix",
     "lint": "npm run lint:sol",
