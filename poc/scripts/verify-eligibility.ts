@@ -7,7 +7,8 @@ import {
   ZERO_ADDRESS
 } from './setup';
 import { getClaim } from './get-claim';
-import { revokeClaim } from './revoke-claim';
+import { addClaim } from './add-claim';
+import { removeClaim } from './remove-claim';
 import { registerCharlieIdentity } from './register-identity';
 
 export const verifyAllIdentities = async (
@@ -24,9 +25,14 @@ export const verifyAllIdentities = async (
   await verifyIdentity(identityRegistryContract, bobWallet, deployerWallet);
   await verifyIdentity(identityRegistryContract, charlieWallet, deployerWallet);
 
-  // Revoke a claim and verify Alice's identity again
-  const claim = await getClaim(identityRegistryContract, aliceWallet, deployerWallet);
-  await revokeClaim(claim, claimIssuerWallet);
+  const { claim, claimId } = await getClaim(identityRegistryContract, aliceWallet, deployerWallet);
+
+  // Remove claim and verify Alice's identity again
+  await removeClaim(identityRegistryContract, aliceWallet, claimId);
+  await verifyIdentity(identityRegistryContract, aliceWallet, deployerWallet);
+
+  // Add claim back and verify Alice's identity again
+  await addClaim(identityRegistryContract, aliceWallet, claim);
   await verifyIdentity(identityRegistryContract, aliceWallet, deployerWallet);
 
   // Register Charlie's OnChainId if it is not not registered

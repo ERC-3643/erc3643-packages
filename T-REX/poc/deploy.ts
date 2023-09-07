@@ -3,8 +3,8 @@ import { deploySuiteWithModularCompliancesModulesFixture, deploySuiteWithSetComp
 (async () => {
   // const result = await deploySuiteWithModuleComplianceBoundToWallet();
   // const result = await deploySuiteWithModularCompliancesFixture();
-  const result = await deploySuiteWithModularCompliancesModulesFixture();
-  // const result = await deploySuiteWithSetComplianceAndAllowedCountries();
+  // const result = await deploySuiteWithModularCompliancesModulesFixture();
+  const result = await deploySuiteWithSetComplianceAndAllowedCountries();
 
   for(const [key, contract] of Object.entries(result.suite)) {
     console.log(key.padEnd(25, ' '), contract.address);

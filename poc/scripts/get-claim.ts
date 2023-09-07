@@ -9,7 +9,7 @@ export const getClaim = async (
   identityRegistryContract: any,
   identityWallet: any,
   deployerWallet: any
-) => {
+): Promise<{ claim: any; claimId: any; }> => {
   const onChainIdContractAddress = await getOnChainIdAddressByWalletAddress(
     identityRegistryContract,
     identityWallet.address
@@ -18,7 +18,7 @@ export const getClaim = async (
   if (onChainIdContractAddress === ZERO_ADDRESS) {
     console.log(`There is no OnChainID associated with address ${identityWallet.address}`);
 
-    return;
+    return { claim: null, claimId: null};
   }
 
   const identityContract: any = getIdentityContract(onChainIdContractAddress, identityWallet);
@@ -28,5 +28,5 @@ export const getClaim = async (
 
   const claim = await identityContract.getClaim(claimIds[0]);
 
-  return claim;
+  return { claim, claimId: claimIds[0] };
 }
