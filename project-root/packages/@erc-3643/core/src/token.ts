@@ -1,13 +1,12 @@
 import { contracts } from '@tokenysolutions/t-rex';
 import { Contract, Signer } from 'ethers';
 
-export const getToken = async (tokenAddress: string, signer: Signer) => {
-  const tokenContract = new Contract(
-    tokenAddress,
-    contracts.Token.abi
+export const getToken = async (contractAddress: string, signer: Signer) => {
+  const token = new Contract(
+    contractAddress,
+    contracts.Token.abi,
+    signer
   );
-
-  const token: any = tokenContract.connect(signer as Signer);
 
   const owner = await token.owner();
   const name = await token.name();
@@ -19,14 +18,15 @@ export const getToken = async (tokenAddress: string, signer: Signer) => {
   const realBalanceOf = balanceOf - frozenTokens;
   const walletIsFrozen = await token.isFrozen(signer.getAddress());
 
+  const identityRegistry = () => token.identityRegistry();
+
   const unfreeze = async (address: string) => {
-    console.log(address)
-    const freezeWallet = await token.setAddressFrozen(address, false);
+    const freezeWallet = await token.setAddressFrozen(address, true);
     await freezeWallet.wait();
   }
 
   const freeze = async (address: string) => {
-    const unfreezeWallet = await token.setAddressFrozen(address, true);
+    const unfreezeWallet = await token.setAddressFrozen(address, false);
     await unfreezeWallet.wait();
   }
 
@@ -54,6 +54,7 @@ export const getToken = async (tokenAddress: string, signer: Signer) => {
     tokenPause: pause,
     tokenFreeze: freeze,
     tokenUnfreeze: unfreeze,
+    identityRegistry,
     contract: token
   };
 }

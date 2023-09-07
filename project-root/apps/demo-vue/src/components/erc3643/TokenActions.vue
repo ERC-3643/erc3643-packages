@@ -2,18 +2,18 @@
 import { useToken } from '@erc-3643/vue-usedapp'
 import { ref, watch } from 'vue';
 import { useEthers } from 'vue-dapp';
+import { BOB_WALLET, TOKEN_ADDRESS } from '@/constants';
 
 const { signer } = useEthers()
 
 const token = ref<{ [key: string]: any }>({});
 
-watch(signer, (signer) => {
+
+watch(signer, async (signer) => {
   if (signer) {
-    token.value = useToken('0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE', signer);
+    token.value = await useToken(TOKEN_ADDRESS, signer);
   }
 })
-
-const BOB_WALLET = '0x976EA74026E726554dB657fA54763abd0C3a0aa9'
 
 const addressFreeze = ref<string | null>(null);
 const addressUnfreeze = ref<string | null>(null);
@@ -21,14 +21,14 @@ const addressUnfreeze = ref<string | null>(null);
 const walletFreeze = () => {
   console.log(addressFreeze.value)
   if (addressFreeze.value) {
-    token.value.freeze.value(addressFreeze.value)
+    token.value.freeze(addressFreeze.value)
   }
 }
 
 const walletUnfreeze = () => {
   console.log(addressUnfreeze.value)
   if (addressUnfreeze.value) {
-    token.value.unfreeze.value(addressUnfreeze.value)
+    token.value.unfreeze(addressUnfreeze.value)
   }
 }
 </script>
@@ -46,21 +46,21 @@ const walletUnfreeze = () => {
         </p>
         <p>
           <q-input
-            v-model="addressUnfreeze"
-            label="Wallet address to freeze"
-            :hint="`ex. Bob wallet ${BOB_WALLET}`"
-            dense
-          />
-          <q-btn class="btn" @click="walletUnfreeze" label="Unfreeze Wallet" dense />
-        </p>
-        <p>
-          <q-input
             v-model="addressFreeze"
             label="Wallet address to unfreeze"
             :hint="`ex. Bob wallet ${BOB_WALLET}`"
             dense
           />
-          <q-btn class="btn" @click="walletFreeze" label="Freeze Wallet"/>
+          <q-btn color="secondary" @click="walletFreeze" label="Freeze Wallet" dense />
+        </p>
+        <p>
+          <q-input
+            v-model="addressUnfreeze"
+            label="Wallet address to freeze"
+            :hint="`ex. Bob wallet ${BOB_WALLET}`"
+            dense
+          />
+          <q-btn color="warning" @click="walletUnfreeze" label="Unfreeze Wallet" dense />
         </p>
       </q-card-section>
     </q-card>

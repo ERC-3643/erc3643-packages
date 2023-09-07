@@ -7,8 +7,8 @@
 		"serve": "vite preview"
 	},
 	"dependencies": {
-		"@erc-3643/vue-usedapp": "*",
 		"@coinbase/wallet-sdk": "3.1.0",
+		"@erc-3643/vue-usedapp": "*",
 		"@gnosis.pm/safe-apps-provider": "^0.15.1",
 		"@gnosis.pm/safe-apps-sdk": "^7.8.0",
 		"@k90mirzaei/vue-toast": "^1.0.3",

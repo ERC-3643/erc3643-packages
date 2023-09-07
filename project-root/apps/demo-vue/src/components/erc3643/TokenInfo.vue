@@ -2,14 +2,15 @@
 import { useToken } from '@erc-3643/vue-usedapp'
 import { ref, watch } from 'vue';
 import { useEthers } from 'vue-dapp';
+import { TOKEN_ADDRESS } from '@/constants'
 
 const { signer } = useEthers()
 
 const token = ref<{ [key: string]: any }>({});
 
-watch(signer, (signer) => {
+watch(signer, async (signer) => {
   if (signer) {
-    token.value = useToken('0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE', signer);
+    token.value = await useToken(TOKEN_ADDRESS, signer);
   }
 })
 
@@ -31,10 +32,22 @@ watch(signer, (signer) => {
         <p>Frozen Tokens: {{ token.frozenTokens }}</p>
         <p>Real Balance Of: {{ token.realBalanceOf }}</p>
         <p>
-          Wallet Is Frozen: {{ token.walletIsFrozen }}
+          Wallet Is Frozen: {{  }}
+          <q-chip v-if="token.walletIsFrozen" color="negative" text-color="white">
+            Yes
+          </q-chip>
+          <q-chip v-else color="positive" text-color="white">
+            No
+          </q-chip>
         </p>
         <p>
-          Token Is Paused: {{ token.paused }}
+          Token Is Paused:
+          <q-chip v-if="token.paused" color="negative" text-color="white">
+            Yes
+          </q-chip>
+          <q-chip v-else color="positive" text-color="white">
+            No
+          </q-chip>
         </p>
       </q-card-section>
     </q-card>
