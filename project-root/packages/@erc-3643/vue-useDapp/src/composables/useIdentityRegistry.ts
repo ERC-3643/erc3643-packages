@@ -4,7 +4,10 @@ import { Signer } from 'vue-dapp';
 export function useIdentityRegistry(contractAddress: string, signer: Signer, debug = false) {
   const {
     contract,
-    getInvestorCountry
+    getInvestorCountry,
+    isVerified,
+    identity,
+    topicsRegistry
   } = getIdentityRegistry(contractAddress, signer);
 
   signer.provider?.on('debug', (data: any) => {
@@ -15,6 +18,9 @@ export function useIdentityRegistry(contractAddress: string, signer: Signer, deb
 
   return {
     contract,
-    getInvestorCountry
+    getInvestorCountry,
+    isVerified,
+    identity,
+    topicsRegistry
   }
 }

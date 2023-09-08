@@ -10,6 +10,7 @@
   "license": "ISC",
   "peerDependencies": {
     "@tokenysolutions/t-rex": ">=4.0.1",
+    "@onchain-id/solidity": ">=2.1.0",
     "ethers": ">=5.6.8"
   }
 }

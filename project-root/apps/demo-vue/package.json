@@ -12,6 +12,7 @@
 		"@gnosis.pm/safe-apps-provider": "^0.15.1",
 		"@gnosis.pm/safe-apps-sdk": "^7.8.0",
 		"@k90mirzaei/vue-toast": "^1.0.3",
+		"@onchain-id/solidity": "^2.1.0",
 		"@quasar/extras": "^1.16.6",
 		"@tokenysolutions/t-rex": "^4.0.1",
 		"@walletconnect/ethereum-provider": "2.7.7",

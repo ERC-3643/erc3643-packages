@@ -3,6 +3,7 @@ import TokenInfo from '@/components/erc3643/TokenInfo.vue'
 import TokenActions from '@/components/erc3643/TokenActions.vue'
 import ComplianceInfo from '@/components/erc3643/ComplianceInfo.vue'
 import IdentityRegistryInfo from '@/components/erc3643/IdentityRegistryInfo.vue'
+import EligibilityVerification from '@/components/erc3643/EligibilityVerification.vue'
 </script>
 
 <template>
@@ -16,6 +17,9 @@ import IdentityRegistryInfo from '@/components/erc3643/IdentityRegistryInfo.vue'
     </div>
     <div class="row q-col-gutter-sm q-py-sm">
       <ComplianceInfo />
+    </div>
+    <div class="row q-col-gutter-sm q-py-sm">
+      <EligibilityVerification />
     </div>
   </q-page>
 </template>
