@@ -11,6 +11,7 @@ import { checkCompliance } from './check-compliance';
 
 const checkUseCases = async () => {
   const rpc = new JsonRpcProvider('http://localhost:8545');
+  // const rpcSepolia = new JsonRpcProvider('https://sepolia.infura.io/v3/023b5330349a4db19ed95c89fb835050');
 
   const {
     deployer,
