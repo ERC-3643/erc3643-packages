@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "useDefineForClassFields": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "lib": [
+      "esnext",
+      "dom"
+    ],
+    "baseUrl": "."
+  },
+  "paths": {
+    "@erc-3643/core": [
+      "./packages/@erc-3643/core/src/index"
+    ],
+    "@erc-3643/vue-usedapp": [
+      "./packages/@erc-3643/vue-useDapp/index"
+    ]
+  }
+}
