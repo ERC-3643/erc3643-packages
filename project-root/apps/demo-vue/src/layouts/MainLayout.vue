@@ -2,9 +2,10 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn flat dense round @click="toggleLeftDrawer" icon="menu" aria-label="Menu" />
         <q-toolbar-title>
-          ERC3643
+          <p class="vertical-middle">
+            ERC3643 by <img src="@/assets/tokeny.png" width="150" alt="">
+          </p>
         </q-toolbar-title>
         <q-space />
         <div class="q-gutter-sm row items-center no-wrap">

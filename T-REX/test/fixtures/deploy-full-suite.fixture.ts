@@ -17,7 +17,18 @@ export async function deployIdentityProxy(implementationAuthority: Contract['add
 }
 
 export async function deployFullSuiteFixture() {
-  const [deployer, tokenIssuer, tokenAgent, tokenAdmin, claimIssuer, aliceWallet, bobWallet, charlieWallet, davidWallet, anotherWallet] = await ethers.getSigners();
+  const [
+    deployer,
+    tokenIssuer,
+    tokenAgent,
+    tokenAdmin,
+    claimIssuer,
+    aliceWallet,
+    bobWallet,
+    charlieWallet,
+    davidWallet,
+    anotherWallet
+  ] = await ethers.getSigners();
   const claimIssuerSigningKey = ethers.Wallet.createRandom();
   const aliceActionKey = ethers.Wallet.createRandom();
 
@@ -132,7 +143,12 @@ export async function deployFullSuiteFixture() {
   await identityRegistry.connect(deployer).addAgent(tokenAgent.address);
   await identityRegistry.connect(deployer).addAgent(token.address);
 
-  await identityRegistry.connect(tokenAgent).batchRegisterIdentity([aliceWallet.address, bobWallet.address], [aliceIdentity.address, bobIdentity.address], [42, 666]);
+  await identityRegistry.connect(tokenAgent)
+  .batchRegisterIdentity(
+    [aliceWallet.address, bobWallet.address],
+    [aliceIdentity.address, bobIdentity.address],
+    [42, 666]
+  );
 
   const claimForAlice = {
     data: ethers.utils.hexlify(ethers.utils.toUtf8Bytes("Some claim public data.")),
