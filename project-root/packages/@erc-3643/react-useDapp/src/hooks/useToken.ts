@@ -1,9 +1,9 @@
 import { getToken } from "@erc-3643/core";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { JsonRpcSigner } from '@ethersproject/providers'
 
 export const useToken = (tokenAddress: string, signer: JsonRpcSigner | undefined) => {
-  const [token, setToken] = useEffect(null);
+  const [token, setToken] = useState<any>();
 
   useEffect(() => {
     if (tokenAddress && signer) {
@@ -12,7 +12,7 @@ export const useToken = (tokenAddress: string, signer: JsonRpcSigner | undefined
   }, [tokenAddress, signer]);
 
   const requestToken = async () => {
-    if (signer){
+    if (signer) {
       setToken(await getToken(tokenAddress, signer));
     }
   };
