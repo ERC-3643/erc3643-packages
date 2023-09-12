@@ -1,4 +1,4 @@
-import { getToken } from "@erc-3643/core/src";
+import { getToken } from "@erc-3643/core";
 import { useEffect } from "react";
 import { Signer } from "ethers";
 
