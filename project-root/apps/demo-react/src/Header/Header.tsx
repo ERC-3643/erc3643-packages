@@ -1,15 +1,15 @@
 import { StyledPill, StyledHeader, StyledLeftCol, StyledRightCol, StyledRow } from './Header.styles'
 import ConnectButton from './ConnectBtn/ConnectButton'
-// import { useSigner } from '@usedapp/core'
+import { useSigner } from '@usedapp/core'
 import { TOKEN_ADDRESS } from '../constants'
-import { useToken } from '@erc-3643/react-useDapp'
+import { useToken } from '@erc-3643/react-usedapp'
 
 const Header = () => {
-  // const signer = useSigner()
+  const signer = useSigner()
 
-  // const token = useToken(TOKEN_ADDRESS, signer)
+  const token = useToken(TOKEN_ADDRESS, signer)
 
-  console.log(useToken())
+  console.log(token)
 
   const address = '0x9965...A4dc'
   const coinsAmount = 100000
