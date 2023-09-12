@@ -84,8 +84,8 @@ const checkClaims = async (
 
   const claimTopics = await claimTopicsRegistryContract.getClaimTopics();
 
-  const missingClaimTopics = [];
-  const invalidClaims = [];
+  const missingClaimTopics: any[] = [];
+  const invalidClaims: any[] = [];
 
   for (const topic of claimTopics) {
     const claimIds = await identityContract.getClaimIdsByTopic(topic);

@@ -1,6 +1,6 @@
-import {BigNumber, Contract, Signer, utils} from "ethers";
-import {ethers} from "hardhat";
-import OnchainID from "@onchain-id/solidity";
+import { ContractFactory, Signer, ZeroAddress, keccak256, Interface, id, AbiCoder, hexlify, toUtf8Bytes, getBytes } from 'ethers';
+import OnchainID from '@onchain-id/solidity';
+import { ethers } from 'hardhat';
 
 const GLOBAL_CONTRACT_TIMEOUT = 120000;
 const GLOBAL_TX_TIMEOUT = 60000;
@@ -17,8 +17,8 @@ const waitTx = async (txName: string) => {
   console.log(`Waited ${GLOBAL_TX_TIMEOUT}`);
 }
 
-export async function deployIdentityProxy(implementationAuthority: Contract['address'], managementKey: string, signer: Signer) {
-  const identity = await new ethers.ContractFactory(
+export async function deployIdentityProxy(implementationAuthority: string, managementKey: string, signer: Signer) {
+  const identity = await new ContractFactory(
       OnchainID.contracts.IdentityProxy.abi,
       OnchainID.contracts.IdentityProxy.bytecode,
       signer
@@ -27,11 +27,12 @@ export async function deployIdentityProxy(implementationAuthority: Contract['add
       managementKey
     );
   await waitContractDeployment('OnchainID.contracts.IdentityProxy.abi', identity);
+  const identityContractAddress = await identity.getAddress();
 
-  return ethers.getContractAt("Identity", identity.address, signer);
+  return ethers.getContractAt('Identity', identityContractAddress, signer);
 }
 
-export const sepolia1 = async () => {
+export const deployImplementations = async () => {
   const [
     deployer,
     tokenIssuer,
@@ -79,20 +80,23 @@ export const sepolia1 = async () => {
     deployer
   ).deploy(deployer.address, true);
   await waitContractDeployment('identityImplementation', identityImplementation);
+  const identityImplementationAddress = await identityImplementation.getAddress();
 
   const identityImplementationAuthority = await new ethers.ContractFactory(
     OnchainID.contracts.ImplementationAuthority.abi,
     OnchainID.contracts.ImplementationAuthority.bytecode,
     deployer
-  ).deploy(identityImplementation.address);
+  ).deploy(identityImplementationAddress);
   await waitContractDeployment('identityImplementationAuthority', identityImplementationAuthority);
+  const identityImplementationAuthorityAddress = await identityImplementationAuthority.getAddress();
 
-  const trexImplementationAuthority = await ethers.deployContract(
+  const trexImplementationAuthority: any = await ethers.deployContract(
     'TREXImplementationAuthority',
-    [true, ethers.constants.AddressZero, ethers.constants.AddressZero],
+    [true, ZeroAddress, ZeroAddress],
     deployer
   );
   await waitContractDeployment('TREXImplementationAuthority', trexImplementationAuthority);
+  const trexImplementationAuthorityAddress = await trexImplementationAuthority.getAddress();
 
   const versionStruct = {
     major: 4,
@@ -110,20 +114,23 @@ export const sepolia1 = async () => {
   await trexImplementationAuthority.connect(deployer).addAndUseTREXVersion(versionStruct, contractsStruct);
   await waitTx('addAndUseTREXVersion');
 
-  const trexFactory = await ethers.deployContract('TREXFactory', [trexImplementationAuthority.address], deployer);
+  const trexFactory = await ethers.deployContract('TREXFactory', [trexImplementationAuthorityAddress], deployer);
   await waitContractDeployment('TREXFactory', trexFactory, 60);
 
-  const claimTopicsRegistryProxy = await ethers.deployContract('ClaimTopicsRegistryProxy', [trexImplementationAuthority.address], deployer);
+  const claimTopicsRegistryProxy = await ethers.deployContract('ClaimTopicsRegistryProxy', [trexImplementationAuthorityAddress], deployer);
   await waitContractDeployment('ClaimTopicsRegistryProxy', claimTopicsRegistryProxy);
-  const claimTopicsRegistry = await ethers.getContractAt('ClaimTopicsRegistry', claimTopicsRegistryProxy.address);
+  const claimTopicsRegistryProxyAddress = await claimTopicsRegistryProxy.getAddress();
+  const claimTopicsRegistry = await ethers.getContractAt('ClaimTopicsRegistry', claimTopicsRegistryProxyAddress);
 
-  const trustedIssuersRegistryProxy = await ethers.deployContract('TrustedIssuersRegistryProxy', [trexImplementationAuthority.address], deployer);
+  const trustedIssuersRegistryProxy = await ethers.deployContract('TrustedIssuersRegistryProxy', [trexImplementationAuthorityAddress], deployer);
   await waitContractDeployment('TrustedIssuersRegistryProxy', trustedIssuersRegistryProxy);
-  const trustedIssuersRegistry = await ethers.getContractAt('TrustedIssuersRegistry', trustedIssuersRegistryProxy.address);
+  const trustedIssuersRegistryProxyAddress = await trustedIssuersRegistryProxy.getAddress();
+  const trustedIssuersRegistry = await ethers.getContractAt('TrustedIssuersRegistry', trustedIssuersRegistryProxyAddress);
 
   const identityRegistryStorageProxy = await ethers.deployContract('IdentityRegistryStorageProxy', [trexImplementationAuthority.address], deployer);
   await waitContractDeployment('IdentityRegistryStorageProxy', identityRegistryStorageProxy);
-  const identityRegistryStorage = await ethers.getContractAt('IdentityRegistryStorage', identityRegistryStorageProxy.address);
+  const identityRegistryStorageProxyAddress = await identityRegistryStorageProxy.getAddress();
+  const identityRegistryStorage = await ethers.getContractAt('IdentityRegistryStorage', identityRegistryStorageProxyAddress);
 
   const defaultCompliance = await ethers.deployContract('DefaultCompliance', deployer);
   await waitContractDeployment('DefaultCompliance', defaultCompliance);
@@ -131,13 +138,14 @@ export const sepolia1 = async () => {
   const identityRegistryProxy = await ethers
     .deployContract(
       'IdentityRegistryProxy',
-      [trexImplementationAuthority.address, trustedIssuersRegistry.address, claimTopicsRegistry.address, identityRegistryStorage.address],
+      [trexImplementationAuthorityAddress, trustedIssuersRegistry.address, claimTopicsRegistry.address, identityRegistryStorage.address],
       deployer,
     );
   await waitContractDeployment('IdentityRegistryProxy', identityRegistryProxy);
-  const identityRegistry = await ethers.getContractAt('IdentityRegistry', identityRegistryProxy.address);
+  const identityRegistryProxyAddress = await identityRegistryProxy.getAddress();
+  const identityRegistry = await ethers.getContractAt('IdentityRegistry', identityRegistryProxyAddress);
 
-  const tokenOID = await deployIdentityProxy(identityImplementationAuthority.address, tokenIssuer.address, deployer);
+  const tokenOID = await deployIdentityProxy(identityImplementationAuthorityAddress, tokenIssuer.address, deployer);
 
   return {
     accounts: {
@@ -184,7 +192,7 @@ export const sepolia1 = async () => {
 export async function deployFullSuiteFixture(context: any) {
   const tokenName = 'TREXDINO';
   const tokenSymbol = 'TREX';
-  const tokenDecimals = BigNumber.from('0');
+  const tokenDecimals = BigInt('0');
   const tokenProxy = await ethers
     .deployContract(
       'TokenProxy',
@@ -200,9 +208,10 @@ export async function deployFullSuiteFixture(context: any) {
       context.accounts.deployer,
     );
   await waitContractDeployment('TokenProxy', tokenProxy, 60);
-  const token = await ethers.getContractAt('Token', tokenProxy.address);
+  const tokenProxyAddress = await tokenProxy.getAddress();
+  const token: any = await ethers.getContractAt('Token', tokenProxyAddress);
 
-  const agentManager = await ethers.deployContract('AgentManager', [token.address], context.accounts.tokenAgent);
+  const agentManager: any = await ethers.deployContract('AgentManager', [token.address], context.accounts.tokenAgent);
   await waitContractDeployment('AgentManager', agentManager);
 
   await context.suite.identityRegistryStorage.connect(context.accounts.deployer).bindIdentityRegistry(context.suite.identityRegistry.address);
@@ -211,30 +220,30 @@ export async function deployFullSuiteFixture(context: any) {
   await token.connect(context.accounts.deployer).addAgent(context.accounts.tokenAgent.address);
   await waitTx('addAgent(tokenAgent.address)');
 
-  const claimTopics = [ethers.utils.id('CLAIM_TOPIC')];
+  const claimTopics = [id('CLAIM_TOPIC')];
   await context.suite.claimTopicsRegistry.connect(context.accounts.deployer).addClaimTopic(claimTopics[0]);
   await waitTx('addClaimTopic');
 
-  const claimIssuerContract = await ethers.deployContract('ClaimIssuer', [context.accounts.claimIssuer.address], context.accounts.claimIssuer);
+  const claimIssuerContract: any = await ethers.deployContract('ClaimIssuer', [context.accounts.claimIssuer.address], context.accounts.claimIssuer);
   await waitContractDeployment('ClaimIssuer', claimIssuerContract);
 
   await claimIssuerContract
     .connect(context.accounts.claimIssuer)
-    .addKey(ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(['address'], [context.accounts.claimIssuerSigningKey.address])), 3, 1);
+    .addKey(keccak256(AbiCoder.defaultAbiCoder().encode(['address'], [context.accounts.claimIssuerSigningKey.address])), 3, 1);
   await waitTx('claimIssuer.addKey');
 
   await context.suite.trustedIssuersRegistry.connect(context.accounts.deployer).addTrustedIssuer(claimIssuerContract.address, claimTopics);
   await waitTx('addTrustedIssuer');
 
-  const aliceIdentity = await deployIdentityProxy(context.authorities.identityImplementationAuthority.address, context.accounts.aliceWallet.address, context.accounts.deployer);
+  const aliceIdentity: any = await deployIdentityProxy(context.authorities.identityImplementationAuthority.address, context.accounts.aliceWallet.address, context.accounts.deployer);
   await aliceIdentity.connect(context.accounts.aliceWallet).addKey(
-    ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(['address'], [context.accounts.aliceActionKey.address])),
+    keccak256(AbiCoder.defaultAbiCoder().encode(['address'], [context.accounts.aliceActionKey.address])),
     2,
     1
   );
   await waitTx('aliceIdentity.addKey');
 
-  const bobIdentity = await deployIdentityProxy(context.authorities.identityImplementationAuthority.address, context.accounts.bobWallet.address, context.accounts.deployer);
+  const bobIdentity: any = await deployIdentityProxy(context.authorities.identityImplementationAuthority.address, context.accounts.bobWallet.address, context.accounts.deployer);
   const charlieIdentity = await deployIdentityProxy(context.authorities.identityImplementationAuthority.address, context.accounts.charlieWallet.address, context.accounts.deployer);
 
   await context.suite.identityRegistry.connect(context.accounts.deployer).addAgent(context.accounts.tokenAgent.address);
@@ -252,7 +261,7 @@ export async function deployFullSuiteFixture(context: any) {
   await waitTx('batchRegisterIdentity');
 
   const claimForAlice = {
-    data: ethers.utils.hexlify(ethers.utils.toUtf8Bytes("Some claim public data.")),
+    data: hexlify(toUtf8Bytes("Some claim public data.")),
     issuer: claimIssuerContract.address,
     topic: claimTopics[0],
     scheme: 1,
@@ -260,9 +269,9 @@ export async function deployFullSuiteFixture(context: any) {
     signature: '',
   };
   claimForAlice.signature = await context.accounts.claimIssuerSigningKey.signMessage(
-    ethers.utils.arrayify(
-      ethers.utils.keccak256(
-        ethers.utils.defaultAbiCoder.encode(
+    getBytes(
+      keccak256(
+        AbiCoder.defaultAbiCoder().encode(
           ['address', 'uint256', 'bytes'],
           [claimForAlice.identity, claimForAlice.topic, claimForAlice.data],
         ),
@@ -281,7 +290,7 @@ export async function deployFullSuiteFixture(context: any) {
   await waitTx('aliceIdentity.addClaim');
 
   const claimForBob = {
-    data: ethers.utils.hexlify(ethers.utils.toUtf8Bytes("Some claim public data.")),
+    data: hexlify(toUtf8Bytes("Some claim public data.")),
     issuer: claimIssuerContract.address,
     topic: claimTopics[0],
     scheme: 1,
@@ -289,9 +298,9 @@ export async function deployFullSuiteFixture(context: any) {
     signature: '',
   };
   claimForBob.signature = await context.accounts.claimIssuerSigningKey.signMessage(
-    ethers.utils.arrayify(
-      ethers.utils.keccak256(
-        ethers.utils.defaultAbiCoder.encode(
+    getBytes(
+      keccak256(
+        AbiCoder.defaultAbiCoder().encode(
           ['address', 'uint256', 'bytes'],
           [claimForBob.identity, claimForBob.topic, claimForBob.data],
         ),
@@ -360,8 +369,9 @@ export async function deployFullSuiteFixture(context: any) {
 export async function deploySuiteWithModularCompliancesFixture(context: any) {
   const complianceProxy = await ethers.deployContract('ModularComplianceProxy', [context.authorities.trexImplementationAuthority.address]);
   await waitContractDeployment('ModularComplianceProxy', complianceProxy);
+  const complianceProxyAddress = await complianceProxy.getAddress();
 
-  const compliance = await ethers.getContractAt('ModularCompliance', complianceProxy.address);
+  const compliance = await ethers.getContractAt('ModularCompliance', complianceProxyAddress);
 
   const complianceBeta = await ethers.deployContract('ModularCompliance');
   await waitContractDeployment('ModularCompliance', complianceBeta);
@@ -402,25 +412,35 @@ export async function deploySuiteWithModularCompliancesModulesFixture(context: a
   };
 }
 
-export const deployTrexEcosystemToSepolia = async (context: any) => {
+export const registerCharlieIdentity = async (context: any) => {
+  const registerIdentityTx = await context.suite.identityRegistry.connect(context.accounts.tokenAgent)
+    .batchRegisterIdentity(
+      [context.accounts.charlieWallet.address],
+      [context.identities.charlieIdentity.address],
+      [42]
+    );
+  await registerIdentityTx.wait();
+}
+
+export const setComplianceAndAllowCountryCodes = async (context: any) => {
   // setComplianceToTokenAndReturnComplianceBeta
   const txSetCompliance = await context.suite.token
     .connect(context.accounts.deployer)
     .setCompliance(context.suite.complianceBeta.address);
-  await waitTx('txSetCompliance.setCompliance()');
+  await txSetCompliance.wait();
 
   // allowCountryCode
   const txAllowCountryCodesModuleA = await context.suite.complianceBeta.callModuleFunction(
-    new utils.Interface(['function batchAllowCountries(uint16[] countries)']).encodeFunctionData('batchAllowCountries', [[42, 578]]),
+    new Interface(['function batchAllowCountries(uint16[] countries)']).encodeFunctionData('batchAllowCountries', [[42, 578, 666]]),
     context.suite.complianceModuleA.address
   );
-  await waitTx('txAllowCountryCodesModuleA');
+  await txAllowCountryCodesModuleA.wait();
 
   const txAllowCountryCodesModuleB = await context.suite.complianceBeta.callModuleFunction(
-    new utils.Interface(['function batchAllowCountries(uint16[] countries)']).encodeFunctionData('batchAllowCountries', [[42, 578]]),
+    new Interface(['function batchAllowCountries(uint16[] countries)']).encodeFunctionData('batchAllowCountries', [[42, 578, 666]]),
     context.suite.complianceModuleB.address
   );
-  await waitTx('txAllowCountryCodesModuleB');
+  await txAllowCountryCodesModuleB.wait();
 
   return context;
 }

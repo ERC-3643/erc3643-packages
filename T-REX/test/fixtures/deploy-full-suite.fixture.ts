@@ -1,4 +1,4 @@
-import {BigNumber, Contract, Signer, utils} from "ethers";
+import {BigNumber, Contract, Signer} from "ethers";
 import {ethers} from "hardhat";
 import OnchainID from "@onchain-id/solidity";
 import {loadFixture} from "@nomicfoundation/hardhat-network-helpers";
@@ -303,31 +303,6 @@ export async function deploySuiteWithModularCompliancesModulesFixture() {
     },
   };
 
-}
-
-export const deploySuiteWithSetComplianceAndAllowedCountries = async () => {
-  const context = await loadFixture(deploySuiteWithModularCompliancesModulesFixture);
-
-  // setComplianceToTokenAndReturnComplianceBeta
-  const txSetCompliance = await context.suite.token
-    .connect(context.accounts.deployer)
-    .setCompliance(context.suite.complianceBeta.address);
-  await txSetCompliance.wait();
-
-  // allowCountryCode
-  const txAllowCountryCodesModuleA = await context.suite.complianceBeta.callModuleFunction(
-    new utils.Interface(['function batchAllowCountries(uint16[] countries)']).encodeFunctionData('batchAllowCountries', [[42, 666]]),
-    context.suite.complianceModuleA.address
-  );
-  await txAllowCountryCodesModuleA.wait();
-
-  const txAllowCountryCodesModuleB = await context.suite.complianceBeta.callModuleFunction(
-    new utils.Interface(['function batchAllowCountries(uint16[] countries)']).encodeFunctionData('batchAllowCountries', [[42, 666]]),
-    context.suite.complianceModuleB.address
-  );
-  await txAllowCountryCodesModuleB.wait();
-
-  return context;
 }
 
 export async function deploySuiteWithModuleComplianceBoundToWallet() {
