@@ -391,13 +391,13 @@ export async function deploySuiteWithModularCompliancesFixture(context: any) {
 
 export async function deploySuiteWithModularCompliancesModulesFixture(context: any) {
   const complianceModuleA = await ethers.deployContract('CountryAllowModule');
-  await complianceModuleA.waitForDeployment();
+  await complianceModuleA.wait();
 
   const moduleAtx = await context.suite.complianceBeta.addModule(complianceModuleA.address);
   await moduleAtx.wait();
 
   const complianceModuleB = await ethers.deployContract('CountryAllowModule');
-  await complianceModuleB.waitForDeployment();
+  await complianceModuleB.wait();
 
   const moduleBtx = await context.suite.complianceBeta.addModule(complianceModuleB.address);
   await moduleBtx.wait();
