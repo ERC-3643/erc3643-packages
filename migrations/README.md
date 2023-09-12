@@ -1,4 +1,4 @@
-# First, you need to install all dependencies
+# Installing dependencies
 1. In the project root run `git clone https://github.com/TokenySolutions/T-REX.git` 
 1. Change directory to `root/migrations` and run `npm ci`
 1. Change directory to `root/T-REX` and run `npm ci`

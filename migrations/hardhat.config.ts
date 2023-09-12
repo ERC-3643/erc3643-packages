@@ -5,11 +5,12 @@ import { HardhatUserConfig } from 'hardhat/config';
 import 'solidity-coverage';
 import '@nomiclabs/hardhat-solhint';
 import '@primitivefi/hardhat-dodoc';
-import { getAccounts } from '../migrations/sepolia-signers';
+// import { getAccounts } from '../migrations/sepolia-signers';
 import { getLocalAccounts } from '../migrations/local-signers';
 
 const infuraProjectId = '023b5330349a4db19ed95c89fb835050';
-const sepoliaAccounts = getAccounts();
+// const sepoliaAccounts = getAccounts();
+const sepoliaAccounts: any = [];
 const localAccounts = getLocalAccounts();
 
 const config: HardhatUserConfig = {
