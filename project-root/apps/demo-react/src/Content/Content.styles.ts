@@ -16,5 +16,6 @@ export const StyledCol = styled.div`
     margin-bottom: 10px;
     padding: 10px;
     box-shadow: 1px 1px 3px 0 lightgray;
+    background-color: white;
   }
 `
