@@ -3,3 +3,7 @@ node_modules
 .DS_Store
 
 sepolia-signers.ts
+
+docs
+
+T-REX
