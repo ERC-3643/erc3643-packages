@@ -3,10 +3,8 @@ import ConnectButton from './ConnectBtn/ConnectButton'
 import { useEthers, useEtherBalance } from '@usedapp/core'
 
 const Header = () => {
-
   const { account } = useEthers()
   const userBalance = useEtherBalance(account)
-  const address = account;
   const coinsAmount = userBalance?.toString()
 
   return (
@@ -14,8 +12,8 @@ const Header = () => {
       <StyledRow>
         <StyledLeftCol>ERC3643</StyledLeftCol>
         <StyledRightCol>
-          <StyledPill>{address}</StyledPill>
-          <StyledPill>{coinsAmount} ETH</StyledPill>
+          {account && <StyledPill>{account}</StyledPill>}
+          {coinsAmount && <StyledPill>{coinsAmount} ETH</StyledPill>}
           <ConnectButton />
         </StyledRightCol>
       </StyledRow>

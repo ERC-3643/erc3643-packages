@@ -1,8 +1,8 @@
 import { getToken } from "@erc-3643/core";
 import { useEffect, useState } from "react";
-import { JsonRpcSigner } from '@ethersproject/providers'
+import { Signer } from "@ethersproject/abstract-signer";
 
-export const useToken = (tokenAddress: string, signer: JsonRpcSigner | undefined) => {
+export const useToken = (tokenAddress: string, signer: Signer | undefined) => {
   const [token, setToken] = useState<any>();
 
   useEffect(() => {
