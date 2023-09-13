@@ -9,7 +9,7 @@ import {
   StyledFieldRow,
   StyledWalletExample,
 } from './ComplianceInfo.styles'
-import { Signer } from '@ethersproject/abstract-signer'
+import { Signer } from 'ethers'
 import { ComplianceModuleStatus } from './interfaces'
 
 const ComplianceInfo = () => {

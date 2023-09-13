@@ -4,6 +4,7 @@ import {
   useIdentityRegistry,
   useClaimTopicsRegistry,
   useClaimIssuer,
+  IdentityRegistry,
 } from '@erc-3643/react-usedapp'
 import { TOKEN_ADDRESS, ZERO_ADDRESS } from '../../constants'
 import { useEffect, useState } from 'react'
@@ -14,7 +15,8 @@ const EligibilityVerificationInfo = () => {
   const token = useToken(TOKEN_ADDRESS, signer)
   const [signerAddress, setSignerAddress] = useState('')
   const [identityRegistryAddress, setIdentityRegistryAddress] = useState('')
-  const identityRegistry = useIdentityRegistry(identityRegistryAddress, signer)
+  const { getIdentityRegistry } = useIdentityRegistry(signer)
+  const [identityRegistry, setIdentityRegistry] = useState<IdentityRegistry | null>(null)
   const [identityIsVerified, setIdentityIsVerified] = useState(false)
   const [topicsRegistryAddress, setTopicsRegistryAddress] = useState('')
   const [identityAddress, setIdentityAddress] = useState('')
@@ -42,6 +44,7 @@ const EligibilityVerificationInfo = () => {
     ;(async () => {
       const address = await token.identityRegistry()
       setIdentityRegistryAddress(address)
+      setIdentityRegistry(getIdentityRegistry(address))
     })()
   }, [token])
 
@@ -69,7 +72,7 @@ const EligibilityVerificationInfo = () => {
 
   useEffect(() => {
     setMissingInvalidClaims()
-  }, [claimTopicsRegistry, onChainIdIdentity])
+  }, [identityIsVerified])
 
   const setMissingInvalidClaims = async () => {
     if (!claimTopicsRegistry || !onChainIdIdentity) {

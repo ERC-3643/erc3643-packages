@@ -10,10 +10,10 @@ const Content = () => {
     <AntdContent>
       <StyledRow>
         <StyledCol>
-          <TokenInfo />
+          {/*<TokenInfo />*/}
           <IdentityRegistryInfo />
-          <ComplianceInfo />
-          <EligibilityVerificationInfo />
+          {/*<ComplianceInfo />*/}
+          {/*<EligibilityVerificationInfo />*/}
         </StyledCol>
         <StyledCol>
           <div>Token actions</div>

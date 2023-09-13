@@ -1,14 +1,14 @@
 import { TOKEN_ADDRESS } from '../../constants'
 import { useSigner } from '@usedapp/core'
 import { useEffect, useState } from 'react'
-import { useIdentityRegistry, useToken } from '@erc-3643/react-usedapp'
+import { IdentityRegistry, useIdentityRegistry, useToken } from '@erc-3643/react-usedapp'
 
 const IdentityRegistryInfo = () => {
   const [investorCountry, setInvestorCountry] = useState('')
   const signer = useSigner()
   const token = useToken(TOKEN_ADDRESS, signer)
-  const [identityRegistryAddress, setIdentityRegistryAddress] = useState('')
-  const identityRegistry = useIdentityRegistry(identityRegistryAddress, signer)
+  const { getIdentityRegistry } = useIdentityRegistry(signer)
+  const [identityRegistry, setIdentityRegistry] = useState<IdentityRegistry | null>(null)
 
   useEffect(() => {
     if (!token) {
@@ -16,7 +16,8 @@ const IdentityRegistryInfo = () => {
     }
 
     ;(async () => {
-      setIdentityRegistryAddress(await token?.identityRegistry())
+      const identityRegistryAddress = await token?.identityRegistry()
+      setIdentityRegistry(getIdentityRegistry(identityRegistryAddress))
     })()
   }, [token])
 
