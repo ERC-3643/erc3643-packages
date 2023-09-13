@@ -47,7 +47,7 @@ const walletUnfreeze = () => {
         <p>
           <q-input
             v-model="addressFreeze"
-            label="Wallet address to unfreeze"
+            label="Wallet address to freeze"
             :hint="`ex. Bob wallet ${BOB_WALLET}`"
             dense
           />
@@ -56,7 +56,7 @@ const walletUnfreeze = () => {
         <p>
           <q-input
             v-model="addressUnfreeze"
-            label="Wallet address to freeze"
+            label="Wallet address to unfreeze"
             :hint="`ex. Bob wallet ${BOB_WALLET}`"
             dense
           />
