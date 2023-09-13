@@ -4,16 +4,6 @@ import { getToken } from '@erc-3643/core';
 
 export async function useToken(tokenAddress: string, signer: Signer, debug = false) {
 
-  const owner = ref('');
-  const name = ref('');
-  const totalSupply = ref<bigint>(BigInt(0));
-  const decimals = ref<bigint>(BigInt(0));
-  const frozenTokens = ref<bigint>(BigInt(0));
-  const realBalanceOf = ref<bigint>(BigInt(0));
-  const balanceOf = ref<bigint>(BigInt(0));
-  const paused = ref(false);
-  const walletIsFrozen = ref(false);
-
   const {
     contract,
     tokenOwner,
@@ -32,15 +22,8 @@ export async function useToken(tokenAddress: string, signer: Signer, debug = fal
     identityRegistry
   } = await getToken(tokenAddress, signer);
 
-  owner.value = tokenOwner;
-  name.value = tokenName;
-  totalSupply.value = tokenTotalSupply;
-  decimals.value = tokenDecimals;
+  const paused = ref(false);
   paused.value = tokenPaused;
-  balanceOf.value = tokenBalanceOf;
-  frozenTokens.value = tokenFrozenTokens;
-  realBalanceOf.value = tokenRealBalanceOf as any;
-  walletIsFrozen.value = tokenWalletIsFrozen;
 
   contract.on('Paused', () => {
     paused.value = true;
@@ -65,15 +48,15 @@ export async function useToken(tokenAddress: string, signer: Signer, debug = fal
   });
 
   return {
-    owner,
-    name,
-    totalSupply,
-    decimals,
-    frozenTokens,
-    realBalanceOf,
-    balanceOf,
+    owner: tokenOwner,
+    name: tokenName,
+    totalSupply: tokenTotalSupply,
+    decimals: tokenDecimals,
+    balanceOf: tokenBalanceOf,
+    frozenTokens: tokenFrozenTokens,
+    realBalanceOf: tokenRealBalanceOf,
+    walletIsFrozen: tokenWalletIsFrozen,
     paused,
-    walletIsFrozen,
     pause: tokenPause,
     run: tokenRun,
     unfreeze: tokenFreeze,
