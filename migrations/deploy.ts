@@ -2,13 +2,17 @@ import { deploySuiteWithModularCompliancesFixture } from '../T-REX/test/fixtures
 import {
   deploySuiteWithModularCompliancesModulesFixture,
   setComplianceAndAllowCountryCodes,
-  registerCharlieIdentity
+  registerCharlieIdentity,
+  addClaimForCharlie,
+  revokeClaimForCharlie
 } from './sepolia-trex-deployment';
 
 (async () => {
   const initialContext = await deploySuiteWithModularCompliancesFixture();
   const contextWithModules = await deploySuiteWithModularCompliancesModulesFixture(initialContext);
-  await registerCharlieIdentity(contextWithModules); 
+  await registerCharlieIdentity(contextWithModules);
+  // const contextWithClaim = await addClaimForCharlie(contextWithModules);
+  // const contextWithRevokedClaim = await revokeClaimForCharlie(contextWithClaim);
   const result: any = await setComplianceAndAllowCountryCodes(contextWithModules);
 
   for(const [key, contract] of Object.entries(result.suite)) {

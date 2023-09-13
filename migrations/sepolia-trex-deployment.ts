@@ -418,6 +418,61 @@ export const registerCharlieIdentity = async (context: any) => {
   await registerIdentityTx.wait();
 }
 
+export const addClaimForCharlie = async (context: any) => {
+  const claimTopics = [id('CLAIM_TOPIC')];
+
+  const claimForCharlie = {
+    data: hexlify(toUtf8Bytes('Some claim public data.')),
+    issuer: context.suite.claimIssuerContract.address,
+    topic: claimTopics[0],
+    scheme: 1,
+    identity: context.identities.charlieIdentity.address,
+    signature: ''
+  };
+  claimForCharlie.signature = await context.accounts.claimIssuerSigningKey.signMessage(
+    getBytes(
+      keccak256(
+        AbiCoder.defaultAbiCoder().encode(
+          ['address', 'uint256', 'bytes'],
+          [claimForCharlie.identity, claimForCharlie.topic, claimForCharlie.data]
+        ),
+      ),
+    )
+  );
+
+  await context.identities.charlieIdentity.connect(context.accounts.charlieWallet).addClaim(
+    claimForCharlie.topic,
+    claimForCharlie.scheme,
+    claimForCharlie.issuer,
+    claimForCharlie.signature,
+    claimForCharlie.data,
+    '',
+  );
+
+  return {
+    ...context,
+    charlieClaim: claimForCharlie
+  };
+}
+
+export const revokeClaimForCharlie = async (context: any) => {
+  try {
+    console.log('Trying to revoke claim by signatue');
+    const tx = await context.suite.claimIssuerContract.revokeClaimBySignature(context.charlieClaim.signature);
+    await tx.wait();
+    console.log('Claim revoked');
+  } catch (error) {
+    if ((error as any).reason === 'Conflict: Claim already revoked') {
+      console.log('Claim already revoked');
+      // TODO: Consider undoing the revokation and retry this action?
+    } else {
+      throw error;
+    }
+  }
+
+  return context;
+}
+
 export const setComplianceAndAllowCountryCodes = async (context: any) => {
   // setComplianceToTokenAndReturnComplianceBeta
   const txSetCompliance = await context.suite.token

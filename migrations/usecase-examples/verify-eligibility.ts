@@ -10,6 +10,7 @@ import { getClaim } from './get-claim';
 import { addClaim } from './add-claim';
 import { removeClaim } from './remove-claim';
 import { registerCharlieIdentity } from './register-identity';
+import { revokeClaim } from './revoke-claim';
 
 export const verifyAllIdentities = async (
   identityRegistryContract: any,
@@ -37,6 +38,10 @@ export const verifyAllIdentities = async (
 
   // Register Charlie's OnChainId if it is not not registered
   await registerCharlieIdentity(identityRegistryContract, charlieWallet);
+
+  // Revoke Bob's claim
+  const { claim: claimBob } = await getClaim(identityRegistryContract, bobWallet, deployerWallet);
+  await revokeClaim(claimBob, claimIssuerWallet);
 
   // Verify Charlie again
   await verifyIdentity(identityRegistryContract, charlieWallet, deployerWallet);
