@@ -9,10 +9,19 @@ export const getIdentityRegistry = (contractAddress: string, signer: Signer) => 
     signer
   );
 
-  const getInvestorCountry = (addressToCheck: string) => contract.investorCountry(addressToCheck)
+  const getInvestorCountry = (addressToCheck: string) => contract.investorCountry(addressToCheck);
+
+  const isVerified = (addressToCheck: string) => contract.isVerified(addressToCheck);
+
+  const identity = (addressToCheck: string) => contract.identity(addressToCheck);
+
+  const topicsRegistry = () => contract.topicsRegistry();
 
   return {
     contract,
-    getInvestorCountry
+    getInvestorCountry,
+    isVerified,
+    identity,
+    topicsRegistry
   }
 }

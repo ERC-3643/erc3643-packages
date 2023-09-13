@@ -21,6 +21,9 @@
     ],
     "@erc-3643/vue-usedapp": [
       "./packages/@erc-3643/vue-useDapp/index"
+    ],
+    "@erc-3643/react-usedapp": [
+      "./packages/@erc-3643/react-useDapp/index"
     ]
   }
 }

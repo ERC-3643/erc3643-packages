@@ -1,16 +1,18 @@
 {
-  "name": "@erc-3643/core",
+  "name": "@erc-3643/react-usedapp",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "@erc-3643/core": "*"
+  },
   "peerDependencies": {
-    "@tokenysolutions/t-rex": ">=4.0.1",
-    "@onchain-id/solidity": ">=2.1.0",
-    "ethers": ">=5.6.8"
+    "react": "^18.2.0",
+    "@usedapp/core": "^1.2.12"
   }
 }
