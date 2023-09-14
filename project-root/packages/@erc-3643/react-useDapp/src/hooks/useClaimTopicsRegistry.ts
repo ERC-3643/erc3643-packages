@@ -1,28 +1,38 @@
-import { Signer } from "@ethersproject/abstract-signer";
+import { Signer, Contract } from "ethers";
 import { getClaimTopicsRegistry } from "@erc-3643/core";
 
+export interface ClaimTopicsRegistry {
+  contract: Contract;
+  getClaimTopics: () => any;
+}
+
 export const useClaimTopicsRegistry = (
-  contractAddress: string,
   signer: Signer | undefined,
   debug = false
 ) => {
-  if (!signer) {
-    return null;
-  }
-
-  const { contract, getClaimTopics } = getClaimTopicsRegistry(
-    contractAddress,
-    signer
-  );
-
-  signer.provider?.on("debug", (data: any) => {
-    if (debug) {
-      console.log(...data);
+  const getClaimTopics = (
+    contractAddress: string
+  ): ClaimTopicsRegistry | null => {
+    if (!signer) {
+      return null;
     }
-  });
+
+    const { contract, getClaimTopics } = getClaimTopicsRegistry(
+      contractAddress,
+      signer
+    );
+
+    if (debug) {
+      signer.provider?.on("debug", (data: any) => console.log(...data));
+    }
+
+    return {
+      contract,
+      getClaimTopics,
+    };
+  };
 
   return {
-    contract,
-    getClaimTopics,
+    getClaimTopicsRegistry: getClaimTopics,
   };
 };

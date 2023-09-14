@@ -1,6 +1,7 @@
-export { useToken } from "./useToken";
-export { useIdentityRegistry, IdentityRegistry } from "./useIdentityRegistry";
-export { useCompliance } from "./useCompliance";
-export { useComplianceModules } from "./useComplianceModules";
-export { useClaimTopicsRegistry } from "./useClaimTopicsRegistry";
-export { useClaimIssuer } from "./useClaimIssuer";
+export * from "./useToken";
+export * from "./useIdentityRegistry";
+export * from "./useCompliance";
+export * from "./useComplianceModules";
+export * from "./useClaimTopicsRegistry";
+export * from "./useClaimIssuer";
+export * from "./useOnchainIDIdentity";

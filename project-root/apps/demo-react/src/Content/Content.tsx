@@ -4,19 +4,20 @@ import { StyledCol, StyledRow } from './Content.styles'
 import IdentityRegistryInfo from './IdentityRegistryInfo/IdentityRegistryInfo'
 import ComplianceInfo from './ComplianceInfo/ComplianceInfo'
 import EligibilityVerificationInfo from './EligibilityVerificationInfo/EligibilityVerificationInfo'
+import TokenActions from './TokenActions/TokenActions'
 
 const Content = () => {
   return (
     <AntdContent>
       <StyledRow>
         <StyledCol>
-          {/*<TokenInfo />*/}
+          <TokenInfo />
           <IdentityRegistryInfo />
-          {/*<ComplianceInfo />*/}
-          {/*<EligibilityVerificationInfo />*/}
+          <ComplianceInfo />
+          <EligibilityVerificationInfo />
         </StyledCol>
         <StyledCol>
-          <div>Token actions</div>
+          <TokenActions />
         </StyledCol>
       </StyledRow>
     </AntdContent>

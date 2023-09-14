@@ -1,29 +1,40 @@
-import { Signer } from "@ethersproject/abstract-signer";
+import { Signer, Contract } from "ethers";
 import { getOnchainIDIdentity } from "@erc-3643/core";
 
+export interface OnchainIDIdentity {
+  contract: Contract;
+  getClaimIdsByTopic: (topic: string) => any;
+  getClaim: (claimId: string) => any;
+}
+
 export function useOnchainIDIdentity(
-  contractAddress: string,
   signer: Signer | undefined,
   debug = false
 ) {
-  if (!signer) {
-    return null;
-  }
-
-  const { contract, getClaim, getClaimIdsByTopic } = getOnchainIDIdentity(
-    contractAddress,
-    signer
-  );
-
-  signer.provider?.on("debug", (data: any) => {
-    if (debug) {
-      console.log(...data);
+  const getOnchainIdentity = (
+    contractAddress: string
+  ): OnchainIDIdentity | null => {
+    if (!signer) {
+      return null;
     }
-  });
+
+    const { contract, getClaim, getClaimIdsByTopic } = getOnchainIDIdentity(
+      contractAddress,
+      signer
+    );
+
+    if (debug) {
+      signer.provider?.on("debug", (data: any) => console.log(...data));
+    }
+
+    return {
+      contract,
+      getClaim,
+      getClaimIdsByTopic,
+    };
+  };
 
   return {
-    contract,
-    getClaim,
-    getClaimIdsByTopic,
+    getOnchainIDIdentity: getOnchainIdentity,
   };
 }

@@ -5,23 +5,29 @@ import {
   useClaimTopicsRegistry,
   useClaimIssuer,
   IdentityRegistry,
+  ClaimTopicsRegistry,
+  Token,
 } from '@erc-3643/react-usedapp'
 import { TOKEN_ADDRESS, ZERO_ADDRESS } from '../../constants'
 import { useEffect, useState } from 'react'
-import { useOnchainIDIdentity } from '@erc-3643/react-usedapp/src/hooks/useOnchainIDIdentity'
+import {
+  OnchainIDIdentity,
+  useOnchainIDIdentity,
+} from '@erc-3643/react-usedapp/src/hooks/useOnchainIDIdentity'
 
 const EligibilityVerificationInfo = () => {
   const signer = useSigner()
-  const token = useToken(TOKEN_ADDRESS, signer)
+  const { getToken } = useToken(signer)
+  const [token, setToken] = useState<Token | null>(null)
   const [signerAddress, setSignerAddress] = useState('')
-  const [identityRegistryAddress, setIdentityRegistryAddress] = useState('')
   const { getIdentityRegistry } = useIdentityRegistry(signer)
   const [identityRegistry, setIdentityRegistry] = useState<IdentityRegistry | null>(null)
   const [identityIsVerified, setIdentityIsVerified] = useState(false)
-  const [topicsRegistryAddress, setTopicsRegistryAddress] = useState('')
   const [identityAddress, setIdentityAddress] = useState('')
-  const claimTopicsRegistry = useClaimTopicsRegistry(topicsRegistryAddress, signer)
-  const onChainIdIdentity = useOnchainIDIdentity(identityAddress, signer)
+  const { getClaimTopicsRegistry } = useClaimTopicsRegistry(signer)
+  const [claimTopicsRegistry, setClaimTopicsRegistry] = useState<ClaimTopicsRegistry | null>(null)
+  const { getOnchainIDIdentity } = useOnchainIDIdentity(signer)
+  const [onChainIdIdentity, setOnChainIdIdentity] = useState<OnchainIDIdentity | null>(null)
   const [missingClaimTopics, setMissingClaimTopics] = useState<any[]>([])
   const [invalidClaims, setInvalidClaims] = useState<any[]>([])
   const { getClaimIssuer } = useClaimIssuer(signer)
@@ -32,6 +38,7 @@ const EligibilityVerificationInfo = () => {
     }
 
     ;(async () => {
+      setToken(await getToken(TOKEN_ADDRESS))
       setSignerAddress(await signer.getAddress())
     })()
   }, [signer])
@@ -43,7 +50,6 @@ const EligibilityVerificationInfo = () => {
 
     ;(async () => {
       const address = await token.identityRegistry()
-      setIdentityRegistryAddress(address)
       setIdentityRegistry(getIdentityRegistry(address))
     })()
   }, [token])
@@ -54,17 +60,19 @@ const EligibilityVerificationInfo = () => {
     }
 
     ;(async () => {
-      const identityIsVerified = identityRegistry.isVerified(signerAddress)
+      const identityIsVerified = await identityRegistry.isVerified(signerAddress)
       setIdentityIsVerified(identityIsVerified)
 
-      if (identityIsVerified) {
+      if (!identityIsVerified) {
         const identityAddress = await identityRegistry.identity(signerAddress)
         setIdentityAddress(identityAddress)
+        setOnChainIdIdentity(getOnchainIDIdentity(identityAddress))
 
         if (identityAddress === ZERO_ADDRESS) {
           console.log(`There is no OnChainID associated with address ${signerAddress}`)
         } else {
-          setTopicsRegistryAddress(await identityRegistry.topicsRegistry())
+          const topicsRegistryAddress = await identityRegistry.topicsRegistry()
+          setClaimTopicsRegistry(getClaimTopicsRegistry(topicsRegistryAddress))
         }
       }
     })()
@@ -72,7 +80,7 @@ const EligibilityVerificationInfo = () => {
 
   useEffect(() => {
     setMissingInvalidClaims()
-  }, [identityIsVerified])
+  }, [claimTopicsRegistry, onChainIdIdentity])
 
   const setMissingInvalidClaims = async () => {
     if (!claimTopicsRegistry || !onChainIdIdentity) {
@@ -114,6 +122,9 @@ const EligibilityVerificationInfo = () => {
   return (
     <div>
       <h3>Eligibility Verification:</h3>
+      <div>Identity Is Verified: {identityIsVerified ? 'Yes' : 'No'}</div>
+      <div>Missing Claim Topics: {JSON.stringify(missingClaimTopics, null, 4)}</div>
+      <div>Invalid Claims: {JSON.stringify(invalidClaims, null, 4)}</div>
     </div>
   )
 }

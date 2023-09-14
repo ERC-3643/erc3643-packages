@@ -9,7 +9,10 @@ export interface IdentityRegistry {
   contract: Contract;
 }
 
-export const useIdentityRegistry = (signer: Signer | undefined) => {
+export const useIdentityRegistry = (
+  signer: Signer | undefined,
+  debug = false
+) => {
   const getIdRegistry = (contractAddress: string): IdentityRegistry | null => {
     if (!signer || !contractAddress) {
       return null;
@@ -22,6 +25,10 @@ export const useIdentityRegistry = (signer: Signer | undefined) => {
       identity,
       topicsRegistry,
     } = getIdentityRegistry(contractAddress, signer as Signer);
+
+    if (debug) {
+      signer.provider?.on("debug", (data: any) => console.log(...data));
+    }
 
     return {
       contract,
