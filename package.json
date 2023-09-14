@@ -12,6 +12,7 @@
     "packages/@erc-3643/core",
     "packages/@erc-3643/react-useDapp",
     "packages/@erc-3643/vue-useDapp",
-    "apps/demo-vue"
+    "apps/demo-vue",
+    "apps/demo-react"
   ]
 }

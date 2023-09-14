@@ -1,17 +1,24 @@
 import { Content as AntdContent } from 'antd/es/layout/layout'
 import TokenInfo from './TokenInfo/TokenInfo'
-import { StyledRow } from './Content.styles'
+import { StyledCol, StyledRow } from './Content.styles'
+import IdentityRegistryInfo from './IdentityRegistryInfo/IdentityRegistryInfo'
+import ComplianceInfo from './ComplianceInfo/ComplianceInfo'
+import EligibilityVerificationInfo from './EligibilityVerificationInfo/EligibilityVerificationInfo'
+import TokenActions from './TokenActions/TokenActions'
 
 const Content = () => {
   return (
     <AntdContent>
       <StyledRow>
-        <div>
+        <StyledCol>
           <TokenInfo />
-        </div>
-        <div>
-          <div>Token actions</div>
-        </div>
+          <IdentityRegistryInfo />
+          <ComplianceInfo />
+          <EligibilityVerificationInfo />
+        </StyledCol>
+        <StyledCol>
+          <TokenActions />
+        </StyledCol>
       </StyledRow>
     </AntdContent>
   )

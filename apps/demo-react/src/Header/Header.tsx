@@ -1,24 +1,15 @@
 import { StyledPill, StyledHeader, StyledLeftCol, StyledRightCol, StyledRow } from './Header.styles'
 import ConnectButton from './ConnectBtn/ConnectButton'
-import { useEffect, useState } from 'react'
-import { useEthers } from '@usedapp/core'
-import { useToken } from '@erc-3643/react-usedapp'
+import { useEthers, useEtherBalance } from '@usedapp/core'
 
 const Header = () => {
-  // const {signer} = useEthers()
-  // const token = useToken("",account as Signer)
-  // console.log(token)
-
-  const address = '0x9965...A4dc'
-  const coinsAmount = 100000
-
+  const { account } = useEthers()
   return (
     <StyledHeader>
       <StyledRow>
         <StyledLeftCol>ERC3643</StyledLeftCol>
         <StyledRightCol>
-          <StyledPill>{address}</StyledPill>
-          <StyledPill>{coinsAmount}ETH</StyledPill>
+          {account && <StyledPill>{account}</StyledPill>}
           <ConnectButton />
         </StyledRightCol>
       </StyledRow>
