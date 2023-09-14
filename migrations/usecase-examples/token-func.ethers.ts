@@ -8,6 +8,7 @@ import { transferTokens } from './transfer-tokens';
 import { freezeTokens } from './freeze-tokens';
 import { freezeUnfreezeWallet } from './freeze-unfreeze-wallet';
 import { checkCompliance } from './check-compliance';
+import { fullCanTransfer } from './full-can-transfer';
 
 const checkUseCases = async () => {
   const rpc = new JsonRpcProvider('http://localhost:8545');
@@ -26,19 +27,22 @@ const checkUseCases = async () => {
   const token = getTokenContract(tokenAgent);
   const identityRegistry = await getIdentityRegistryContract(token, tokenAgent);
 
-  await showTokenInfo(token);
+  // await showTokenInfo(token);
 
-  await pauseUnpause(token);
+  // await pauseUnpause(token);
   
-  await transferTokens(token, aliceWallet, bobWallet);
+  // await transferTokens(token, aliceWallet, bobWallet);
 
-  await freezeTokens(token, bobWallet);
+  // await freezeTokens(token, bobWallet);
 
-  await freezeUnfreezeWallet(token, anotherWallet10);
+  // await freezeUnfreezeWallet(token, anotherWallet10);
 
-  await checkCompliance(token, deployer, identityRegistry, aliceWallet, bobWallet);
+  // await checkCompliance(token, deployer, identityRegistry, aliceWallet, bobWallet);
 
-  await verifyAllIdentities(identityRegistry, aliceWallet, bobWallet, charlieWallet, claimIssuer, deployer);
+  // await verifyAllIdentities(identityRegistry, aliceWallet, bobWallet, charlieWallet, claimIssuer, deployer);
+
+  const fullCanTransferRes = await fullCanTransfer(rpc, token, aliceWallet.address, '0xc40260E1dEa927E80E517b9A0d4A4EB397A51CEB', 10000);
+  console.dir(fullCanTransferRes);
 }
 
 checkUseCases();
