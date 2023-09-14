@@ -41,7 +41,7 @@ const checkUseCases = async () => {
 
   // await verifyAllIdentities(identityRegistry, aliceWallet, bobWallet, charlieWallet, claimIssuer, deployer);
 
-  const fullCanTransferRes = await fullCanTransfer(rpc, token, aliceWallet.address, '0xc40260E1dEa927E80E517b9A0d4A4EB397A51CEB', 10000);
+  const fullCanTransferRes = await fullCanTransfer(rpc, token, aliceWallet.address, charlieWallet.address, 10000);
   console.dir(fullCanTransferRes);
 }
 

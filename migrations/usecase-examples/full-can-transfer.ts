@@ -83,10 +83,10 @@ const checkVerification = async (providerOrSigner: any, tokenContract: any, wall
   // check required claim topics
   const missingClaimTopics: any[] = [];
   const invalidClaimTopics: any[] = [];
-  const onChainIdContract = new Contract(onChainIdContractAddress, OnchainID.contracts.Identity.abi);
+  const onChainIdContract = new Contract(onChainIdContractAddress, OnchainID.contracts.Identity.abi, providerOrSigner);
 
   const claimTopicsRegistryAddr = await identityRegistryContract.topicsRegistry();
-  const claimTopicsRegistryContract = new Contract(claimTopicsRegistryAddr, contracts.ClaimTopicsRegistry.abi);
+  const claimTopicsRegistryContract = new Contract(claimTopicsRegistryAddr, contracts.ClaimTopicsRegistry.abi, providerOrSigner);
   const claimTopics = await claimTopicsRegistryContract.getClaimTopics();
 
   for (const topic of claimTopics) {
