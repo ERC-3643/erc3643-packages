@@ -136,7 +136,7 @@ const checkCompliance = async (
   const modules = await complianceContract.getModules();
 
   for (const moduleAddress of modules) {
-    const moduleContract = new Contract(moduleAddress, contracts.CountryAllowModule.abi);
+    const moduleContract = new Contract(moduleAddress, contracts.AbstractModule.abi);
     try {
       const isCompliantWithModule = await moduleContract.moduleCheck(from, to, amount, complianceContractAddress);
 
