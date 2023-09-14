@@ -10,7 +10,7 @@ module.exports = function (config, env) {
             babelInclude([
                 path.resolve('src'),
                 path.resolve('../../packages/@erc-3643/core/src'),
-                path.resolve('../../packages/@erc-3643/react-useDapp'),
+                path.resolve('../../packages/@erc-3643/react-useDapp/src'),
             ]),
             // alias({
             //     /* Fix several clones of React (https://reactjs.org/warnings/invalid-hook-call-warning.html) */
