@@ -1,0 +1,27 @@
+{
+  "name": "poc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "hardhat": "hardhat",
+    "hardhat:node": "hardhat node",
+    "token:ether": "ts-node ./usecase-examples/token-func.ethers.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@nomicfoundation/hardhat-ethers": "^3.0.4",
+    "@onchain-id/solidity": "^2.1.0",
+    "@tokenysolutions/t-rex": "^4.0.1",
+    "ethers": "^6.7.1",
+    "hardhat": "^2.17.3"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "@nomiclabs/hardhat-solhint": "^3.0.1",
+    "@primitivefi/hardhat-dodoc": "^0.2.3",
+    "@xyrusworx/hardhat-solidity-json": "^1.0.2",
+    "ts-node": "^10.9.1"
+  }
+}
