@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { useCompliance, useTransferCompliance } from '@erc-3643/vue-usedapp';
+import { useTransferCompliance } from '@erc-3643/vue-usedapp';
 import { ref, watch } from 'vue';
 import { Signer } from 'ethers';
 import { useEthers } from 'vue-dapp';
-import { BOB_WALLET, COMPLIANCE_ADDRESS, TOKEN_ADDRESS } from '@/constants';
+import { BOB_WALLET, TOKEN_ADDRESS } from '@/constants';
 
 const { signer } = useEthers();
 
-const compliance = ref<{ [key: string]: any }>({});
 const signerAddress = ref('');
 const addressToTransfer = ref('');
 const amountToTransfer = ref(0);
@@ -16,7 +15,6 @@ const complianceErrors = ref([]);
 
 watch(signer, async (signer) => {
   if (signer) {
-    compliance.value = useCompliance(COMPLIANCE_ADDRESS, signer);
     signerAddress.value = await signer.getAddress()
   }
 });
