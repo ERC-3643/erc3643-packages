@@ -1,28 +1,14 @@
-import { Header } from 'antd/es/layout/layout'
-import styled from 'styled-components'
-// import { Button } from 'antd'
+import styled from '@emotion/styled'
+import { Theme } from '@mui/material'
 
-export const StyledHeader = styled(Header)`
-  background-color: #1976d2;
+export const StyledHeader = styled.div<{ theme: Theme }>`
+  min-height: 50px;
+  background-color: ${({ theme }) => theme.palette.primary.main};
   color: white;
 `
 
-export const StyledRow = styled.div`
-  display: flex;
-
-  > div {
-    width: 50%;
-  }
-`
-
-export const StyledLeftCol = styled.div`
-  display: flex;
-  align-items: center;
-`
-export const StyledRightCol = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
+export const StyleLogoText = styled.p`
+  font-size: 21px;
 `
 
 export const StyledPill = styled.div`

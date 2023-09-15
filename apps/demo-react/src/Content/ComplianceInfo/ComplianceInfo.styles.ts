@@ -1,8 +1,5 @@
-import styled from 'styled-components'
-
-export const StyledFieldRow = styled.div`
-  margin-bottom: 15px;
-`
+import styled from '@emotion/styled'
+import { Chip, TextField } from '@mui/material'
 
 export const StyledWalletExample = styled.div`
   font-size: 11px;
@@ -11,4 +8,12 @@ export const StyledWalletExample = styled.div`
 
 export const StyledComplianceModule = styled.div`
   margin-bottom: 15px;
+`
+
+export const StyledTextField = styled(TextField)`
+  width: 100%;
+`
+
+export const StyledChip = styled(Chip)`
+  color: white;
 `

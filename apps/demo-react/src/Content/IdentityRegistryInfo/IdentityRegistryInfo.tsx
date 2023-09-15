@@ -43,10 +43,10 @@ const IdentityRegistryInfo = () => {
   }, [identityRegistry, signer])
 
   return (
-    <div>
+    <>
       <h3>Identity Registry Info</h3>
       <div>Investor Country: {investorCountry}</div>
-    </div>
+    </>
   )
 }
 

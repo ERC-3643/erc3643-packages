@@ -1,9 +1,10 @@
-import { Button, Input } from 'antd'
+import Button from '@mui/material/Button'
+
 import { useSigner } from '@usedapp/core'
 import { Token, useToken } from '@erc-3643/react-usedapp'
 import { useEffect, useState } from 'react'
 import { BOB_WALLET, TOKEN_ADDRESS } from '../../constants'
-import { StyledFieldRow, StyledWalletExample } from './TokenActions.styles'
+import { StyledFieldRow, StyledWalletExample, StyledTextField } from './TokenActions.styles'
 
 const TokenActions = () => {
   const signer = useSigner()
@@ -53,41 +54,42 @@ const TokenActions = () => {
   }
 
   return (
-    <div>
+    <>
+      {' '}
       <h3>Token actions</h3>
       <div>
         Pause token:{' '}
         {token && (
-          <Button type='primary' onClick={onPause}>
+          <Button variant='contained' color={token.paused ? 'success' : 'error'} onClick={onPause}>
             {token.paused ? 'Run' : 'Pause'}
           </Button>
         )}
       </div>
       <StyledFieldRow>
-        <Input
-          placeholder='Wallet address to freeze'
+        <StyledTextField
+          label='Wallet address to freeze'
           onChange={(e) => setFreezeWallet(e.target.value)}
         />
         <StyledWalletExample>ex. Bob wallet: {BOB_WALLET}</StyledWalletExample>
         <div>
-          <Button type='primary' onClick={onFreeze}>
+          <Button variant='contained' color='secondary' onClick={onFreeze}>
             Freeze wallet
           </Button>
         </div>
       </StyledFieldRow>
       <StyledFieldRow>
-        <Input
-          placeholder='Wallet address to unfreeze'
+        <StyledTextField
+          label='Wallet address to unfreeze'
           onChange={(e) => setUnfreezeWallet(e.target.value)}
         />
         <StyledWalletExample>ex. Bob wallet: {BOB_WALLET}</StyledWalletExample>
         <div>
-          <Button type='primary' onClick={onUnfreeze}>
+          <Button variant='contained' color='warning' onClick={onUnfreeze}>
             Unfreeze wallet
           </Button>
         </div>
       </StyledFieldRow>
-    </div>
+    </>
   )
 }
 

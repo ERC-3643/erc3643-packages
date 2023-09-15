@@ -3,14 +3,16 @@ import { useCompliance, useComplianceModules } from '@erc-3643/react-usedapp'
 import { BOB_WALLET, COMPLIANCE_ADDRESS } from '../../constants'
 import { useSigner } from '@usedapp/core'
 import { useEffect, useState } from 'react'
-import { Button, Input } from 'antd'
+import Button from '@mui/material/Button'
 import {
+  StyledChip,
   StyledComplianceModule,
-  StyledFieldRow,
+  StyledTextField,
   StyledWalletExample,
 } from './ComplianceInfo.styles'
 import { Signer } from 'ethers'
 import { ComplianceModuleStatus } from './interfaces'
+import { Box } from '@mui/material'
 
 const ComplianceInfo = () => {
   const contractNamesMapper: { [key: string]: string } = {
@@ -83,29 +85,35 @@ const ComplianceInfo = () => {
   }, [modulesAddresses, complianceModules])
 
   return (
-    <div>
+    <>
       <h3>Compliance Info:</h3>
-      <div>Can transfer?: {canTransfer ? 'Yes' : 'No'}</div>
+      <div>
+        Can transfer?:{' '}
+        {canTransfer ? (
+          <StyledChip label='Yes' color='success' />
+        ) : (
+          <StyledChip label='No' color='error' />
+        )}
+      </div>
       <div>From: {signerAddress}</div>
-      <StyledFieldRow>
-        <Input
-          placeholder='Transfer to wallet'
+      <Box sx={{ mb: 1 }}>
+        <StyledTextField
+          label='Transfer to wallet'
           value={transferTo}
           onChange={(e) => setTransferTo(e.target.value)}
         />
         <StyledWalletExample>ex. Bob wallet: {BOB_WALLET}</StyledWalletExample>
-      </StyledFieldRow>
-      <StyledFieldRow>
-        <div>Amount of tokens</div>
-        <Input
+      </Box>
+      <Box sx={{ mb: 1 }}>
+        <StyledTextField
           type='number'
-          placeholder='Amount of tokens'
+          label='Amount of tokens'
           value={tokensAmount}
           onChange={(e) => setTokensAmount(e.target.value)}
         />
-      </StyledFieldRow>
+      </Box>
       <div>
-        <Button type='primary' onClick={onCanTransfer}>
+        <Button variant='contained' onClick={onCanTransfer}>
           Can transfer?
         </Button>
       </div>
@@ -123,7 +131,7 @@ const ComplianceInfo = () => {
           ))}
         </div>
       )}
-    </div>
+    </>
   )
 }
 

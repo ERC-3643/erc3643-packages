@@ -1,12 +1,12 @@
 import { useSigner } from '@usedapp/core'
 import {
-  useToken,
-  useIdentityRegistry,
-  useClaimTopicsRegistry,
-  useClaimIssuer,
-  IdentityRegistry,
   ClaimTopicsRegistry,
+  IdentityRegistry,
   Token,
+  useClaimIssuer,
+  useClaimTopicsRegistry,
+  useIdentityRegistry,
+  useToken,
 } from '@erc-3643/react-usedapp'
 import { TOKEN_ADDRESS, ZERO_ADDRESS } from '../../constants'
 import { useEffect, useState } from 'react'
@@ -120,12 +120,12 @@ const EligibilityVerificationInfo = () => {
   }
 
   return (
-    <div>
+    <>
       <h3>Eligibility Verification:</h3>
       <div>Identity Is Verified: {identityIsVerified ? 'Yes' : 'No'}</div>
       <div>Missing Claim Topics: {JSON.stringify(missingClaimTopics, null, 4)}</div>
       <div>Invalid Claims: {JSON.stringify(invalidClaims, null, 4)}</div>
-    </div>
+    </>
   )
 }
 
