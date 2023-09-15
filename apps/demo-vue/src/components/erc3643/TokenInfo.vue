@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useToken } from '@erc-3643/vue-usedapp'
+import { useToken } from '@erc-3643/vue-usedapp';
 import { ref, watch } from 'vue';
 import { useEthers } from 'vue-dapp';
 import { TOKEN_ADDRESS } from '@/constants';

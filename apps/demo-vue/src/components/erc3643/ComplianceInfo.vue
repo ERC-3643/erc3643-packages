@@ -14,7 +14,6 @@ const amountToTransfer = ref(0);
 const transferOk = ref(null);
 const complianceErrors = ref([]);
 
-
 watch(signer, async (signer) => {
   if (signer) {
     compliance.value = useCompliance(COMPLIANCE_ADDRESS, signer);
@@ -27,20 +26,15 @@ const canTransfer = async () => {
   // Use Signer only when you intend to change state
   // const provider = new providers.Web3Provider((window as any).ethereum, 'any');
   const { isTransferCompliant } = useTransferCompliance();
-  try {
-    await isTransferCompliant(
-      signer.value as Signer,
-      TOKEN_ADDRESS,
-      signerAddress.value,
-      addressToTransfer.value,
-      amountToTransfer.value
-    );
-
-    transferOk.value = true as any;
-  } catch (e) {
-    complianceErrors.value = (e as any).cause;
-    transferOk.value = false as any;
-  }
+  const { result, errors } = await isTransferCompliant(
+    signer.value as Signer,
+    TOKEN_ADDRESS,
+    signerAddress.value,
+    addressToTransfer.value,
+    amountToTransfer.value
+  );
+  transferOk.value = result as any;
+  complianceErrors.value = errors as any;
 }
 </script>
 

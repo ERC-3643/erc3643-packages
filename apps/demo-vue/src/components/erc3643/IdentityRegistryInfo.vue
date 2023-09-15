@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useIdentityRegistry, useToken } from '@erc-3643/vue-usedapp'
+import { useIdentityRegistry, useToken } from '@erc-3643/vue-usedapp';
 import { ref, watch } from 'vue';
 import { useEthers } from 'vue-dapp';
-import { TOKEN_ADDRESS } from '@/constants'
+import { TOKEN_ADDRESS } from '@/constants';
 
-const { signer } = useEthers()
+const { signer } = useEthers();
 
 const token = ref<{ [key: string]: any }>({});
 const investorCountry = ref(0);
@@ -14,7 +14,7 @@ watch(signer, async (signer) => {
     const identityRegistryAddress = await token.value.identityRegistry();
     const {
       getInvestorCountry
-    } = await useIdentityRegistry(identityRegistryAddress, signer);
+    } = useIdentityRegistry(identityRegistryAddress, signer);
 
     investorCountry.value = await getInvestorCountry(await signer.getAddress());
   }

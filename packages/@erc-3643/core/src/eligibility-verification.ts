@@ -1,4 +1,4 @@
-import { Signer, constants } from 'ethers';
+import { Signer, constants, providers } from 'ethers';
 import { getIdentityRegistry } from './identity-registry';
 import { getClaimTopicsRegistry } from './claim-topics-registry';
 import { getOnchainIDIdentity } from './onchain-id-identity';
@@ -14,7 +14,7 @@ export const getEligibilityVerification = async (
     isVerified,
     identity,
     topicsRegistry
-  } = await getIdentityRegistry(identityRegistryAddress, signer);
+  } = getIdentityRegistry(identityRegistryAddress, signer);
 
   const identityIsVerified = await isVerified(walletAddress);
 
@@ -24,9 +24,12 @@ export const getEligibilityVerification = async (
     throw new Error(`There is no OnChainID associated with address ${walletAddress}`);
   }
 
-  if (!identityIsVerified) {
-    throw new Error(`Identity is not verified for address ${walletAddress}`);
-  }
+  // I'm commenting this out because the response of this method will never contain information
+  // on invalid or missing claims as it throws an error before reading claims if the identity is not verified.
+
+  // if (!identityIsVerified) {
+  //   throw new Error(`Identity is not verified for address ${walletAddress}`);
+  // }
 
   const topicsRegistryAddress = await topicsRegistry();
 
@@ -49,4 +52,30 @@ export const getEligibilityVerification = async (
     identityIsVerified,
     ...claimsWithIssues
   }
+}
+
+export const getReceiverEligabilityVerificationReasons = async (
+  identityRegistryAddress: string,
+  signerOrProvider: Signer | providers.Web3Provider,
+  addr: string
+): Promise<void> => {
+  const errors: string[] = [];
+
+  try {
+    const { identityIsVerified, missingClaimTopics, invalidClaims } = await getEligibilityVerification(
+      identityRegistryAddress,
+      signerOrProvider as Signer,
+      addr
+    );
+
+    if (identityIsVerified) return;
+
+    missingClaimTopics.length && errors.push(`${addr} has missing claims with topics ${missingClaimTopics.join()}`);
+    invalidClaims.length && errors.push(`${addr} has invalid claims with topics ${invalidClaims.map(claim => claim.topic).join()}`);
+  } catch (error) {
+    errors.push((error as Error).message);
+  }
+
+  // return errors;
+  if (errors.length) throw new Error('Identity not eligible for transfer', { cause: errors });
 }

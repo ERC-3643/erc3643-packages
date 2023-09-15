@@ -1,8 +1,7 @@
-import { contracts } from '@tokenysolutions/t-rex';
-import OnchainID from '@onchain-id/solidity';
-import { Contract, Signer, providers } from 'ethers';
-import { ZERO_ADDRESS } from '@/constants';
+import { Signer, providers } from 'ethers';
 import { getToken } from './token';
+import { getCompliance } from './compliance';
+import { getReceiverEligabilityVerificationReasons } from './eligibility-verification';
 
 export const getTransferCompliance = () => {
   const isTransferCompliant = async (
@@ -11,126 +10,47 @@ export const getTransferCompliance = () => {
     from: string,
     to: string,
     amount: number
-  ): Promise<void> => {
+  ): Promise<{ result: boolean, errors: string[] }> => {
     const token = await getToken(tokenAddress, signerOrProvider as Signer);
+    const identityRegistryAddress = await token.identityRegistry();
+    const complianceContractAddress = await token.compliance();
+    const { canTransferWithReasons } = getCompliance(complianceContractAddress, signerOrProvider as Signer);
 
-    // позаворачивать в try catch и проборосить error.cause, вернуть ошибки и результат как раньше
     // Sender & Receiver wallets must not be frozen
-    await token.areTransferPartiesFrozen(from, to);
+    const frozenErrors = await getExecutionErrorReasons(token.areTransferPartiesFrozen, from, to);
 
     // Sender's spendable balance must be >= amount
-    await isEnoughBalance(token, from, amount);
+    const balanceErrors = await getExecutionErrorReasons(token.isEnoughSpendableBalance, from, amount);
 
-    // БРАТЬ ИЗ IDENTITY REGISTRY
     // Receiver's ID must be verified
-    await isReceiverVerified(signerOrProvider, token, to);
-
-    // БРАТЬ ИЗ COMPLIANCE
-    // Sender & Receiver must be compliant
-    await isCompliant(signerOrProvider, token, from, to, amount);
-
-    // return {
-    //   result: errors.length === 0,
-    //   errors
-    // };
-  }
-  
-  const isEnoughBalance = async (token: any, from: string, amount: number): Promise<string[]> => {
-    const errors: string[] = [];
-
-    const frozenTokens = await token.getFrozenTokens(from);
-    const balance = await token.balanceOf(from);
-    const spendableBalance = balance - frozenTokens;
-    amount > spendableBalance && errors.push(`Insufficient balance. Current spendable balance is ${spendableBalance}`);
-
-    return errors;
-  }
-  
-  const isReceiverVerified = async (signerOrProvider: any, token: any, addr: string): Promise<string[]> => {
-    const errors: string[] = [];
-  
-    const identityRegistryContractAddress = await token.identityRegistry();
-    const identityRegistryContract = new Contract(
-      identityRegistryContractAddress,
-      contracts.IdentityRegistry.abi,
-      signerOrProvider
+    const eligibilityErrors = await getExecutionErrorReasons(
+      getReceiverEligabilityVerificationReasons,
+      identityRegistryAddress,
+      signerOrProvider as Signer,
+      to
     );
-    const isVerified = await identityRegistryContract.isVerified(addr);
 
-    if (isVerified) return [];
-  
-    // check OnChainID
-    const onChainIdContractAddress = await identityRegistryContract.identity(addr);
-    if (onChainIdContractAddress === ZERO_ADDRESS) {
-      errors.push(`There is no OnChainID associated with ${addr}`);
-  
-      return errors;
-    }
-  
-    // check required claim topics
-  const missingClaimTopics: any[] = [];
-  const invalidClaimTopics: any[] = [];
-    const onChainIdContract = new Contract(onChainIdContractAddress, OnchainID.contracts.Identity.abi, signerOrProvider);
+    // Sender & Receiver must be compliant
+    const complianceErrors = await getExecutionErrorReasons(canTransferWithReasons, from, to, amount);
 
-    const claimTopicsRegistryAddr = await identityRegistryContract.topicsRegistry();
-    const claimTopicsRegistryContract = new Contract(claimTopicsRegistryAddr, contracts.ClaimTopicsRegistry.abi, signerOrProvider);
-    const claimTopics = await claimTopicsRegistryContract.getClaimTopics();
-  
-    for (const topic of claimTopics) {
-      const claimIds = await onChainIdContract.getClaimIdsByTopic(topic);
-      !claimIds.length && missingClaimTopics.push(topic);
-  
-      for (const claimId of claimIds) {
-        const claim = await onChainIdContract.getClaim(claimId);
+    // All compliance errors
+    const errors = [frozenErrors, balanceErrors, eligibilityErrors, complianceErrors].flat();
 
-        const claimIssuerContract: any = new Contract(
-          claim.issuer,
-          OnchainID.contracts.ClaimIssuer.abi
-        );
-
-        const isClaimValid = await claimIssuerContract.isClaimValid(
-          onChainIdContractAddress,
-          topic,
-          claim.signature,
-          claim.data
-        );
-
-        !isClaimValid && invalidClaimTopics.push(topic);
-      }
-    }
-  
-    missingClaimTopics.length && errors.push(`${addr} has missing claims with topics ${missingClaimTopics.join()}`);
-    invalidClaimTopics.length && errors.push(`${addr} has invalid claims with topics ${invalidClaimTopics.join()}`);
-
-    return errors;
+    return {
+      result: errors.length === 0,
+      errors
+    };
   }
-  
-  const isCompliant = async (
-    signerOrProvider: any,
-    token: any,
-    from: string,
-    to: string,
-    amount: number
-  ): Promise<string[]> => {
+
+  const getExecutionErrorReasons = async (func: Function, ...args: any[]): Promise<string[]> => {
     const errors: string[] = [];
-    const complianceContractAddress = await token.compliance();
-    const complianceContract = new Contract(complianceContractAddress, contracts.ModularCompliance.abi, signerOrProvider);
 
-    const isCompliant = await complianceContract.canTransfer(from, to, amount);
-
-    if (isCompliant) return [];
-
-    const modules = await complianceContract.getModules();
-
-    for (const moduleAddress of modules) {
-      const moduleContract = new Contract(moduleAddress, contracts.AbstractModule.abi);
-      try {
-        const isCompliantWithModule = await moduleContract.moduleCheck(from, to, amount, complianceContractAddress);
-
-        !isCompliantWithModule && errors.push(`Transfer is not compliant with module at ${moduleAddress}`);
-      } catch (e) {
-        errors.push(`Transfer is not compliant with module at ${moduleAddress}`);
-      }    
+    try {
+      await func(...args);
+    } catch (error) {
+      if (Array.isArray((error as Error).cause)) {
+        errors.push(((error as Error).cause as string[]).join());
+      }
     }
 
     return errors;

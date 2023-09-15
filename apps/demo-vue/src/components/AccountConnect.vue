@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useBoard, useEthers, useWallet, displayEther, shortenAddress } from 'vue-dapp'
-const { open } = useBoard()
-const { address, balance, isActivated } = useEthers()
-const { disconnect, wallet } = useWallet()
+import { useBoard, useEthers, useWallet, displayEther, shortenAddress } from 'vue-dapp';
+const { open } = useBoard();
+const { address, balance, isActivated } = useEthers();
+const { disconnect, wallet } = useWallet();
 
 const connectButton = ref('Connect');
 
