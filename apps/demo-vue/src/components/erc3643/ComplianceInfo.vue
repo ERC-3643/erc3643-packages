@@ -93,10 +93,9 @@ const canTransfer = async () => {
             :key="index"
           >
             <q-card-section :class="[index === 0 ? 'q-pt-none': '']">
-              <q-chip color="negative" text-color="white">
-                <div class="ellipsis">
+              <q-chip style="height: 100%;" color="negative" text-color="white">
+                <div style="white-space: normal; word-wrap: break-word;">
                   {{ error }}
-                  <q-tooltip>{{ error }}</q-tooltip>
                 </div>
               </q-chip>
             </q-card-section>
