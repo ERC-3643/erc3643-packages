@@ -16,7 +16,11 @@ watch(signer, async (signer) => {
     const token = await useToken(TOKEN_ADDRESS, signer);
     const identityRegistryAddress = await token.identityRegistry();
 
-    result.value = await useEligibilityVerification(identityRegistryAddress, signer);
+    result.value = await useEligibilityVerification(
+      identityRegistryAddress,
+      signer,
+      null
+    );
   }
 });
 

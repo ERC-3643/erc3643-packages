@@ -2,10 +2,13 @@ import { Signer, constants } from 'ethers';
 import { getIdentityRegistry } from './identity-registry';
 import { getClaimTopicsRegistry } from './claim-topics-registry';
 import { getOnchainIDIdentity } from './onchain-id-identity';
-import { getClaimIssuer } from './claim-issuer';
 
-export const getEligibilityVerification = async (identityRegistryAddress: string, signer: Signer) => {
-  const signerAddress = await signer.getAddress();
+export const getEligibilityVerification = async (
+  identityRegistryAddress: string,
+  signer: Signer,
+  walletAddressToCheck: string | null = null
+) => {
+  const walletAddress = walletAddressToCheck || await signer.getAddress();
 
   const {
     isVerified,
@@ -13,61 +16,37 @@ export const getEligibilityVerification = async (identityRegistryAddress: string
     topicsRegistry
   } = await getIdentityRegistry(identityRegistryAddress, signer);
 
-  const identityIsVerified = await isVerified(signerAddress);
-
-  const missingClaimTopics = [];
-  const invalidClaims = [];
+  const identityIsVerified = await isVerified(walletAddress);
 
   if (!identityIsVerified) {
-    const identityAddress = await identity(signerAddress);
-
-    if (identityAddress === constants.AddressZero) {
-      console.log(`There is no OnChainID associated with address ${signerAddress}`);
-    } else {
-      const topicsRegistryAddress = await topicsRegistry();
-
-      const {
-        getClaimTopics
-      } = getClaimTopicsRegistry(
-        topicsRegistryAddress,
-        signer
-      );
-
-      const {
-        getClaim,
-        getClaimIdsByTopic
-      } = getOnchainIDIdentity(identityAddress, signer);
-
-      const claimTopics = await getClaimTopics();
-
-      for (const topic of claimTopics) {
-        const claimIds = await getClaimIdsByTopic(topic);
-
-        !claimIds.length && missingClaimTopics.push(topic);
-
-        for (const claimId of claimIds) {
-          const claim = await getClaim(claimId);
-
-          const {
-            isClaimValid
-          } = getClaimIssuer(claim.issuer, signer);
-
-          const isValid = await isClaimValid(
-            identityAddress,
-            topic,
-            claim.signature,
-            claim.data
-          );
-
-          !isValid && invalidClaims.push(claim);
-        }
-      }
-    }
+    throw new Error(`Identity is not verified for address ${walletAddress}`);
   }
+
+  const identityAddress = await identity(walletAddress);
+
+  if (identityAddress === constants.AddressZero) {
+    throw new Error(`There is no OnChainID associated with address ${walletAddress}`);
+  }
+
+  const topicsRegistryAddress = await topicsRegistry();
+
+  const {
+    getClaimTopics
+  } = getClaimTopicsRegistry(
+    topicsRegistryAddress,
+    signer
+  );
+
+  const claimTopics = await getClaimTopics();
+
+  const {
+    getClaimsWithIssues
+  } = getOnchainIDIdentity(identityAddress, signer);
+
+  const claimsWithIssues = await getClaimsWithIssues(identityAddress, claimTopics);
 
   return {
     identityIsVerified,
-    missingClaimTopics,
-    invalidClaims
+    ...claimsWithIssues
   }
 }
