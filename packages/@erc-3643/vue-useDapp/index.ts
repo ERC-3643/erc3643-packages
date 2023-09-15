@@ -1,1 +1,1 @@
-export * from './src/composables'
+export * from './src/composables';
