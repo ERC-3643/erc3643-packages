@@ -20,5 +20,5 @@ export function useCompliance(contractAddress: string, signer: Signer, debug = f
     canTransfer,
     canTransferWithReasons,
     getModules
-  }
+  };
 }

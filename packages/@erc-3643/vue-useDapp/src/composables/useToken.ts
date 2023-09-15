@@ -74,5 +74,5 @@ export async function useToken(tokenAddress: string, signer: Signer, debug = fal
     getBalance,
     areTransferPartiesFrozen,
     isEnoughSpendableBalance
-  }
+  };
 }

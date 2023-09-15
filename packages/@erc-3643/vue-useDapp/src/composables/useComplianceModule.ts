@@ -21,5 +21,5 @@ export function useComplianceModule(
   return {
     contract,
     moduleCheck
-  }
+  };
 }
