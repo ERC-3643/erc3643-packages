@@ -21,6 +21,8 @@ export const getToken = async (contractAddress: string, signer: Signer) => {
   const identityRegistry = () => token.identityRegistry();
   const compliance = () => token.compliance();
   const isWalletFrozen = (walletAddress: string) => token.isFrozen(walletAddress);
+  const getFrozenTokens = (walletAddress: string) => token.getFrozenTokens(walletAddress);
+  const getBalance = (walletAddress: string) => token.balanceOf(walletAddress);
 
   const unfreeze = async (address: string) => {
     const freezeWallet = await token.setAddressFrozen(address, true);
@@ -42,6 +44,29 @@ export const getToken = async (contractAddress: string, signer: Signer) => {
     await unpause.wait();
   }
 
+  const areTransferPartiesFrozen = async (from: string, to: string): Promise<void> => {
+    const errors: string[] = [];
+
+    const senderFrozen = await isWalletFrozen(from);
+    senderFrozen && errors.push(`${from} is frozen`);
+
+    const receiverFrozen = await isWalletFrozen(to);
+    receiverFrozen && errors.push(`${to} is frozen`);
+
+    if (errors.length) throw new Error('Wallet is frozen', { cause: errors });
+  }
+
+  const isEnoughSpendableBalance = async (from: string, amount: number): Promise<void> => {
+    const errors: string[] = [];
+
+    const frozenTokens = await getFrozenTokens(from);
+    const balance = await getBalance(from);
+    const spendableBalance = balance - frozenTokens;
+    amount > spendableBalance && errors.push(`Insufficient balance. Current spendable balance is ${spendableBalance}`);
+
+    if (errors.length) throw new Error('Insufficient balance', { cause: errors });
+  }
+
   return {
     tokenOwner: owner,
     tokenName: name,
@@ -59,6 +84,10 @@ export const getToken = async (contractAddress: string, signer: Signer) => {
     identityRegistry,
     compliance,
     isWalletFrozen,
+    getFrozenTokens,
+    getBalance,
+    areTransferPartiesFrozen,
+    isEnoughSpendableBalance,
     contract: token
   };
 }

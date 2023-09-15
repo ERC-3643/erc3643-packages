@@ -21,7 +21,11 @@ export async function useToken(tokenAddress: string, signer: Signer, debug = fal
     tokenUnfreeze,
     identityRegistry,
     compliance,
-    isWalletFrozen
+    isWalletFrozen,
+    getFrozenTokens,
+    getBalance,
+    areTransferPartiesFrozen,
+    isEnoughSpendableBalance
   } = await getToken(tokenAddress, signer);
 
   const paused = ref(false);
@@ -65,6 +69,10 @@ export async function useToken(tokenAddress: string, signer: Signer, debug = fal
     freeze: tokenUnfreeze,
     identityRegistry,
     compliance,
-    isWalletFrozen
+    isWalletFrozen,
+    getFrozenTokens,
+    getBalance,
+    areTransferPartiesFrozen,
+    isEnoughSpendableBalance
   }
 }

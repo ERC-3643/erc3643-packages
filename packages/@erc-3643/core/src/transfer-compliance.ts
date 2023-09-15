@@ -2,6 +2,7 @@ import { contracts } from '@tokenysolutions/t-rex';
 import OnchainID from '@onchain-id/solidity';
 import { Contract, Signer, providers } from 'ethers';
 import { ZERO_ADDRESS } from '@/constants';
+import { getToken } from './token';
 
 export const getTransferCompliance = () => {
   const isTransferCompliant = async (
@@ -10,44 +11,28 @@ export const getTransferCompliance = () => {
     from: string,
     to: string,
     amount: number
-  ): Promise<{ result: boolean, errors: string[] }> => {
-    const token = new Contract(
-      tokenAddress,
-      contracts.Token.abi,
-      signerOrProvider
-    );
+  ): Promise<void> => {
+    const token = await getToken(tokenAddress, signerOrProvider as Signer);
 
+    // позаворачивать в try catch и проборосить error.cause, вернуть ошибки и результат как раньше
     // Sender & Receiver wallets must not be frozen
-    const frozenErrors = await isFrozen(token, from, to);
-  
+    await token.areTransferPartiesFrozen(from, to);
+
     // Sender's spendable balance must be >= amount
-    const balanceErrors = await isEnoughBalance(token, from, amount);
-  
+    await isEnoughBalance(token, from, amount);
+
+    // БРАТЬ ИЗ IDENTITY REGISTRY
     // Receiver's ID must be verified
-    const receiverVerificationErrors = await isReceiverVerified(signerOrProvider, token, to);
-  
+    await isReceiverVerified(signerOrProvider, token, to);
+
+    // БРАТЬ ИЗ COMPLIANCE
     // Sender & Receiver must be compliant
-    const complianceErrors = await isCompliant(signerOrProvider, token, from, to, amount);
-  
-    // All compliance errors
-    const errors = [frozenErrors, balanceErrors, receiverVerificationErrors, complianceErrors].flat();
-  
-    return {
-      result: errors.length === 0,
-      errors
-    };
-  }
-  
-  const isFrozen = async (token: any, from: string, to: string): Promise<string[]> => {
-    const errors: string[] = [];
-  
-    const senderFrozen = await token.isFrozen(from);
-    senderFrozen && errors.push(`${from} is frozen`);
-  
-    const receiverFrozen = await token.isFrozen(to);
-    receiverFrozen && errors.push(`${to} is frozen`);
-  
-    return errors;
+    await isCompliant(signerOrProvider, token, from, to, amount);
+
+    // return {
+    //   result: errors.length === 0,
+    //   errors
+    // };
   }
   
   const isEnoughBalance = async (token: any, from: string, amount: number): Promise<string[]> => {
