@@ -1,7 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
-import { Goerli, Mainnet, DAppProvider, Hardhat } from '@usedapp/core'
+import { DAppProvider, Goerli, Hardhat, Mainnet } from '@usedapp/core'
+import { createTheme, CssBaseline, ThemeProvider } from '@mui/material'
 
 const config = {
   readOnlyChainId: Hardhat.chainId,
@@ -12,11 +13,34 @@ const config = {
   },
 }
 
+const customTheme = createTheme({
+  palette: {
+    primary: {
+      main: '#1976d2',
+    },
+    secondary: {
+      main: '#26a69a',
+    },
+    error: {
+      main: '#c10015',
+    },
+    warning: {
+      main: '#f2c037',
+    },
+    success: {
+      main: '#21ba45',
+    },
+  },
+})
+
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <React.StrictMode>
     <DAppProvider config={config}>
-      <App />
+      <ThemeProvider theme={customTheme}>
+        <CssBaseline />
+        <App />
+      </ThemeProvider>
     </DAppProvider>
   </React.StrictMode>,
 )

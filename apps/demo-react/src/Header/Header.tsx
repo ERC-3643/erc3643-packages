@@ -1,28 +1,24 @@
-import { StyledPill, StyledHeader, StyledLeftCol, StyledRightCol, StyledRow } from './Header.styles'
+import { StyledPill, StyleLogoText } from './Header.styles'
 import ConnectButton from './ConnectBtn/ConnectButton'
-import { useEffect, useState } from 'react'
 import { useEthers } from '@usedapp/core'
-import { useToken } from '@erc-3643/react-usedapp'
+import { AppBar, Box, Toolbar } from '@mui/material'
 
 const Header = () => {
-  // const {signer} = useEthers()
-  // const token = useToken("",account as Signer)
-  // console.log(token)
-
-  const address = '0x9965...A4dc'
-  const coinsAmount = 100000
+  const { account } = useEthers()
 
   return (
-    <StyledHeader>
-      <StyledRow>
-        <StyledLeftCol>ERC3643</StyledLeftCol>
-        <StyledRightCol>
-          <StyledPill>{address}</StyledPill>
-          <StyledPill>{coinsAmount}ETH</StyledPill>
+    <AppBar position='fixed'>
+      <Box sx={{ flexGrow: 1, p: 1 }}>
+        <Toolbar disableGutters>
+          <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
+            <StyleLogoText>ERC3643</StyleLogoText>{' '}
+            <img src='/tokeny.png' alt='tokeny' width={150} />
+          </Box>
+          {account && <StyledPill>{account}</StyledPill>}
           <ConnectButton />
-        </StyledRightCol>
-      </StyledRow>
-    </StyledHeader>
+        </Toolbar>
+      </Box>
+    </AppBar>
   )
 }
 
