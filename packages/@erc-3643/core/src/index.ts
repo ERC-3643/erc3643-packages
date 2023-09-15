@@ -6,3 +6,4 @@ export * from './claim-issuer';
 export * from './claim-topics-registry';
 export * from './onchain-id-identity';
 export * from './claim-issuer';
+export * from './transfer-compliance';

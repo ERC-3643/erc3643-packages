@@ -19,6 +19,8 @@ export const getToken = async (contractAddress: string, signer: Signer) => {
   const walletIsFrozen = await token.isFrozen(signer.getAddress());
 
   const identityRegistry = () => token.identityRegistry();
+  const compliance = () => token.compliance();
+  const isWalletFrozen = (walletAddress: string) => token.isFrozen(walletAddress);
 
   const unfreeze = async (address: string) => {
     const freezeWallet = await token.setAddressFrozen(address, true);
@@ -55,6 +57,8 @@ export const getToken = async (contractAddress: string, signer: Signer) => {
     tokenFreeze: freeze,
     tokenUnfreeze: unfreeze,
     identityRegistry,
+    compliance,
+    isWalletFrozen,
     contract: token
   };
 }

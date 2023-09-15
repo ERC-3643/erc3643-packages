@@ -5,12 +5,12 @@ import {
   useClaimTopicsRegistry,
   useOnchainIDIdentity,
   useClaimIssuer
-} from '@erc-3643/vue-usedapp'
+} from '@erc-3643/vue-usedapp';
 import { ref, watch } from 'vue';
 import { useEthers } from 'vue-dapp';
-import { TOKEN_ADDRESS, ZERO_ADDRESS } from '@/constants'
+import { TOKEN_ADDRESS, ZERO_ADDRESS } from '@/constants';
 
-const { signer } = useEthers()
+const { signer } = useEthers();
 const identityIsVerified = ref(null);
 const missingClaimTopics = ref<any>([]);
 const invalidClaims = ref<any>([]);
@@ -24,7 +24,7 @@ watch(signer, async (signer) => {
       isVerified,
       identity,
       topicsRegistry
-    } = await useIdentityRegistry(identityRegistryAddress, signer);
+    } = useIdentityRegistry(identityRegistryAddress, signer);
 
     identityIsVerified.value = await isVerified(signerAddress);
 

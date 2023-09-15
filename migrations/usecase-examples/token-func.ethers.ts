@@ -27,19 +27,19 @@ const checkUseCases = async () => {
   const token = getTokenContract(tokenAgent);
   const identityRegistry = await getIdentityRegistryContract(token, tokenAgent);
 
-  // await showTokenInfo(token);
+  await showTokenInfo(token);
 
-  // await pauseUnpause(token);
+  await pauseUnpause(token);
   
-  // await transferTokens(token, aliceWallet, bobWallet);
+  await transferTokens(token, aliceWallet, bobWallet);
 
-  // await freezeTokens(token, bobWallet);
+  await freezeTokens(token, bobWallet);
 
-  // await freezeUnfreezeWallet(token, anotherWallet10);
+  await freezeUnfreezeWallet(token, anotherWallet10);
 
-  // await checkCompliance(token, deployer, identityRegistry, aliceWallet, bobWallet);
+  await checkCompliance(token, deployer, identityRegistry, aliceWallet, bobWallet);
 
-  // await verifyAllIdentities(identityRegistry, aliceWallet, bobWallet, charlieWallet, claimIssuer, deployer);
+  await verifyAllIdentities(identityRegistry, aliceWallet, bobWallet, charlieWallet, claimIssuer, deployer);
 
   const fullCanTransferRes = await fullCanTransfer(rpc, token, aliceWallet.address, charlieWallet.address, 10000);
   console.dir(fullCanTransferRes);
