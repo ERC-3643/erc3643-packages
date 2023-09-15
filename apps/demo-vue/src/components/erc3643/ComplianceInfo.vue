@@ -89,14 +89,15 @@ const canTransfer = async () => {
             <div class="text-h6">Compliance Errors:</div>
           </q-card-section>
           <div
-            class="row no-wrap"
-            style="display: inline-block;"
             v-for="(error, index) in complianceErrors"
-            :key="error"
+            :key="index"
           >
             <q-card-section :class="[index === 0 ? 'q-pt-none': '']">
               <q-chip color="negative" text-color="white">
-                {{ error }}
+                <div class="ellipsis">
+                  {{ error }}
+                  <q-tooltip>{{ error }}</q-tooltip>
+                </div>
               </q-chip>
             </q-card-section>
             <q-separator inset />
