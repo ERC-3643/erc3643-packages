@@ -1,19 +1,24 @@
-import { StyledPill, StyledHeader, StyledLeftCol, StyledRightCol, StyledRow } from './Header.styles'
+import { StyledPill, StyleLogoText } from './Header.styles'
 import ConnectButton from './ConnectBtn/ConnectButton'
-import { useEthers, useEtherBalance } from '@usedapp/core'
+import { useEthers } from '@usedapp/core'
+import { AppBar, Box, Toolbar } from '@mui/material'
 
 const Header = () => {
   const { account } = useEthers()
+
   return (
-    <StyledHeader>
-      <StyledRow>
-        <StyledLeftCol>ERC3643</StyledLeftCol>
-        <StyledRightCol>
+    <AppBar position='fixed'>
+      <Box sx={{ flexGrow: 1, p: 1 }}>
+        <Toolbar disableGutters>
+          <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
+            <StyleLogoText>ERC3643</StyleLogoText>{' '}
+            <img src='/tokeny.png' alt='tokeny' width={150} />
+          </Box>
           {account && <StyledPill>{account}</StyledPill>}
           <ConnectButton />
-        </StyledRightCol>
-      </StyledRow>
-    </StyledHeader>
+        </Toolbar>
+      </Box>
+    </AppBar>
   )
 }
 

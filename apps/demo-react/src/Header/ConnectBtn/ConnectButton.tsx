@@ -1,21 +1,21 @@
 import { useEthers } from '@usedapp/core'
-import { StyledConnectBtn } from './ConnectButton.styles'
+import Button from '@mui/material/Button'
 
 const ConnectButton = () => {
   const { account, deactivate, activateBrowserWallet } = useEthers()
 
   if (account) {
     return (
-      <StyledConnectBtn type='primary' onClick={() => deactivate()}>
+      <Button variant='contained' color='warning' onClick={() => deactivate()}>
         Disconnect
-      </StyledConnectBtn>
+      </Button>
     )
   }
 
   return (
-    <StyledConnectBtn type='default' onClick={() => activateBrowserWallet()}>
+    <Button variant='contained' color='secondary' onClick={() => activateBrowserWallet()}>
       Connect
-    </StyledConnectBtn>
+    </Button>
   )
 }
 
