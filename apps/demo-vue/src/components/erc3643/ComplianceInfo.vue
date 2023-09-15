@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useCompliance, useTransferCompliance } from '@erc-3643/vue-usedapp';
 import { ref, watch } from 'vue';
-import { providers } from 'ethers';
+import { Signer } from 'ethers';
 import { useEthers } from 'vue-dapp';
 import { BOB_WALLET, COMPLIANCE_ADDRESS, TOKEN_ADDRESS } from '@/constants';
 
@@ -23,11 +23,12 @@ watch(signer, async (signer) => {
 });
 
 const canTransfer = async () => {
-  // We do not need signer here because we only intend to read
-  const provider = new providers.Web3Provider((window as any).ethereum, 'any');
+  // TODO: Use Provider (e.g. ethers.providers.Web3Provider) when you intend to read state
+  // Use Signer only when you intend to change state
+  // const provider = new providers.Web3Provider((window as any).ethereum, 'any');
   const { isTransferCompliant } = useTransferCompliance();
   const { result, errors } = await isTransferCompliant(
-    provider,
+    signer.value as Signer,
     TOKEN_ADDRESS,
     signerAddress.value,
     addressToTransfer.value,
