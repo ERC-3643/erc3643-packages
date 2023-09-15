@@ -18,14 +18,14 @@ export const getEligibilityVerification = async (
 
   const identityIsVerified = await isVerified(walletAddress);
 
-  if (!identityIsVerified) {
-    throw new Error(`Identity is not verified for address ${walletAddress}`);
-  }
-
   const identityAddress = await identity(walletAddress);
 
   if (identityAddress === constants.AddressZero) {
     throw new Error(`There is no OnChainID associated with address ${walletAddress}`);
+  }
+
+  if (!identityIsVerified) {
+    throw new Error(`Identity is not verified for address ${walletAddress}`);
   }
 
   const topicsRegistryAddress = await topicsRegistry();
