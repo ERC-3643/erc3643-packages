@@ -24,13 +24,6 @@ export const getEligibilityVerification = async (
     throw new Error(`There is no OnChainID associated with address ${walletAddress}`);
   }
 
-  // I'm commenting this out because the response of this method will never contain information
-  // on invalid or missing claims as it throws an error before reading claims if the identity is not verified.
-
-  // if (!identityIsVerified) {
-  //   throw new Error(`Identity is not verified for address ${walletAddress}`);
-  // }
-
   const topicsRegistryAddress = await topicsRegistry();
 
   const {
@@ -48,13 +41,17 @@ export const getEligibilityVerification = async (
 
   const claimsWithIssues = await getClaimsWithIssues(identityAddress, claimTopics);
 
+  if (!identityIsVerified) {
+    throw new Error(`Identity is not verified for address ${walletAddress}`);
+  }
+
   return {
     identityIsVerified,
     ...claimsWithIssues
   }
 }
 
-export const getReceiverEligabilityVerificationReasons = async (
+export const getReceiverEligibilityVerificationReasons = async (
   identityRegistryAddress: string,
   signerOrProvider: Signer | providers.Web3Provider,
   addr: string

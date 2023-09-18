@@ -1,7 +1,7 @@
 import { Signer, providers } from 'ethers';
 import { getToken } from './token';
 import { getCompliance } from './compliance';
-import { getReceiverEligabilityVerificationReasons } from './eligibility-verification';
+import { getReceiverEligibilityVerificationReasons } from './eligibility-verification';
 
 export const getTransferCompliance = () => {
   const isTransferCompliant = async (
@@ -24,7 +24,7 @@ export const getTransferCompliance = () => {
 
     // Receiver's ID must be verified
     const eligibilityErrors = await getExecutionErrorReasons(
-      getReceiverEligabilityVerificationReasons,
+      getReceiverEligibilityVerificationReasons,
       identityRegistryAddress,
       signerOrProvider as Signer,
       to

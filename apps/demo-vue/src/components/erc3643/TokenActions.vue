@@ -19,14 +19,12 @@ const addressFreeze = ref<string | null>(null);
 const addressUnfreeze = ref<string | null>(null);
 
 const walletFreeze = () => {
-  console.log(addressFreeze.value);
   if (addressFreeze.value) {
     token.value.freeze(addressFreeze.value);
   }
 }
 
 const walletUnfreeze = () => {
-  console.log(addressUnfreeze.value);
   if (addressUnfreeze.value) {
     token.value.unfreeze(addressUnfreeze.value);
   }
