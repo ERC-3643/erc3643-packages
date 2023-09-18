@@ -8,6 +8,7 @@ import { transferTokens } from './transfer-tokens';
 import { freezeTokens } from './freeze-tokens';
 import { freezeUnfreezeWallet } from './freeze-unfreeze-wallet';
 import { checkCompliance } from './check-compliance';
+import { fullCanTransfer } from './full-can-transfer';
 
 const checkUseCases = async () => {
   const rpc = new JsonRpcProvider('http://localhost:8545');
@@ -39,6 +40,9 @@ const checkUseCases = async () => {
   await checkCompliance(token, deployer, identityRegistry, aliceWallet, bobWallet);
 
   await verifyAllIdentities(identityRegistry, aliceWallet, bobWallet, charlieWallet, claimIssuer, deployer);
+
+  const fullCanTransferRes = await fullCanTransfer(rpc, token, aliceWallet.address, charlieWallet.address, 10000);
+  console.dir(fullCanTransferRes);
 }
 
 checkUseCases();

@@ -5,8 +5,8 @@ export const useEligibilityVerification = async (
   identityRegistryAddress: string,
   signer: Signer,
   walletAddressToCheck: string | null = null
-) => getEligibilityVerification (
+) => getEligibilityVerification(
     identityRegistryAddress,
     signer,
     walletAddressToCheck
-  )
+  );

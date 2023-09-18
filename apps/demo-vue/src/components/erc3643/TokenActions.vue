@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useToken } from '@erc-3643/vue-usedapp'
+import { useToken } from '@erc-3643/vue-usedapp';
 import { ref, watch } from 'vue';
 import { useEthers } from 'vue-dapp';
 import { BOB_WALLET, TOKEN_ADDRESS } from '@/constants';
 
-const { signer } = useEthers()
+const { signer } = useEthers();
 
 const token = ref<{ [key: string]: any }>({});
 
@@ -19,16 +19,14 @@ const addressFreeze = ref<string | null>(null);
 const addressUnfreeze = ref<string | null>(null);
 
 const walletFreeze = () => {
-  console.log(addressFreeze.value)
   if (addressFreeze.value) {
-    token.value.freeze(addressFreeze.value)
+    token.value.freeze(addressFreeze.value);
   }
 }
 
 const walletUnfreeze = () => {
-  console.log(addressUnfreeze.value)
   if (addressUnfreeze.value) {
-    token.value.unfreeze(addressUnfreeze.value)
+    token.value.unfreeze(addressUnfreeze.value);
   }
 }
 </script>

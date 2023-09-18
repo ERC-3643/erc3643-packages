@@ -1,64 +1,38 @@
 <script setup lang="ts">
-import { useCompliance, useComplianceModule } from '@erc-3643/vue-usedapp'
+import { useTransferCompliance } from '@erc-3643/vue-usedapp';
 import { ref, watch } from 'vue';
-import { Signer, useEthers } from 'vue-dapp';
-import { contracts } from '@tokenysolutions/t-rex';
-import { BOB_WALLET, COMPLIANCE_ADDRESS } from '@/constants';
+import { Signer } from 'ethers';
+import { useEthers } from 'vue-dapp';
+import { BOB_WALLET, TOKEN_ADDRESS } from '@/constants';
 
 const { signer } = useEthers();
 
-const contractNamesMapper: { [key: string]: string } = {
-  '0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB': contracts.CountryAllowModule.contractName,
-  '0xa82fF9aFd8f496c3d6ac40E2a0F282E47488CFc9': contracts.CountryAllowModule.contractName
-};
-
-const compliance = ref<{ [key: string]: any }>({});
 const signerAddress = ref('');
 const addressToTransfer = ref('');
 const amountToTransfer = ref(0);
 const transferOk = ref(null);
-const modules = ref<{ [key: string]: any }>([]);
-
+const complianceErrors = ref([]);
 
 watch(signer, async (signer) => {
   if (signer) {
-    compliance.value = await useCompliance(COMPLIANCE_ADDRESS, signer);
     signerAddress.value = await signer.getAddress()
   }
 });
 
 const canTransfer = async () => {
-  transferOk.value = await compliance.value.canTransfer(
+  // TODO: Use Provider (e.g. ethers.providers.Web3Provider) when you intend to read state
+  // Use Signer only when you intend to change state
+  // const provider = new providers.Web3Provider((window as any).ethereum, 'any');
+  const { isTransferCompliant } = useTransferCompliance();
+  const { result, errors } = await isTransferCompliant(
+    signer.value as Signer,
+    TOKEN_ADDRESS,
     signerAddress.value,
     addressToTransfer.value,
     amountToTransfer.value
   );
-
-  if (transferOk.value === false) {
-    const modulesAddresses = await compliance.value.getModules();
-
-    for (const address of modulesAddresses) {
-
-      const {
-        moduleCheck
-      } = useComplianceModule(
-        address,
-        contracts.CountryAllowModule.abi,
-        signer.value as Signer
-      );
-
-      modules.value.push({
-        address,
-        name: contractNamesMapper[address],
-        status: await moduleCheck(
-          signerAddress.value,
-          addressToTransfer.value,
-          amountToTransfer.value,
-          COMPLIANCE_ADDRESS
-        )
-      })
-    }
-  }
+  transferOk.value = result as any;
+  complianceErrors.value = errors as any;
 }
 </script>
 
@@ -107,21 +81,19 @@ const canTransfer = async () => {
     </div>
     <div class="row q-col-gutter-sm q-py-sm">
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <q-card class="compliance-modules" v-if="transferOk == false">
+        <q-card class="compliance-errors" style="display: block;" v-if="transferOk == false">
           <q-card-section>
-            <div class="text-h6">Compliance Modules:</div>
+            <div class="text-h6">Compliance Errors:</div>
           </q-card-section>
           <div
-            v-for="(m, index) in modules"
-            :key="m.address"
+            v-for="(error, index) in complianceErrors"
+            :key="index"
           >
             <q-card-section :class="[index === 0 ? 'q-pt-none': '']">
-              {{ m.address }}<br/>{{ m.name }}
-              <q-chip v-if="m.status" color="positive" text-color="white">
-                Allow
-              </q-chip>
-              <q-chip v-else color="negative" text-color="white">
-                Restrict
+              <q-chip style="height: 100%;" color="negative" text-color="white">
+                <div style="white-space: normal; word-wrap: break-word;">
+                  {{ error }}
+                </div>
               </q-chip>
             </q-card-section>
             <q-separator inset />

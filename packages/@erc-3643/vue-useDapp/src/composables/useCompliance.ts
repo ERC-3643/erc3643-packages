@@ -4,6 +4,7 @@ import { Signer } from 'vue-dapp';
 export function useCompliance(contractAddress: string, signer: Signer, debug = false) {
   const {
     canTransfer,
+    canTransferWithReasons,
     getModules,
     contract
   } = getCompliance(contractAddress, signer);
@@ -17,6 +18,7 @@ export function useCompliance(contractAddress: string, signer: Signer, debug = f
   return {
     contract,
     canTransfer,
+    canTransferWithReasons,
     getModules
-  }
+  };
 }
