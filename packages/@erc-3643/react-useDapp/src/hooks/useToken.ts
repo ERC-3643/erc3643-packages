@@ -17,6 +17,12 @@ export interface Token {
   run: () => Promise<void>;
   unfreeze: (address: string) => Promise<void>;
   freeze: (address: string) => Promise<void>;
+  compliance: () => Promise<any>;
+  isWalletFrozen: (walletAddress: string) => Promise<boolean>;
+  getFrozenTokens: (walletAddress: string) => Promise<boolean>;
+  getBalance: (walletAddress: string) => Promise<any>;
+  areTransferPartiesFrozen: (from: string, to: string) => Promise<void>;
+  isEnoughSpendableBalance: (from: string, amount: number) => Promise<void>;
 }
 
 export const useToken = (signer: Signer | undefined, debug = false) => {
@@ -49,6 +55,12 @@ export const useToken = (signer: Signer | undefined, debug = false) => {
       run: token.tokenRun,
       unfreeze: token.tokenFreeze,
       freeze: token.tokenUnfreeze,
+      compliance: token.compliance,
+      isWalletFrozen: token.isWalletFrozen,
+      getFrozenTokens: token.getFrozenTokens,
+      getBalance: token.getBalance,
+      areTransferPartiesFrozen: token.areTransferPartiesFrozen,
+      isEnoughSpendableBalance: token.isEnoughSpendableBalance,
     };
   };
 
