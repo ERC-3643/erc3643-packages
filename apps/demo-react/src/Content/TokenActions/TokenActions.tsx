@@ -4,7 +4,7 @@ import { useSigner } from '@usedapp/core'
 import { Token, useToken } from '@erc-3643/react-usedapp'
 import { useEffect, useState } from 'react'
 import { BOB_WALLET, TOKEN_ADDRESS } from '../../constants'
-import { StyledFieldRow, StyledWalletExample, StyledTextField } from './TokenActions.styles'
+import { StyledFieldRow, StyledTextField, StyledWalletExample } from './TokenActions.styles'
 
 const TokenActions = () => {
   const signer = useSigner()
