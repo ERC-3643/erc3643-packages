@@ -7,10 +7,10 @@ export interface OnchainIDIdentity {
   getClaim: (claimId: string) => any;
 }
 
-export function useOnchainIDIdentity(
+export const useOnchainIDIdentity = (
   signer: Signer | undefined,
   debug = false
-) {
+) => {
   const getOnchainIdentity = (
     contractAddress: string
   ): OnchainIDIdentity | null => {
@@ -37,4 +37,4 @@ export function useOnchainIDIdentity(
   return {
     getOnchainIDIdentity: getOnchainIdentity,
   };
-}
+};

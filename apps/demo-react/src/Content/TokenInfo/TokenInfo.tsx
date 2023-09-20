@@ -3,7 +3,7 @@ import { TOKEN_ADDRESS } from '../../constants'
 import { useSigner } from '@usedapp/core'
 import { utils } from 'ethers'
 import { useEffect, useState } from 'react'
-import { StyledChip } from './TokenInfo.styles'
+import { StyledChip } from '../../components/Chip/Chip.styles'
 
 const TokenInfo = () => {
   const { formatEther } = utils

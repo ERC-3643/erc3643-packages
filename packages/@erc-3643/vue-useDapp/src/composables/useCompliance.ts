@@ -3,10 +3,10 @@ import { Signer } from 'vue-dapp';
 
 export function useCompliance(contractAddress: string, signer: Signer, debug = false) {
   const {
+    contract,
     canTransfer,
     canTransferWithReasons,
     getModules,
-    contract
   } = getCompliance(contractAddress, signer);
 
   signer.provider?.on('debug', (data: any) => {

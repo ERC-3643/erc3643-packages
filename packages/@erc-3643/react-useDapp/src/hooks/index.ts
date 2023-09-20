@@ -5,3 +5,5 @@ export * from "./useComplianceModules";
 export * from "./useClaimTopicsRegistry";
 export * from "./useClaimIssuer";
 export * from "./useOnchainIDIdentity";
+export * from "./useTransferCompliance";
+export * from "./useEligibilityVerification";

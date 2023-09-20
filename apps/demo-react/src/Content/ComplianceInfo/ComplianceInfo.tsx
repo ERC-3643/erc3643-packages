@@ -1,39 +1,21 @@
-import { contracts } from '@tokenysolutions/t-rex'
-import { useCompliance, useComplianceModules } from '@erc-3643/react-usedapp'
-import { BOB_WALLET, COMPLIANCE_ADDRESS } from '../../constants'
+import { useTransferCompliance } from '@erc-3643/react-usedapp'
+import { BOB_WALLET, TOKEN_ADDRESS } from '../../constants'
 import { useSigner } from '@usedapp/core'
 import { useEffect, useState } from 'react'
 import Button from '@mui/material/Button'
-import {
-  StyledChip,
-  StyledComplianceModule,
-  StyledTextField,
-  StyledWalletExample,
-} from './ComplianceInfo.styles'
+import { StyledTextField, StyledWalletExample } from './ComplianceInfo.styles'
 import { Signer } from 'ethers'
-import { ComplianceModuleStatus } from './interfaces'
 import { Box } from '@mui/material'
+import { StyledChip } from '../../components/Chip/Chip.styles'
 
 const ComplianceInfo = () => {
-  const contractNamesMapper: { [key: string]: string } = {
-    '0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB': contracts.CountryAllowModule.contractName,
-    '0xa82fF9aFd8f496c3d6ac40E2a0F282E47488CFc9': contracts.CountryAllowModule.contractName,
-  }
   const signer = useSigner()
-  const compliance = useCompliance(COMPLIANCE_ADDRESS, signer)
+  const { isTransferCompliant } = useTransferCompliance()
   const [signerAddress, setSignerAddress] = useState('')
   const [transferTo, setTransferTo] = useState('')
   const [tokensAmount, setTokensAmount] = useState('0')
-  const [modulesAddresses, setModulesAddressed] = useState<string[]>([])
-  const complianceModules = useComplianceModules(
-    modulesAddresses,
-    contracts.CountryAllowModule.abi,
-    signer as Signer,
-  )
-  const [complianceModulesStatuses, setComplianceModulesStatuses] = useState<
-    ComplianceModuleStatus[]
-  >([])
   const [canTransfer, setCanTransfer] = useState(false)
+  const [complianceErrors, setComplianceErrors] = useState<string[]>([])
 
   useEffect(() => {
     if (!signer) {
@@ -46,43 +28,20 @@ const ComplianceInfo = () => {
   }, [signer])
 
   const onCanTransfer = async () => {
-    if (!compliance) {
+    if (!signer) {
       return
     }
 
-    setComplianceModulesStatuses([])
-
-    const transferOk = await compliance.canTransfer(
+    const { result, errors } = await isTransferCompliant(
+      signer as Signer,
+      TOKEN_ADDRESS,
       signerAddress,
       transferTo,
       parseFloat(tokensAmount),
     )
-
-    setCanTransfer(transferOk)
-
-    if (!transferOk) {
-      setModulesAddressed(await compliance.getModules())
-    }
+    setCanTransfer(Boolean(result))
+    setComplianceErrors(errors)
   }
-
-  useEffect(() => {
-    if (!modulesAddresses.length) {
-      return
-    }
-
-    Promise.all(
-      complianceModules.map(async ({ contractAddress, moduleCheck }) => ({
-        address: contractAddress,
-        name: contractNamesMapper[contractAddress],
-        status: await moduleCheck(
-          signerAddress,
-          transferTo,
-          parseFloat(tokensAmount),
-          COMPLIANCE_ADDRESS,
-        ),
-      })),
-    ).then((values) => setComplianceModulesStatuses(values))
-  }, [modulesAddresses, complianceModules])
 
   return (
     <>
@@ -118,16 +77,13 @@ const ComplianceInfo = () => {
         </Button>
       </div>
 
-      {complianceModulesStatuses.length > 0 && (
+      {complianceErrors.length > 0 && (
         <div>
           <h3>Compliance Modules:</h3>
-          {complianceModulesStatuses.map(({ address, name }, index) => (
-            <StyledComplianceModule key={index}>
-              <div>{address}</div>
-              <div>
-                {name} - <strong>Restrict</strong>
-              </div>
-            </StyledComplianceModule>
+          {complianceErrors.map((error, index) => (
+            <p>
+              <StyledChip key={index} label={error} color='error' />
+            </p>
           ))}
         </div>
       )}

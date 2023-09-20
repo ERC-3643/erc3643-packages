@@ -10,10 +10,8 @@ export const useCompliance = (
     return null;
   }
 
-  const { canTransfer, getModules, contract } = getCompliance(
-    contractAddress,
-    signer
-  );
+  const { contract, canTransfer, canTransferWithReasons, getModules } =
+    getCompliance(contractAddress, signer);
 
   if (debug) {
     signer.provider?.on("debug", (data: any) => console.log(...data));
@@ -23,5 +21,6 @@ export const useCompliance = (
     contract,
     canTransfer,
     getModules,
+    canTransferWithReasons,
   };
 };
