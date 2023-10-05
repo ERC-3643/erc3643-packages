@@ -21,7 +21,10 @@ watch(signer, async (signer) => {
     tokenData.value.balanceOf = await token.balanceOf()
     tokenData.value.frozenTokens = await token.frozenTokens()
     tokenData.value.realBalanceOf = await token.realBalanceOf()
-    tokenData.value.isPaused = isPaused
+    tokenData.value.isPaused = isPaused;
+    tokenData.value.walletIsFrozen = await token.walletIsFrozen(await signer.getAddress())
+
+    console.log(tokenData.value.walletIsFrozen)
   }
 })
 

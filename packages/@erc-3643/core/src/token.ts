@@ -74,12 +74,12 @@ export class Token {
   }
 
   public unfreeze = async (address: string) => {
-    const freezeWallet = await this._contract.setAddressFrozen(address, true);
+    const freezeWallet = await this._contract.setAddressFrozen(address, false);
     await freezeWallet.wait();
   }
 
   public freeze = async (address: string) => {
-    const unfreezeWallet = await this._contract.setAddressFrozen(address, false);
+    const unfreezeWallet = await this._contract.setAddressFrozen(address, true);
     await unfreezeWallet.wait();
   }
 
