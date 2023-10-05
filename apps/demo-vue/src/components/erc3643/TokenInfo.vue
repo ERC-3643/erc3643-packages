@@ -6,18 +6,22 @@ import { TOKEN_ADDRESS } from '@/constants';
 
 const { signer } = useEthers()
 
-const token = ref<{ [key: string]: any }>({});
+const tokenData = ref<{ [key: string]: any }>({});
 
 watch(signer, async (signer) => {
   if (signer) {
-    const getToken = await useToken(TOKEN_ADDRESS, signer);
-    token.value.decimals = await getToken.decimals()
-    token.value.name = await getToken.name()
-    token.value.owner = await getToken.owner()
-    token.value.totalSupply = await getToken.totalSupply()
-    token.value.balanceOf = await getToken.balanceOf()
-    token.value.frozenTokens = await getToken.frozenTokens()
-    token.value.realBalanceOf = await getToken.realBalanceOf()
+    const {
+      token,
+      isPaused
+    } = await useToken(TOKEN_ADDRESS, signer);
+    tokenData.value.decimals = await token.decimals()
+    tokenData.value.name = await token.name()
+    tokenData.value.owner = await token.owner()
+    tokenData.value.totalSupply = await token.totalSupply()
+    tokenData.value.balanceOf = await token.balanceOf()
+    tokenData.value.frozenTokens = await token.frozenTokens()
+    tokenData.value.realBalanceOf = await token.realBalanceOf()
+    tokenData.value.isPaused = isPaused
   }
 })
 
@@ -31,16 +35,16 @@ watch(signer, async (signer) => {
         <div class="text-h6">Token info:</div>
       </q-card-section>
       <q-card-section>
-        <p>Decimals: {{ token.decimals }}</p>
-        <p>Name: {{ token.name }}</p>
-        <p>Owner: {{ token.owner }}</p>
-        <p>Total Supply: {{ token.totalSupply }}</p>
-        <p>Balance Of: {{ token.balanceOf }}</p>
-        <p>Frozen Tokens: {{ token.frozenTokens }}</p>
-        <p>Real Balance Of: {{ token.realBalanceOf }}</p>
+        <p>Decimals: {{ tokenData.decimals }}</p>
+        <p>Name: {{ tokenData.name }}</p>
+        <p>Owner: {{ tokenData.owner }}</p>
+        <p>Total Supply: {{ tokenData.totalSupply }}</p>
+        <p>Balance Of: {{ tokenData.balanceOf }}</p>
+        <p>Frozen Tokens: {{ tokenData.frozenTokens }}</p>
+        <p>Real Balance Of: {{ tokenData.realBalanceOf }}</p>
         <p>
           Wallet Is Frozen: {{  }}
-          <q-chip v-if="token.walletIsFrozen" color="negative" text-color="white">
+          <q-chip v-if="tokenData.walletIsFrozen" color="negative" text-color="white">
             Yes
           </q-chip>
           <q-chip v-else color="positive" text-color="white">
@@ -49,7 +53,7 @@ watch(signer, async (signer) => {
         </p>
         <p>
           Token Is Paused:
-          <q-chip v-if="token.paused" color="negative" text-color="white">
+          <q-chip v-if="tokenData.isPaused" color="negative" text-color="white">
             Yes
           </q-chip>
           <q-chip v-else color="positive" text-color="white">

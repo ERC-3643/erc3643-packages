@@ -23,49 +23,55 @@ export class TransferCompliance {
     const token = await this.token.init(tokenAddress, signerOrProvider as Signer);
     const identityRegistryAddress = await token.identityRegistry();
     const complianceContractAddress = await token.compliance();
-    // const { canTransferWithReasons } = getCompliance(complianceContractAddress, signerOrProvider as Signer);
     const compliance = this.complianceContract.init(complianceContractAddress, signerOrProvider as Signer);
+    const errors = [];
 
     // Sender & Receiver wallets must not be frozen
-    const frozenErrors = await this.getExecutionErrorReasons(token.areTransferPartiesFrozen, from, to);
-
-    // Sender's spendable balance must be >= amount
-    const balanceErrors = await this.getExecutionErrorReasons(token.isEnoughSpendableBalance, from, amount);
-
-    // Receiver's ID must be verified
-    const eligibilityErrors = await this.getExecutionErrorReasons(
-      this.eligibilityVerification.getReceiverEligibilityVerificationReasons,
-      identityRegistryAddress,
-      signerOrProvider as Signer,
-      to
-    );
-
-    // Sender & Receiver must be compliant
-    const complianceErrors = await this.getExecutionErrorReasons(compliance.canTransferWithReasons, from, to, amount);
-
-    // All compliance errors
-    const errors = [frozenErrors, balanceErrors, eligibilityErrors, complianceErrors].flat();
-
-    return {
-      result: errors.length === 0,
-      errors
-    };
-  }
-
-  getExecutionErrorReasons = async (func: Function, ...args: any[]): Promise<string[]> => {
-    const errors: string[] = [];
-
     try {
-      await func(...args);
+      await token.areTransferPartiesFrozen(from, to);
     } catch (error) {
       if (Array.isArray((error as Error).cause)) {
         errors.push(((error as Error).cause as string[]).join());
       }
     }
 
-    return errors;
-  }
+    // Sender's spendable balance must be >= amount
+    try {
+      await token.isEnoughSpendableBalance(from, amount);
+    } catch (error) {
+      if (Array.isArray((error as Error).cause)) {
+        errors.push(((error as Error).cause as string[]).join());
+      }
+    }
 
+    // Receiver's ID must be verified
+    try {
+      await this.eligibilityVerification.getReceiverEligibilityVerificationReasons(
+        identityRegistryAddress,
+        signerOrProvider as Signer,
+        to
+      )
+    } catch (error) {
+      if (Array.isArray((error as Error).cause)) {
+        errors.push(((error as Error).cause as string[]).join());
+      }
+    }
+
+    // Sender & Receiver must be compliant
+    try {
+      await compliance.canTransferWithReasons(from, to, amount);
+    } catch (error) {
+      if (Array.isArray((error as Error).cause)) {
+        errors.push(((error as Error).cause as string[]).join());
+      }
+    }
+
+
+    return {
+      result: errors.length === 0,
+      errors: errors.flat()
+    };
+  }
 }
 
 export const getTransferCompliance = Container.get(TransferCompliance);

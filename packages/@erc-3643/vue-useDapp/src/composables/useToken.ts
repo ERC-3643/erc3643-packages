@@ -7,15 +7,15 @@ export async function useToken(tokenAddress: string, signer: Signer) {
 
   const token = TokenContract.init(tokenAddress, signer);
 
-  const paused = ref(false);
-  paused.value = await token.paused();
+  const isPaused = ref(false);
+  isPaused.value = await token.paused();
 
   token.contract.on('Paused', () => {
-    paused.value = true;
+    isPaused.value = true;
   });
 
   token.contract.on('Unpaused', () => {
-    paused.value = false;
+    isPaused.value = false;
   });
 
   token.contract.on('AddressFrozen', (walletAddressToFreeze: string, isFrozen: boolean, signerAddress: string) => {
@@ -26,5 +26,8 @@ export async function useToken(tokenAddress: string, signer: Signer) {
     console.log(error);
   })
 
-  return token;
+  return {
+    token,
+    isPaused
+  };
 }

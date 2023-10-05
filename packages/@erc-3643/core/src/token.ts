@@ -58,7 +58,7 @@ export class Token {
   }
 
   public compliance = async () => {
-    return this.compliance()
+    return this._contract.compliance()
   }
 
   public isWalletFrozen = async (walletAddress?: string) => {

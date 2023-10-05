@@ -6,20 +6,18 @@ import { TOKEN_ADDRESS } from '@/constants';
 
 const { signer } = useEthers();
 
-const token = ref<{ [key: string]: any }>({});
 const investorCountry = ref(0);
+const identityRegistryAddress = ref('');
 watch(signer, async (signer) => {
   if (signer) {
-    token.value = await useToken(TOKEN_ADDRESS, signer);
-    const identityRegistryAddress = await token.value.identityRegistry();
-    const {
-      getInvestorCountry
-    } = useIdentityRegistry(identityRegistryAddress, signer);
+    const { token } = await useToken(TOKEN_ADDRESS, signer);
 
-    investorCountry.value = await getInvestorCountry(await signer.getAddress());
+    identityRegistryAddress.value = await token.identityRegistry();
+    const identityRegistry = useIdentityRegistry(identityRegistryAddress.value, signer);
+
+    investorCountry.value = await identityRegistry.getInvestorCountry(await signer.getAddress());
   }
 })
-
 
 </script>
 
@@ -28,6 +26,9 @@ watch(signer, async (signer) => {
     <q-card class="identity-registry-info">
       <q-card-section>
         <div class="text-h6">Identity Registry info:</div>
+      </q-card-section>
+      <q-card-section>
+        <p>Identity Registry: {{ identityRegistryAddress }}</p>
       </q-card-section>
       <q-card-section>
         <p>Investor Country: {{ investorCountry }}</p>

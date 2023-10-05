@@ -23,8 +23,8 @@ const canTransfer = async () => {
   // TODO: Use Provider (e.g. ethers.providers.Web3Provider) when you intend to read state
   // Use Signer only when you intend to change state
   // const provider = new providers.Web3Provider((window as any).ethereum, 'any');
-  const { isTransferCompliant } = useTransferCompliance();
-  const { result, errors } = await isTransferCompliant(
+  const transferCompliant = useTransferCompliance();
+  const { result, errors } = await transferCompliant.isTransferCompliant(
     signer.value as Signer,
     TOKEN_ADDRESS,
     signerAddress.value,
