@@ -49,7 +49,7 @@ import { SwitchLocaleLink } from '../../components/SwitchLocaleLink'
 import { usePositionTokenURI } from '../../hooks/usePositionTokenURI'
 import { TransactionType } from '../../state/transactions/types'
 import { calculateGasMargin } from '../../utils/calculateGasMargin'
-import { checkTransferCompliance } from '../../utils/check-transfer-compliance' // added for transfer compliance checks
+import { checkTransferCompliance } from '../../utils/checkTransferCompliance' // added for transfer compliance checks
 import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
 import { LoadingRows } from './styled'
 
