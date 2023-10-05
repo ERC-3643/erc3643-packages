@@ -1,35 +1,42 @@
-import OnchainID from '@onchain-id/solidity';
+import { contracts } from '@onchain-id/solidity';
 import { Contract, Signer } from 'ethers';
-import { getClaimIssuer } from './claim-issuer';
+import Container, { Service } from 'typedi';
+import { BaseContract } from './base-contract';
+import { ClaimIssuer } from './claim-issuer';
 
-export const getOnchainIDIdentity = (contractAddress: string, signer: Signer) => {
+@Service()
+export class OnchainIDIdentity {
+  private _contract: Contract;
+  private signer: Signer;
 
-  const contract = new Contract(
-    contractAddress,
-    OnchainID.contracts.Identity.abi,
-    signer
-  );
+  constructor(
+    private readonly baseContract: BaseContract,
+    private readonly claimIssuer: ClaimIssuer
+  ) {}
 
-  const getClaimIdsByTopic = (topic: string) => contract.getClaimIdsByTopic(topic)
-  const getClaim = (claimId: string) => contract.getClaim(claimId)
+  public get contract() {
+    return this._contract;
+  }
 
-  const getClaimsWithIssues = async (identityAddress: string, claimTopics: string[]) => {
+  public getClaimIdsByTopic = (topic: string) => this._contract.getClaimIdsByTopic(topic);
+
+  public getClaim = (claimId: string) => this._contract.getClaim(claimId);
+
+  public getClaimsWithIssues = async (identityAddress: string, claimTopics: string[]) => {
     const missingClaimTopics = [];
     const invalidClaims = [];
 
     for (const topic of claimTopics) {
-      const claimIds = await getClaimIdsByTopic(topic);
+      const claimIds = await this.getClaimIdsByTopic(topic);
 
       !claimIds.length && missingClaimTopics.push(topic);
 
       for (const claimId of claimIds) {
-        const claim = await getClaim(claimId);
+        const claim = await this.getClaim(claimId);
 
-        const {
-          isClaimValid
-        } = getClaimIssuer(claim.issuer, signer);
+        const claimIssuerContract = this.claimIssuer.init(claim.issuer, this.signer)
 
-        const isValid = await isClaimValid(
+        const isValid = await claimIssuerContract.isClaimValid(
           identityAddress,
           topic,
           claim.signature,
@@ -46,10 +53,21 @@ export const getOnchainIDIdentity = (contractAddress: string, signer: Signer) =>
     }
   }
 
-  return {
-    contract,
-    getClaimIdsByTopic,
-    getClaim,
-    getClaimsWithIssues
+  public init = (
+    contractAddress: string,
+    signer?: Signer
+  ) => {
+
+    this._contract = this.baseContract.connect(
+      contractAddress,
+      contracts.Identity.abi,
+      signer
+    );
+
+    this.signer = signer;
+
+    return this;
   }
 }
+
+export const OnchainIDIdentityContract = Container.get(OnchainIDIdentity);

@@ -1,78 +1,86 @@
 import { Signer, constants, providers } from 'ethers';
-import { getIdentityRegistry } from './identity-registry';
-import { getClaimTopicsRegistry } from './claim-topics-registry';
-import { getOnchainIDIdentity } from './onchain-id-identity';
+import { IdentityRegistry } from './identity-registry';
+import { ClaimTopicsRegistry } from './claim-topics-registry';
+import { OnchainIDIdentity } from './onchain-id-identity';
+import Container, { Service } from 'typedi';
 
-export const getEligibilityVerification = async (
-  identityRegistryAddress: string,
-  signer: Signer,
-  walletAddressToCheck: string | null = null
-) => {
-  const walletAddress = walletAddressToCheck || await signer.getAddress();
+@Service()
+export class EligibilityVerification {
 
-  const {
-    isVerified,
-    identity,
-    topicsRegistry
-  } = getIdentityRegistry(identityRegistryAddress, signer);
+  constructor(
+    private readonly identityRegistry: IdentityRegistry,
+    private readonly claimTopicsRegistry: ClaimTopicsRegistry,
+    private readonly onchainIDIdentity: OnchainIDIdentity
+  ) {}
 
-  const identityIsVerified = await isVerified(walletAddress);
+  public getEligibilityVerification = async (
+    identityRegistryAddress: string,
+    signer: Signer,
+    walletAddressToCheck: string | null = null
+  ) => {
+    const walletAddress = walletAddressToCheck || await signer.getAddress();
 
-  const identityAddress = await identity(walletAddress);
-
-  if (identityAddress === constants.AddressZero) {
-    throw new Error(`There is no OnChainID associated with address ${walletAddress}`);
-  }
-
-  const topicsRegistryAddress = await topicsRegistry();
-
-  const {
-    getClaimTopics
-  } = getClaimTopicsRegistry(
-    topicsRegistryAddress,
-    signer
-  );
-
-  const claimTopics = await getClaimTopics();
-
-  const {
-    getClaimsWithIssues
-  } = getOnchainIDIdentity(identityAddress, signer);
-
-  const claimsWithIssues = await getClaimsWithIssues(identityAddress, claimTopics);
-
-  if (!identityIsVerified) {
-    throw new Error(`Identity is not verified for address ${walletAddress}`);
-  }
-
-  return {
-    identityIsVerified,
-    ...claimsWithIssues
-  }
-}
-
-export const getReceiverEligibilityVerificationReasons = async (
-  identityRegistryAddress: string,
-  signerOrProvider: Signer | providers.Web3Provider,
-  addr: string
-): Promise<void> => {
-  const errors: string[] = [];
-
-  try {
-    const { identityIsVerified, missingClaimTopics, invalidClaims } = await getEligibilityVerification(
+    const identityRegistryContract = this.identityRegistry.init(
       identityRegistryAddress,
-      signerOrProvider as Signer,
-      addr
+      signer
     );
 
-    if (identityIsVerified) return;
+    const identityIsVerified = await identityRegistryContract.isVerified(walletAddress);
 
-    missingClaimTopics.length && errors.push(`${addr} has missing claims with topics ${missingClaimTopics.join()}`);
-    invalidClaims.length && errors.push(`${addr} has invalid claims with topics ${invalidClaims.map(claim => claim.topic).join()}`);
-  } catch (error) {
-    errors.push((error as Error).message);
+    const identityAddress = await identityRegistryContract.identity(walletAddress);
+
+    if (identityAddress === constants.AddressZero) {
+      throw new Error(`There is no OnChainID associated with address ${walletAddress}`);
+    }
+
+    const topicsRegistryAddress = await identityRegistryContract.topicsRegistry();
+
+    const claimTopicsRegistryContract = this.claimTopicsRegistry.init(
+      topicsRegistryAddress,
+      signer
+    );
+
+    const claimTopics = await claimTopicsRegistryContract.getClaimTopics();
+
+    const onchainIDIdentityContract = this.onchainIDIdentity.init(identityAddress, signer)
+
+    const claimsWithIssues = await onchainIDIdentityContract.getClaimsWithIssues(identityAddress, claimTopics);
+
+    if (!identityIsVerified) {
+      throw new Error(`Identity is not verified for address ${walletAddress}`);
+    }
+
+    return {
+      identityIsVerified,
+      ...claimsWithIssues
+    }
   }
 
-  // return errors;
-  if (errors.length) throw new Error('Identity not eligible for transfer', { cause: errors });
+  public getReceiverEligibilityVerificationReasons = async (
+    identityRegistryAddress: string,
+    signerOrProvider: Signer | providers.Web3Provider,
+    addr: string
+  ): Promise<void> => {
+    const errors: string[] = [];
+
+    try {
+      const { identityIsVerified, missingClaimTopics, invalidClaims } = await this.getEligibilityVerification(
+        identityRegistryAddress,
+        signerOrProvider as Signer,
+        addr
+      );
+
+      if (identityIsVerified) return;
+
+      missingClaimTopics.length && errors.push(`${addr} has missing claims with topics ${missingClaimTopics.join()}`);
+      invalidClaims.length && errors.push(`${addr} has invalid claims with topics ${invalidClaims.map(claim => claim.topic).join()}`);
+    } catch (error) {
+      errors.push((error as Error).message);
+    }
+
+    // return errors;
+    if (errors.length) throw new Error('Identity not eligible for transfer', { cause: errors });
+  }
 }
+
+export const getEligibilityVerification = Container.get(EligibilityVerification);

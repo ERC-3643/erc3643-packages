@@ -1,93 +1,136 @@
 import { contracts } from '@tokenysolutions/t-rex';
-import { Contract, Signer } from 'ethers';
+import { BigNumber, Contract, Signer } from 'ethers';
+import Container, { Service } from 'typedi';
+import { BaseContract } from './base-contract';
 
-export const getToken = async (contractAddress: string, signer: Signer) => {
-  const token = new Contract(
-    contractAddress,
-    contracts.Token.abi,
-    signer
-  );
+@Service()
+export class Token {
+  private _contract: Contract;
+  private signer: Signer;
 
-  const owner = await token.owner();
-  const name = await token.name();
-  const totalSupply = await token.totalSupply();
-  const decimals = await token.decimals();
-  const balanceOf = await token.balanceOf(signer.getAddress());
-  const paused = await token.paused();
-  const frozenTokens = await token.getFrozenTokens(signer.getAddress());
-  const realBalanceOf = balanceOf - frozenTokens;
-  const walletIsFrozen = await token.isFrozen(signer.getAddress());
+  constructor(
+    private readonly baseContract: BaseContract
+  ) {}
 
-  const identityRegistry = () => token.identityRegistry();
-  const compliance = () => token.compliance();
-  const isWalletFrozen = (walletAddress: string) => token.isFrozen(walletAddress);
-  const getFrozenTokens = (walletAddress: string) => token.getFrozenTokens(walletAddress);
-  const getBalance = (walletAddress: string) => token.balanceOf(walletAddress);
+  public get contract() {
+    return this._contract;
+  }
 
-  const unfreeze = async (address: string) => {
-    const freezeWallet = await token.setAddressFrozen(address, true);
+  public owner = async (): Promise<string> => {
+    return this._contract.owner();
+  }
+
+  public name = async () => {
+    return this._contract.name();
+  }
+
+  public totalSupply = async () => {
+    return this._contract.totalSupply();
+  }
+
+  public decimals = async () => {
+    return this._contract.decimals();
+  }
+
+  public balanceOf = (walletAddress?: string): Promise<BigNumber> => {
+    return this._contract.balanceOf(walletAddress || this.signer.getAddress());
+  }
+
+  public paused = (): Promise<boolean> => {
+    return this._contract.paused();
+  }
+
+  public frozenTokens = (walletAddress?: string): Promise<BigNumber> => {
+    return this._contract.getFrozenTokens(walletAddress || this.signer.getAddress());
+  }
+
+  public walletIsFrozen = (walletAddress?: string): Promise<boolean> => {
+    return this._contract.isFrozen(walletAddress || this.signer.getAddress());
+  }
+
+  public realBalanceOf = async (walletAddress?: string): Promise<string> => {
+    const balanceOf = await this.balanceOf(walletAddress);
+    return balanceOf.sub(await this.frozenTokens(walletAddress)).toString()
+  }
+
+  public identityRegistry = async () => {
+    return this._contract.identityRegistry()
+  }
+
+  public compliance = async () => {
+    return this.compliance()
+  }
+
+  public isWalletFrozen = async (walletAddress?: string) => {
+    return this._contract.isFrozen(walletAddress || this.signer.getAddress());
+  }
+
+  public getFrozenTokens = async (walletAddress?: string) => {
+    return this._contract.getFrozenTokens(walletAddress || this.signer.getAddress());
+  }
+
+  public getBalance = async (walletAddress?: string) => {
+    return this._contract.balanceOf(walletAddress || this.signer.getAddress());
+  }
+
+  public unfreeze = async (address: string) => {
+    const freezeWallet = await this._contract.setAddressFrozen(address, true);
     await freezeWallet.wait();
   }
 
-  const freeze = async (address: string) => {
-    const unfreezeWallet = await token.setAddressFrozen(address, false);
+  public freeze = async (address: string) => {
+    const unfreezeWallet = await this._contract.setAddressFrozen(address, false);
     await unfreezeWallet.wait();
   }
 
-  const pause = async () => {
-    const pause = await token.pause();
+  public pause = async () => {
+    const pause = await this._contract.pause();
     await pause.wait();
   }
 
-  const run = async () => {
-    const unpause = await token.unpause();
+  public run = async () => {
+    const unpause = await this._contract.unpause();
     await unpause.wait();
   }
 
-  const areTransferPartiesFrozen = async (from: string, to: string): Promise<void> => {
+  public areTransferPartiesFrozen = async (from: string, to: string): Promise<void> => {
     const errors: string[] = [];
 
-    const senderFrozen = await isWalletFrozen(from);
+    const senderFrozen = await this.isWalletFrozen(from);
     senderFrozen && errors.push(`${from} is frozen`);
 
-    const receiverFrozen = await isWalletFrozen(to);
+    const receiverFrozen = await this.isWalletFrozen(to);
     receiverFrozen && errors.push(`${to} is frozen`);
 
     if (errors.length) throw new Error('Wallet is frozen', { cause: errors });
   }
 
-  const isEnoughSpendableBalance = async (from: string, amount: number): Promise<void> => {
+  public isEnoughSpendableBalance = async (from: string, amount: number): Promise<void> => {
     const errors: string[] = [];
 
-    const frozenTokens = await getFrozenTokens(from);
-    const balance = await getBalance(from);
+    const frozenTokens = await this.getFrozenTokens(from);
+    const balance = await this.getBalance(from);
     const spendableBalance = balance - frozenTokens;
     amount > spendableBalance && errors.push(`Insufficient balance. Current spendable balance is ${spendableBalance}`);
 
     if (errors.length) throw new Error('Insufficient balance', { cause: errors });
   }
 
-  return {
-    tokenOwner: owner,
-    tokenName: name,
-    tokenTotalSupply: totalSupply,
-    tokenDecimals: decimals,
-    tokenPaused: paused,
-    tokenBalanceOf: balanceOf,
-    tokenFrozenTokens: frozenTokens,
-    tokenRealBalanceOf: realBalanceOf,
-    tokenWalletIsFrozen: walletIsFrozen,
-    tokenRun: run,
-    tokenPause: pause,
-    tokenFreeze: freeze,
-    tokenUnfreeze: unfreeze,
-    identityRegistry,
-    compliance,
-    isWalletFrozen,
-    getFrozenTokens,
-    getBalance,
-    areTransferPartiesFrozen,
-    isEnoughSpendableBalance,
-    contract: token
-  };
+  public init = (
+    contractAddress: string,
+    signer?: Signer
+  ) => {
+
+    this._contract = this.baseContract.connect(
+      contractAddress,
+      contracts.Token.abi,
+      signer
+    );
+
+    this.signer = signer;
+
+    return this;
+  }
 }
+
+export const TokenContract = Container.get<Token>(Token);

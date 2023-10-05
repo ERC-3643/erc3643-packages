@@ -1,32 +1,48 @@
+import { contracts } from '@tokenysolutions/t-rex';
 import { Contract, ContractInterface, Signer } from 'ethers'
+import Container, { Service } from 'typedi';
+import { BaseContract } from './base-contract';
 
-export const getComplianceModule = (
-  contractAddress: string,
-  abi: ContractInterface,
-  signer: Signer
-) => {
+@Service()
+export class ComplianceModule {
+  private _contract: Contract;
 
-  const contract = new Contract(
-    contractAddress,
-    abi,
-    signer
-  );
+  constructor(
+    private readonly baseContract: BaseContract
+  ) {}
 
-  const moduleCheck = (
+  public get contract() {
+    return this._contract;
+  }
+
+  public moduleCheck = (
     from: string,
     to: string,
     amount: number,
     complienceAddress: string
-  ) => contract
-    .moduleCheck(
-      from,
-      to,
-      amount,
-      complienceAddress
+  ) => {
+    return this._contract
+      .moduleCheck(
+        from,
+        to,
+        amount,
+        complienceAddress
+      );
+  }
+
+  public init = (
+    contractAddress: string,
+    signer?: Signer
+  ) => {
+
+    this._contract = this.baseContract.connect(
+      contractAddress,
+      contracts.AbstractModule.abi,
+      signer
     );
 
-  return {
-    contract,
-    moduleCheck
+    return this;
   }
 }
+
+export const ComplianceModuleContract = Container.get(ComplianceModule);

@@ -1,27 +1,43 @@
-import { contracts } from '@tokenysolutions/t-rex'
-import { Contract, Signer } from 'ethers'
+import { contracts } from '@tokenysolutions/t-rex';
+import { Contract, Signer } from 'ethers';
+import Container, { Service } from 'typedi';
 
-export const getIdentityRegistry = (contractAddress: string, signer: Signer) => {
+import { BaseContract } from './base-contract';
 
-  const contract = new Contract(
-    contractAddress,
-    contracts.IdentityRegistry.abi,
-    signer
-  );
+@Service()
+export class IdentityRegistry {
+  private _contract: Contract;
 
-  const getInvestorCountry = (addressToCheck: string) => contract.investorCountry(addressToCheck);
+  constructor(
+    private readonly baseContract: BaseContract
+  ) {}
 
-  const isVerified = (addressToCheck: string) => contract.isVerified(addressToCheck);
+  public get contract() {
+    return this._contract;
+  }
 
-  const identity = (addressToCheck: string) => contract.identity(addressToCheck);
+  public getInvestorCountry = (addressToCheck: string) => this._contract.investorCountry(addressToCheck);
 
-  const topicsRegistry = () => contract.topicsRegistry();
+  public isVerified = (addressToCheck: string) => this._contract.isVerified(addressToCheck);
 
-  return {
-    contract,
-    getInvestorCountry,
-    isVerified,
-    identity,
-    topicsRegistry
+  public identity = (addressToCheck: string) => this._contract.identity(addressToCheck);
+
+  public topicsRegistry = () => this._contract.topicsRegistry();
+
+
+  public init = (
+    contractAddress: string,
+    signer?: Signer
+  ) => {
+
+    this._contract = this.baseContract.connect(
+      contractAddress,
+      contracts.IdentityRegistry.abi,
+      signer
+    );
+
+    return this;
   }
 }
+
+export const IdentityRegistryContract = Container.get(IdentityRegistry);

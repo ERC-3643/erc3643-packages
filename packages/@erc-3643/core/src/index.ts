@@ -8,3 +8,4 @@ export * from './onchain-id-identity';
 export * from './claim-issuer';
 export * from './transfer-compliance';
 export * from './eligibility-verification';
+export * from './di';

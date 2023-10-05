@@ -10,7 +10,14 @@ const token = ref<{ [key: string]: any }>({});
 
 watch(signer, async (signer) => {
   if (signer) {
-    token.value = await useToken(TOKEN_ADDRESS, signer);
+    const getToken = await useToken(TOKEN_ADDRESS, signer);
+    token.value.decimals = await getToken.decimals()
+    token.value.name = await getToken.name()
+    token.value.owner = await getToken.owner()
+    token.value.totalSupply = await getToken.totalSupply()
+    token.value.balanceOf = await getToken.balanceOf()
+    token.value.frozenTokens = await getToken.frozenTokens()
+    token.value.realBalanceOf = await getToken.realBalanceOf()
   }
 })
 
@@ -27,7 +34,7 @@ watch(signer, async (signer) => {
         <p>Decimals: {{ token.decimals }}</p>
         <p>Name: {{ token.name }}</p>
         <p>Owner: {{ token.owner }}</p>
-        <p>Total Supply: {{ token.totalSupply}}</p>
+        <p>Total Supply: {{ token.totalSupply }}</p>
         <p>Balance Of: {{ token.balanceOf }}</p>
         <p>Frozen Tokens: {{ token.frozenTokens }}</p>
         <p>Real Balance Of: {{ token.realBalanceOf }}</p>
