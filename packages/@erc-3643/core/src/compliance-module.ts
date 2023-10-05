@@ -1,4 +1,3 @@
-import { contracts } from '@tokenysolutions/t-rex';
 import { Contract, ContractInterface, Signer } from 'ethers'
 import Container, { Service } from 'typedi';
 import { BaseContract } from './base-contract';
@@ -32,12 +31,13 @@ export class ComplianceModule {
 
   public init = (
     contractAddress: string,
+    abi: ContractInterface,
     signer?: Signer
   ) => {
 
     this._contract = this.baseContract.connect(
       contractAddress,
-      contracts.AbstractModule.abi,
+      abi,
       signer
     );
 

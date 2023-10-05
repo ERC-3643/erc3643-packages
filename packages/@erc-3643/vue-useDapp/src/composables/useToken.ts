@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { Signer } from 'vue-dapp';
 import { TokenContract } from '@erc-3643/core';
 
-export async function useToken(tokenAddress: string, signer: Signer, debug = false) {
+export async function useToken(tokenAddress: string, signer: Signer) {
 
   const token = TokenContract.init(tokenAddress, signer);
 
@@ -25,12 +25,6 @@ export async function useToken(tokenAddress: string, signer: Signer, debug = fal
   token.contract.on('error', (error: Error) => {
     console.log(error);
   })
-
-  signer.provider?.on('debug', (data: any) => {
-    if (debug) {
-      console.log(...data);
-    }
-  });
 
   return token;
 }
