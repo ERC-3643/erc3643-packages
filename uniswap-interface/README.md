@@ -4,7 +4,6 @@
 1. Metamask
 
 ### Launch steps
-1. `git checkout uniswap-trex`
 1. `yarn install`
 1. `yarn start`
 
