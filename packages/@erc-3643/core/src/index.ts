@@ -1,4 +1,6 @@
-import Container, { Token } from 'typedi';
+import 'reflect-metadata';
+
+import Container from 'typedi';
 import {
   ClaimIssuer,
   ClaimTopicsRegistry,
@@ -7,7 +9,8 @@ import {
   EligibilityVerification,
   IdentityRegistry,
   OnchainIDIdentity,
-  TransferCompliance
+  TransferCompliance,
+  Token
 } from '..';
 
 export * from './token';
