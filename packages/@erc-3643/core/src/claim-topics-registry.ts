@@ -1,17 +1,36 @@
 import { contracts } from '@tokenysolutions/t-rex'
 import { Contract, Signer } from 'ethers'
+import { Service } from 'typedi';
 
-export const getClaimTopicsRegistry = (contractAddress: string, signer: Signer) => {
+import { BaseContract } from './base-contract';
 
-  const contract = new Contract(
-    contractAddress,
-    contracts.ClaimTopicsRegistry.abi,
-    signer
-  );
+@Service()
+export class ClaimTopicsRegistry {
+  private _contract: Contract;
 
-  const getClaimTopics = () => contract.getClaimTopics();
-  return {
-    contract,
-    getClaimTopics
+  constructor(
+    private readonly baseContract: BaseContract
+  ) {}
+
+  public get contract() {
+    return this._contract;
+  }
+
+  public getClaimTopics = async () => {
+    return this._contract.getClaimTopics();
+  }
+
+  public init = (
+    contractAddress: string,
+    signer?: Signer
+  ) => {
+
+    this._contract = this.baseContract.connect(
+      contractAddress,
+      contracts.ClaimTopicsRegistry.abi,
+      signer
+    );
+
+    return this;
   }
 }

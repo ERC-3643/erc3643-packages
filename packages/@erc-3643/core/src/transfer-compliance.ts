@@ -1,62 +1,75 @@
 import { Signer, providers } from 'ethers';
-import { getToken } from './token';
-import { getCompliance } from './compliance';
-import { getReceiverEligibilityVerificationReasons } from './eligibility-verification';
+import { Token } from './token';
+import { Compliance } from './compliance';
+import { EligibilityVerification } from './eligibility-verification';
+import { Service } from 'typedi';
 
-export const getTransferCompliance = () => {
-  const isTransferCompliant = async (
+@Service()
+export class TransferCompliance {
+
+  constructor(
+    private readonly token: Token,
+    private readonly complianceContract: Compliance,
+    private readonly eligibilityVerification: EligibilityVerification
+  ) {}
+
+  isTransferCompliant = async (
     signerOrProvider: Signer | providers.Web3Provider,
     tokenAddress: string,
     from: string,
     to: string,
     amount: number
   ): Promise<{ result: boolean, errors: string[] }> => {
-    const token = await getToken(tokenAddress, signerOrProvider as Signer);
+    const token = await this.token.init(tokenAddress, signerOrProvider as Signer);
     const identityRegistryAddress = await token.identityRegistry();
     const complianceContractAddress = await token.compliance();
-    const { canTransferWithReasons } = getCompliance(complianceContractAddress, signerOrProvider as Signer);
+    const compliance = this.complianceContract.init(complianceContractAddress, signerOrProvider as Signer);
+    const errors = [];
 
     // Sender & Receiver wallets must not be frozen
-    const frozenErrors = await getExecutionErrorReasons(token.areTransferPartiesFrozen, from, to);
-
-    // Sender's spendable balance must be >= amount
-    const balanceErrors = await getExecutionErrorReasons(token.isEnoughSpendableBalance, from, amount);
-
-    // Receiver's ID must be verified
-    const eligibilityErrors = await getExecutionErrorReasons(
-      getReceiverEligibilityVerificationReasons,
-      identityRegistryAddress,
-      signerOrProvider as Signer,
-      to
-    );
-
-    // Sender & Receiver must be compliant
-    const complianceErrors = await getExecutionErrorReasons(canTransferWithReasons, from, to, amount);
-
-    // All compliance errors
-    const errors = [frozenErrors, balanceErrors, eligibilityErrors, complianceErrors].flat();
-
-    return {
-      result: errors.length === 0,
-      errors
-    };
-  }
-
-  const getExecutionErrorReasons = async (func: Function, ...args: any[]): Promise<string[]> => {
-    const errors: string[] = [];
-
     try {
-      await func(...args);
+      await token.areTransferPartiesFrozen(from, to);
     } catch (error) {
       if (Array.isArray((error as Error).cause)) {
         errors.push(((error as Error).cause as string[]).join());
       }
     }
 
-    return errors;
-  }
+    // Sender's spendable balance must be >= amount
+    try {
+      await token.isEnoughSpendableBalance(from, amount);
+    } catch (error) {
+      if (Array.isArray((error as Error).cause)) {
+        errors.push(((error as Error).cause as string[]).join());
+      }
+    }
 
-  return {
-    isTransferCompliant
-  };
+    // Receiver's ID must be verified
+    try {
+      await this.eligibilityVerification.getReceiverEligibilityVerificationReasons(
+        identityRegistryAddress,
+        signerOrProvider as Signer,
+        to
+      )
+    } catch (error) {
+      if (Array.isArray((error as Error).cause)) {
+        errors.push(((error as Error).cause as string[]).join());
+      }
+    }
+
+    // Sender & Receiver must be compliant
+    try {
+      await compliance.canTransferWithReasons(from, to, amount);
+    } catch (error) {
+      if (Array.isArray((error as Error).cause)) {
+        errors.push(((error as Error).cause as string[]).join());
+      }
+    }
+
+
+    return {
+      result: errors.length === 0,
+      errors: errors.flat()
+    };
+  }
 }

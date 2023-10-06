@@ -9,7 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@erc-3643/core": "*"
+    "@erc-3643/core": "*",
+    "reflect-metadata": "^0.1.13"
   },
   "peerDependencies": {
     "vue": ">=3.2.0",

@@ -1,28 +1,45 @@
-import OnchainID from '@onchain-id/solidity';
-import { Contract, Signer } from 'ethers';
+import { contracts, interfaces } from '@onchain-id/solidity';
+import { Signer } from 'ethers';
+import { Service } from 'typedi';
+import { BaseContract } from './base-contract';
 
-export const getClaimIssuer = (contractAddress: string, signer: Signer) => {
+@Service()
+export class ClaimIssuer {
+  private _contract: typeof interfaces.IClaimIssuer;
 
-  const contract = new Contract(
-    contractAddress,
-    OnchainID.contracts.ClaimIssuer.abi,
-    signer
-  );
+  constructor(
+    private readonly baseContract: BaseContract
+  ) {}
 
-  const isClaimValid = (
+  public get contract() {
+    return this._contract;
+  }
+
+  public isClaimValid = async (
     onchainIdentityAddress: string,
     topic: string,
     signature: string,
     data: string
-  ) => contract.isClaimValid(
-    onchainIdentityAddress,
-    topic,
-    signature,
-    data
-  );
+  ) => {
+    return this._contract.isClaimValid(
+      onchainIdentityAddress,
+      topic,
+      signature,
+      data
+    )
+  }
 
-  return {
-    contract,
-    isClaimValid
+  public init = (
+    contractAddress: string,
+    signer?: Signer
+  ) => {
+
+    this._contract = this.baseContract.connect(
+      contractAddress,
+      contracts.ClaimIssuer.abi,
+      signer
+    );
+
+    return this;
   }
 }
