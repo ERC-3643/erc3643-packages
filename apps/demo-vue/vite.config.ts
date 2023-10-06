@@ -4,10 +4,13 @@ import vue from '@vitejs/plugin-vue'
 import nodeStdlibBrowser from 'node-stdlib-browser'
 import inject from '@rollup/plugin-inject'
 import { quasar, transformAssetUrls } from '@quasar/vite-plugin'
+import swc from 'unplugin-swc'
+
 
 // https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [
+		swc.vite(),
 		vue({
 			template: { transformAssetUrls }
 		}),

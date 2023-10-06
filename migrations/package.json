@@ -6,7 +6,8 @@
   "scripts": {
     "hardhat": "hardhat",
     "hardhat:node": "hardhat node",
-    "token:ether": "ts-node ./usecase-examples/token-func.ethers.ts"
+    "token:ether": "ts-node ./usecase-examples/token-func.ethers.ts",
+    "erc3643:deploy": "cd ../T-REX && npx hardhat run --network localhost ../migrations/deploy.ts"
   },
   "author": "",
   "license": "ISC",

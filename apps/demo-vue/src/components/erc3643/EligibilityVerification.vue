@@ -13,7 +13,7 @@ const result = ref<any>({});
 watch(signer, async (signer) => {
 
   if (signer) {
-    const token = await useToken(TOKEN_ADDRESS, signer);
+    const { token } = await useToken(TOKEN_ADDRESS, signer);
     const identityRegistryAddress = await token.identityRegistry();
 
     result.value = await useEligibilityVerification(

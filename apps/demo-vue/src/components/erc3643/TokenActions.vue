@@ -6,12 +6,15 @@ import { BOB_WALLET, TOKEN_ADDRESS } from '@/constants';
 
 const { signer } = useEthers();
 
-const token = ref<{ [key: string]: any }>({});
+const tokenData = ref<{ [key: string]: any }>({});
 
 
 watch(signer, async (signer) => {
   if (signer) {
-    token.value = await useToken(TOKEN_ADDRESS, signer);
+    const { token, isPaused } = await useToken(TOKEN_ADDRESS, signer);
+
+    tokenData.value = token;
+    tokenData.value.isPaused = isPaused;
   }
 })
 
@@ -20,13 +23,13 @@ const addressUnfreeze = ref<string | null>(null);
 
 const walletFreeze = () => {
   if (addressFreeze.value) {
-    token.value.freeze(addressFreeze.value);
+    tokenData.value.freeze(addressFreeze.value);
   }
 }
 
 const walletUnfreeze = () => {
   if (addressUnfreeze.value) {
-    token.value.unfreeze(addressUnfreeze.value);
+    tokenData.value.unfreeze(addressUnfreeze.value);
   }
 }
 </script>
@@ -39,8 +42,8 @@ const walletUnfreeze = () => {
       <q-card-section>
         <p>
           Pause token:
-          <q-btn v-if="token.paused" color="positive" @click="token.run" label="Run" dense />
-          <q-btn v-else color="negative" @click="token.pause" label="Pause" dense />
+          <q-btn v-if="tokenData.isPaused" color="positive" @click="tokenData.run" label="Run" dense />
+          <q-btn v-else color="negative" @click="tokenData.pause" label="Pause" dense />
         </p>
         <p>
           <q-input

@@ -1,25 +1,10 @@
-import { getComplianceModule } from '@erc-3643/core';
+import { ComplianceModuleContract } from '@erc-3643/core';
 import { Signer } from 'vue-dapp';
 
 export function useComplianceModule(
   contractAddress: string,
   abi: any[],
-  signer: Signer,
-  debug = false
+  signer: Signer
 ) {
-  const {
-    moduleCheck,
-    contract
-  } = getComplianceModule(contractAddress, abi, signer);
-
-  signer.provider?.on('debug', (data: any) => {
-    if (debug) {
-      console.log(...data);
-    }
-  });
-
-  return {
-    contract,
-    moduleCheck
-  };
+  return ComplianceModuleContract.init(contractAddress, abi, signer);;
 }
