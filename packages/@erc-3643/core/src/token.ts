@@ -132,5 +132,3 @@ export class Token {
     return this;
   }
 }
-
-export const TokenContract = Container.get<Token>(Token);

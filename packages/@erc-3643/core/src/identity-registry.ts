@@ -39,5 +39,3 @@ export class IdentityRegistry {
     return this;
   }
 }
-
-export const IdentityRegistryContract = Container.get(IdentityRegistry);

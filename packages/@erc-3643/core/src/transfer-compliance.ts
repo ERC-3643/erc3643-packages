@@ -73,5 +73,3 @@ export class TransferCompliance {
     };
   }
 }
-
-export const getTransferCompliance = Container.get(TransferCompliance);

@@ -12,7 +12,7 @@ export class Compliance {
 
   constructor(
     private readonly baseContract: BaseContract,
-    private readonly complienceModule: ComplianceModule
+    private readonly complianceModule: ComplianceModule
   ) {}
 
   public get contract() {
@@ -42,7 +42,11 @@ export class Compliance {
     const modules = await this.getModules();
 
     for (const moduleAddress of modules) {
-      const moduleContract = this.complienceModule.init(moduleAddress, this.signer);
+      const moduleContract = this.complianceModule.init(
+        moduleAddress,
+        contracts.AbstractModule.abi,
+        this.signer
+      );
       try {
         const isCompliantWithModule = await moduleContract.moduleCheck(from, to, amount, this._contract.addressAddress);
 
@@ -71,5 +75,3 @@ export class Compliance {
     return this;
   }
 }
-
-export const ComplianceContract = Container.get(Compliance);

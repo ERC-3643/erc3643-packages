@@ -18,14 +18,14 @@ export class ComplianceModule {
     from: string,
     to: string,
     amount: number,
-    complienceAddress: string
+    complianceAddress: string
   ) => {
     return this._contract
       .moduleCheck(
         from,
         to,
         amount,
-        complienceAddress
+        complianceAddress
       );
   }
 
@@ -44,5 +44,3 @@ export class ComplianceModule {
     return this;
   }
 }
-
-export const ComplianceModuleContract = Container.get(ComplianceModule);

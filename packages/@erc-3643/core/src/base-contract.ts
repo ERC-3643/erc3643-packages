@@ -5,11 +5,11 @@ import { Service } from 'typedi';
 @Service()
 export class BaseContract {
 
-  public connect = (
+  public connect (
     addressOrName: string,
     contractInterface: ContractInterface,
     signerOrProvider?: Signer | Provider
-  ) => {
+  ) {
     return new Contract(
       addressOrName,
       contractInterface,

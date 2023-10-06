@@ -34,5 +34,3 @@ export class ClaimTopicsRegistry {
     return this;
   }
 }
-
-export const ClaimTopicsRegistryContract = Container.get(ClaimTopicsRegistry);

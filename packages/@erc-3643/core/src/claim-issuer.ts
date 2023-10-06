@@ -43,5 +43,3 @@ export class ClaimIssuer {
     return this;
   }
 }
-
-export const ClaimIssuerContract = Container.get(ClaimIssuer);

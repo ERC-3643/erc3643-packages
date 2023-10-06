@@ -83,4 +83,3 @@ export class EligibilityVerification {
   }
 }
 
-export const getEligibilityVerification = Container.get(EligibilityVerification);

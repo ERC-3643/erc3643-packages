@@ -69,5 +69,3 @@ export class OnchainIDIdentity {
     return this;
   }
 }
-
-export const OnchainIDIdentityContract = Container.get(OnchainIDIdentity);
