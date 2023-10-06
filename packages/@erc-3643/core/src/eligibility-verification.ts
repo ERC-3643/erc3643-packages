@@ -25,8 +25,6 @@ export class EligibilityVerification {
       signer
     );
 
-    const identityIsVerified = await identityRegistryContract.isVerified(walletAddress);
-
     const identityAddress = await identityRegistryContract.identity(walletAddress);
 
     if (identityAddress === constants.AddressZero) {
@@ -45,6 +43,8 @@ export class EligibilityVerification {
     const onchainIDIdentityContract = this.onchainIDIdentity.init(identityAddress, signer)
 
     const claimsWithIssues = await onchainIDIdentityContract.getClaimsWithIssues(identityAddress, claimTopics);
+
+    const identityIsVerified = await identityRegistryContract.isVerified(walletAddress);
 
     return {
       identityIsVerified,
