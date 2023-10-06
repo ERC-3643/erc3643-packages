@@ -8,7 +8,8 @@
 /src/locales/**/*.po
 
 # generated files
-/src/**/__generated__
+/src/**/__generated__/*
+!/src/**/__generated__/.gitkeep
 
 # schema
 schema.graphql
