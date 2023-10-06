@@ -1,6 +1,6 @@
 import { contracts, interfaces } from '@onchain-id/solidity';
 import { Signer } from 'ethers';
-import Container, { Service } from 'typedi';
+import { Service } from 'typedi';
 import { BaseContract } from './base-contract';
 
 @Service()

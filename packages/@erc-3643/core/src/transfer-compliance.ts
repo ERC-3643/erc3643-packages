@@ -2,7 +2,7 @@ import { Signer, providers } from 'ethers';
 import { Token } from './token';
 import { Compliance } from './compliance';
 import { EligibilityVerification } from './eligibility-verification';
-import Container, { Service } from 'typedi';
+import { Service } from 'typedi';
 
 @Service()
 export class TransferCompliance {

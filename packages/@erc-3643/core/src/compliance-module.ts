@@ -1,5 +1,5 @@
 import { Contract, ContractInterface, Signer } from 'ethers'
-import Container, { Service } from 'typedi';
+import { Service } from 'typedi';
 import { BaseContract } from './base-contract';
 
 @Service()

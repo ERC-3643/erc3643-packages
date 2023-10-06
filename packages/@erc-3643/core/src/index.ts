@@ -20,7 +20,6 @@ export * from './onchain-id-identity';
 export * from './claim-issuer';
 export * from './transfer-compliance';
 export * from './eligibility-verification';
-export * from './di';
 
 export const ClaimIssuerContract = Container.get(ClaimIssuer);
 export const ClaimTopicsRegistryContract = Container.get(ClaimTopicsRegistry);
@@ -29,5 +28,5 @@ export const ComplianceContract = Container.get(Compliance);
 export const getEligibilityVerification = Container.get(EligibilityVerification);
 export const IdentityRegistryContract = Container.get(IdentityRegistry);
 export const OnchainIDIdentityContract = Container.get(OnchainIDIdentity);
-export const TokenContract = Container.get<Token>(Token);
+export const TokenContract = Container.get(Token);
 export const getTransferCompliance = Container.get(TransferCompliance);

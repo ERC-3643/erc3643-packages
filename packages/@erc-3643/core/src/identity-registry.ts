@@ -1,6 +1,6 @@
 import { contracts } from '@tokenysolutions/t-rex';
 import { Contract, Signer } from 'ethers';
-import Container, { Service } from 'typedi';
+import { Service } from 'typedi';
 
 import { BaseContract } from './base-contract';
 

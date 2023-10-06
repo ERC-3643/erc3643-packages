@@ -2,7 +2,7 @@ import { Signer, constants, providers } from 'ethers';
 import { IdentityRegistry } from './identity-registry';
 import { ClaimTopicsRegistry } from './claim-topics-registry';
 import { OnchainIDIdentity } from './onchain-id-identity';
-import Container, { Service } from 'typedi';
+import { Service } from 'typedi';
 
 @Service()
 export class EligibilityVerification {
