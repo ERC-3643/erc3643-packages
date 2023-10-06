@@ -46,10 +46,6 @@ export class EligibilityVerification {
 
     const claimsWithIssues = await onchainIDIdentityContract.getClaimsWithIssues(identityAddress, claimTopics);
 
-    if (!identityIsVerified) {
-      throw new Error(`Identity is not verified for address ${walletAddress}`);
-    }
-
     return {
       identityIsVerified,
       ...claimsWithIssues
