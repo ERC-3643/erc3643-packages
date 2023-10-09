@@ -1,5 +1,5 @@
 import { Signer } from "@ethersproject/abstract-signer";
-import { getClaimIssuer } from "@erc-3643/core";
+import { ClaimIssuerContract } from "@erc-3643/core";
 
 export function useClaimIssuer(signer: Signer | undefined, debug = false) {
   const getIssuer = (contractAddress: string) => {
@@ -7,7 +7,7 @@ export function useClaimIssuer(signer: Signer | undefined, debug = false) {
       return null;
     }
 
-    const { contract, isClaimValid } = getClaimIssuer(contractAddress, signer);
+    const { contract, isClaimValid } = ClaimIssuerContract.init(contractAddress, signer);
 
     if (debug) {
       signer.provider?.on("debug", (data: any) => console.log(...data));

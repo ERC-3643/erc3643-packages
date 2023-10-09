@@ -1,5 +1,5 @@
 import { Signer } from "@ethersproject/abstract-signer";
-import { getCompliance } from "@erc-3643/core";
+import { ComplianceContract } from "@erc-3643/core";
 
 export const useCompliance = (
   contractAddress: string,
@@ -11,7 +11,7 @@ export const useCompliance = (
   }
 
   const { contract, canTransfer, canTransferWithReasons, getModules } =
-    getCompliance(contractAddress, signer);
+    ComplianceContract.init(contractAddress, signer);
 
   if (debug) {
     signer.provider?.on("debug", (data: any) => console.log(...data));

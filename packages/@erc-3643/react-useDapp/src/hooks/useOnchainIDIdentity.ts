@@ -1,5 +1,5 @@
 import { Signer, Contract } from "ethers";
-import { getOnchainIDIdentity } from "@erc-3643/core";
+import { OnchainIDIdentityContract } from "@erc-3643/core";
 
 export interface OnchainIDIdentity {
   contract: Contract;
@@ -18,7 +18,7 @@ export const useOnchainIDIdentity = (
       return null;
     }
 
-    const { contract, getClaim, getClaimIdsByTopic } = getOnchainIDIdentity(
+    const { contract, getClaim, getClaimIdsByTopic } = OnchainIDIdentityContract.init(
       contractAddress,
       signer
     );

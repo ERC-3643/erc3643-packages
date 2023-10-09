@@ -1,4 +1,4 @@
-import { getIdentityRegistry } from "@erc-3643/core";
+import { IdentityRegistryContract } from "@erc-3643/core";
 import { Contract, Signer } from "ethers";
 
 export interface IdentityRegistry {
@@ -24,7 +24,7 @@ export const useIdentityRegistry = (
       isVerified,
       identity,
       topicsRegistry,
-    } = getIdentityRegistry(contractAddress, signer as Signer);
+    } = IdentityRegistryContract.init(contractAddress, signer as Signer);
 
     if (debug) {
       signer.provider?.on("debug", (data: any) => console.log(...data));

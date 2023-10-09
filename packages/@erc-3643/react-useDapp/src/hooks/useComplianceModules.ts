@@ -1,5 +1,5 @@
 import { Signer } from "@ethersproject/abstract-signer";
-import { getComplianceModule } from "@erc-3643/core";
+import { ComplianceModuleContract } from "@erc-3643/core";
 
 export const useComplianceModules = (
   contractAddresses: string[],
@@ -8,7 +8,7 @@ export const useComplianceModules = (
   debug = false
 ) => {
   const modules = contractAddresses.map((contractAddress) => {
-    const { moduleCheck, contract } = getComplianceModule(
+    const { moduleCheck, contract } = ComplianceModuleContract.init(
       contractAddress,
       abi,
       signer
