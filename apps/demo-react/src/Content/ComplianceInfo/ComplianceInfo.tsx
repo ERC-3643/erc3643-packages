@@ -81,9 +81,9 @@ const ComplianceInfo = () => {
         <div>
           <h3>Compliance Modules:</h3>
           {complianceErrors.map((error, index) => (
-            <p>
+            <div>
               <StyledChip key={index} label={error} color='error' />
-            </p>
+            </div>
           ))}
         </div>
       )}

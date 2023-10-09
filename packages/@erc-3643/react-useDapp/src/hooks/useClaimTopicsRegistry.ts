@@ -1,5 +1,5 @@
 import { Signer, Contract } from "ethers";
-import { getClaimTopicsRegistry } from "@erc-3643/core";
+import { ClaimTopicsRegistryContract } from "@erc-3643/core";
 
 export interface ClaimTopicsRegistry {
   contract: Contract;
@@ -17,7 +17,7 @@ export const useClaimTopicsRegistry = (
       return null;
     }
 
-    const { contract, getClaimTopics } = getClaimTopicsRegistry(
+    const { contract, getClaimTopics } = ClaimTopicsRegistryContract.init(
       contractAddress,
       signer
     );

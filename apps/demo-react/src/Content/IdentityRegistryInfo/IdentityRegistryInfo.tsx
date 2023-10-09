@@ -27,8 +27,7 @@ const IdentityRegistryInfo = () => {
     }
 
     ;(async () => {
-      const identityRegistryAddress = await token?.identityRegistry()
-      setIdentityRegistry(getIdentityRegistry(identityRegistryAddress))
+      setIdentityRegistry(getIdentityRegistry(token?.identityRegistry))
     })()
   }, [token])
 

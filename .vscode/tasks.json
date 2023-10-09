@@ -51,6 +51,13 @@
       "detail": "vite"
     },
     {
+      "type": "npm",
+      "script": "start",
+      "path": "apps/demo-react",
+      "problemMatcher": [],
+      "label": "npm: dev - apps/demo-react"
+    },
+    {
       "label": "ERC3643 EcoSystem",
       "dependsOrder": "sequence",
       "dependsOn": [

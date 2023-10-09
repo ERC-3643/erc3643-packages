@@ -20,7 +20,7 @@ const EligibilityVerificationInfo = () => {
       const token = await getToken(TOKEN_ADDRESS)
 
       if (token) {
-        setIdentityRegistryAddress((await token.identityRegistry()) as string)
+        setIdentityRegistryAddress((token.identityRegistry) as string)
       }
     })()
   }, [signer])

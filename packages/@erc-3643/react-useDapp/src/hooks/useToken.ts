@@ -1,4 +1,4 @@
-import { getToken } from "@erc-3643/core";
+import { TokenContract } from "@erc-3643/core";
 import { useEffect, useState } from "react";
 import { Signer } from "@ethersproject/abstract-signer";
 
@@ -33,7 +33,8 @@ export const useToken = (signer: Signer | undefined, debug = false) => {
       return null;
     }
 
-    const token = await getToken(tokenAddress, signer);
+    const token = await TokenContract.init(tokenAddress, signer);
+
     setToken(token);
 
     if (!token) {
@@ -41,20 +42,20 @@ export const useToken = (signer: Signer | undefined, debug = false) => {
     }
 
     return {
-      owner: token.tokenOwner,
-      name: token.tokenName,
-      totalSupply: token.tokenTotalSupply,
-      decimals: token.tokenDecimals,
-      frozenTokens: token.tokenFrozenTokens,
-      realBalanceOf: token.tokenRealBalanceOf,
-      balanceOf: token.tokenBalanceOf,
-      paused: token.tokenPaused,
-      walletIsFrozen: token.tokenWalletIsFrozen,
-      identityRegistry: token.identityRegistry,
-      pause: token.tokenPause,
-      run: token.tokenRun,
-      unfreeze: token.tokenFreeze,
-      freeze: token.tokenUnfreeze,
+      owner: await token.owner(),
+      name: await token.name(),
+      totalSupply: await token.totalSupply(),
+      decimals: await token.decimals(),
+      frozenTokens: await token.frozenTokens(),
+      realBalanceOf: await token.realBalanceOf(),
+      balanceOf: await token.balanceOf(),
+      paused: await token.paused(),
+      walletIsFrozen: await token.walletIsFrozen(),
+      identityRegistry: await token.identityRegistry(),
+      pause: token.pause,
+      run: token.run,
+      unfreeze: token.unfreeze,
+      freeze: token.freeze,
       compliance: token.compliance,
       isWalletFrozen: token.isWalletFrozen,
       getFrozenTokens: token.getFrozenTokens,
@@ -69,28 +70,30 @@ export const useToken = (signer: Signer | undefined, debug = false) => {
       return;
     }
 
-    token.contract.on("Paused", () => {
-      setToken({ ...token, paused: true });
-    });
+    if (token.contract) {
+      token.contract.on("Paused", () => {
+        setToken({ ...token, paused: true });
+      });
 
-    token.contract.on("Unpaused", () => {
-      setToken({ ...token, paused: false });
-    });
+      token.contract.on("Unpaused", () => {
+        setToken({ ...token, paused: false });
+      });
 
-    token.contract.on(
-      "AddressFrozen",
-      (
-        walletAddressToFreeze: string,
-        isFrozen: boolean,
-        signerAddress: string
-      ) => {
-        console.log(walletAddressToFreeze, "is frozen", isFrozen);
-      }
-    );
+      token.contract.on(
+        "AddressFrozen",
+        (
+          walletAddressToFreeze: string,
+          isFrozen: boolean,
+          signerAddress: string
+        ) => {
+          console.log(walletAddressToFreeze, "is frozen", isFrozen);
+        }
+      );
 
-    token.contract.on("error", (error: Error) => {
-      console.log(error);
-    });
+      token.contract.on("error", (error: Error) => {
+        console.log(error);
+      });
+    }
 
     if (debug) {
       signer.provider?.on("debug", (data: any) => console.log(...data));

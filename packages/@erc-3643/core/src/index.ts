@@ -1,15 +1,13 @@
 import Container from 'typedi';
-import {
-  ClaimIssuer,
-  ClaimTopicsRegistry,
-  Compliance,
-  ComplianceModule,
-  EligibilityVerification,
-  IdentityRegistry,
-  OnchainIDIdentity,
-  TransferCompliance,
-  Token
-} from '..';
+import { ClaimIssuer } from './claim-issuer';
+import { ClaimTopicsRegistry } from './claim-topics-registry';
+import { Compliance } from './compliance';
+import { ComplianceModule } from './compliance-module';
+import { EligibilityVerification } from './eligibility-verification';
+import { IdentityRegistry } from './identity-registry';
+import { OnchainIDIdentity } from './onchain-id-identity';
+import { Token } from './token';
+import { TransferCompliance } from './transfer-compliance';
 
 export * from './token';
 export * from './compliance';

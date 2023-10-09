@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import { DAppProvider, Goerli, Hardhat, Mainnet } from '@usedapp/core'
 import { createTheme, CssBaseline, ThemeProvider } from '@mui/material'
+import 'reflect-metadata';
 
 const config = {
   readOnlyChainId: Hardhat.chainId,
