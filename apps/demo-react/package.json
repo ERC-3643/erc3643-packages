@@ -19,6 +19,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
+    "reflect-metadata": "^0.1.13",
+    "typedi": "^0.10.0",
     "typescript": "^4.9.5"
   },
   "scripts": {
