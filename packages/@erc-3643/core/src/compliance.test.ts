@@ -33,7 +33,7 @@ describe('Compliance', function () {
 
   });
 
-  describe('Compliance', () => {
+  describe('canTransferWithReasons', () => {
     it('should pass if canTransfer', async () => {
 
       const contract = complianceContract.init('', '' as any);

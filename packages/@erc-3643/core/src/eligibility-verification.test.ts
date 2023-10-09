@@ -39,7 +39,7 @@ const MockImplementation = (implementation = {}) => ({
   init: jest.fn(() => implementation)
 })
 
-describe('Compliance', function () {
+describe('Eligibility Verification', function () {
   let eligibilityVerification: EligibilityVerification;
 
   beforeEach(() => {
@@ -52,7 +52,7 @@ describe('Compliance', function () {
     eligibilityVerification = Container.get(EligibilityVerification);
   });
 
-  describe('Eligibility Verification', () => {
+  describe('getEligibilityVerification', () => {
     it('should fail if no identity', async () => {
 
       jest.spyOn(implIdentityRegistry, 'identity').mockResolvedValue(constants.AddressZero);
@@ -81,7 +81,9 @@ describe('Compliance', function () {
         constants.AddressZero
       )).toEqual({"identityIsVerified": false, "invalidClaims": [2], "missingClaimTopics": [1]})
     });
+  });
 
+  describe('getReceiverEligibilityVerificationReasons', () => {
     it('should return values with the reasons', async () => {
 
       jest.spyOn(implIdentityRegistry, 'identity').mockResolvedValue('0x123456456');
@@ -99,6 +101,5 @@ describe('Compliance', function () {
         constants.AddressZero
       )).rejects.toThrow('Identity not eligible for transfer');
     });
-
   });
 });

@@ -32,6 +32,8 @@ export class TransferCompliance {
     } catch (error) {
       if (Array.isArray((error as Error).cause)) {
         errors.push(((error as Error).cause as string[]).join());
+      } else {
+        errors.push(error.message)
       }
     }
 
@@ -41,6 +43,8 @@ export class TransferCompliance {
     } catch (error) {
       if (Array.isArray((error as Error).cause)) {
         errors.push(((error as Error).cause as string[]).join());
+      } else {
+        errors.push(error.message)
       }
     }
 
@@ -54,6 +58,8 @@ export class TransferCompliance {
     } catch (error) {
       if (Array.isArray((error as Error).cause)) {
         errors.push(((error as Error).cause as string[]).join());
+      } else {
+        errors.push(error.message)
       }
     }
 
@@ -63,9 +69,10 @@ export class TransferCompliance {
     } catch (error) {
       if (Array.isArray((error as Error).cause)) {
         errors.push(((error as Error).cause as string[]).join());
+      } else {
+        errors.push(error.message)
       }
     }
-
 
     return {
       result: errors.length === 0,

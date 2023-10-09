@@ -108,10 +108,8 @@ export class Token {
   public isEnoughSpendableBalance = async (from: string, amount: number): Promise<void> => {
     const errors: string[] = [];
 
-    const frozenTokens = await this.getFrozenTokens(from);
-    const balance = await this.getBalance(from);
-    const spendableBalance = balance - frozenTokens;
-    amount > spendableBalance && errors.push(`Insufficient balance. Current spendable balance is ${spendableBalance}`);
+    const spendableBalance = await this.realBalanceOf(from);
+    amount > +spendableBalance && errors.push(`Insufficient balance. Current spendable balance is ${spendableBalance}`);
 
     if (errors.length) throw new Error('Insufficient balance', { cause: errors });
   }
