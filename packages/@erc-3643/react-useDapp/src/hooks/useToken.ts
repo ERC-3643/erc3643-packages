@@ -25,6 +25,14 @@ export interface Token {
   isEnoughSpendableBalance: (from: string, amount: number) => Promise<void>;
 }
 
+// export const useToken = (signer: Signer | undefined, debug = false) => {
+//   const [token, setToken] = useState<any>();
+//
+//   return {
+//     getToken: (tokenAddress: string): Promise<Token | null>=>Promise.resolve(null),
+//   };
+// };
+
 export const useToken = (signer: Signer | undefined, debug = false) => {
   const [token, setToken] = useState<any>();
 
@@ -51,7 +59,7 @@ export const useToken = (signer: Signer | undefined, debug = false) => {
       balanceOf: await token.balanceOf(),
       paused: await token.paused(),
       walletIsFrozen: await token.walletIsFrozen(),
-      identityRegistry: token.identityRegistry,
+      identityRegistry: await token.identityRegistry(),
       pause: token.pause,
       run: token.run,
       unfreeze: token.unfreeze,
