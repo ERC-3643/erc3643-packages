@@ -64,7 +64,7 @@
         "npm: hardhat:node - migrations",
         "npm: erc3643:deploy - migrations",
         "npm: token:ether - migrations",
-        "npm: dev - apps/demo-react"
+        "npm: dev - apps/demo-vue"
       ]
     }
   ]
