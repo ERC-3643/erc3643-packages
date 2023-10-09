@@ -4,11 +4,12 @@ import { useSigner } from '@usedapp/core'
 import { utils } from 'ethers'
 import { useEffect, useState } from 'react'
 import { StyledChip } from '../../components/Chip/Chip.styles'
+import { Signer } from '@ethersproject/abstract-signer'
 
 const TokenInfo = () => {
   const { formatEther } = utils
   const signer = useSigner()
-  const { getToken } = useToken(signer)
+  const { getToken } = useToken(signer as Signer)
   const [token, setToken] = useState<Token | null>(null)
 
   useEffect(() => {
