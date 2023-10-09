@@ -14,7 +14,7 @@ export const useEligibilityVerification = (signer: Signer | undefined) => {
       return null;
     }
 
-    return getEligibilityVerification(
+    return getEligibilityVerification.getEligibilityVerification(
       identityRegistryAddress,
       signer,
       walletAddressToCheck
