@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@erc-3643/react-usedapp": "*",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@erc-3643/react-usedapp": "*",
     "@mui/material": "^5.14.9",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -48,6 +48,7 @@
     ]
   },
   "devDependencies": {
+    "babel-plugin-transform-typescript-metadata": "^0.3.2",
     "customize-cra": "^1.0.0",
     "react-app-rewire-alias": "^1.1.7",
     "react-app-rewired": "^2.2.1"

@@ -1,9 +1,9 @@
 const path = require('path');
-const {override, babelInclude} = require('customize-cra');
-const {alias} = require('react-app-rewire-alias')
+const { override, babelInclude, addBabelPlugin } = require('customize-cra');
+const babelTsTransformPlugin = require('babel-plugin-transform-typescript-metadata');
+// const {alias} = require('react-app-rewire-alias');
 
 module.exports = function (config, env) {
-
     return Object.assign(
         config,
         override(
@@ -12,6 +12,7 @@ module.exports = function (config, env) {
                 path.resolve('../../packages/@erc-3643/core/src'),
                 path.resolve('../../packages/@erc-3643/react-useDapp/src'),
             ]),
+            addBabelPlugin(babelTsTransformPlugin)
             // alias({
             //     /* Fix several clones of React (https://reactjs.org/warnings/invalid-hook-call-warning.html) */
             //     'react': 'node_modules/react'
