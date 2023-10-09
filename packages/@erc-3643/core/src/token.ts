@@ -120,7 +120,7 @@ export class Token {
     contractAddress: string,
     signer?: Signer
   ) => {
-    console.log(this.baseContract)
+
     this._contract = this.baseContract.connect(
       contractAddress,
       contracts.Token.abi,

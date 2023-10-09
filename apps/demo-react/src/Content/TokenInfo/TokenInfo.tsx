@@ -34,22 +34,22 @@ const TokenInfo = () => {
           <p>Balance Of: {formatEther(token?.balanceOf ?? 0)}</p>
           <p>Frozen Tokens: {formatEther(token?.frozenTokens ?? 0)}</p>
           <p>Real Balance Of: {formatEther(token?.realBalanceOf ?? 0)}</p>
-          <p>
+          <div>
             Wallet Is Frozen:{' '}
             {token?.walletIsFrozen ? (
               <StyledChip label='Yes' color='error' />
             ) : (
               <StyledChip label='No' color='success' />
             )}
-          </p>
-          <p>
+          </div>
+          <div>
             Token Is Paused:{' '}
             {token?.paused ? (
               <StyledChip label='Yes' color='error' />
             ) : (
               <StyledChip label='No' color='success' />
             )}
-          </p>
+          </div>
         </>
       )}
     </>

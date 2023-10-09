@@ -14,21 +14,21 @@ const Content = () => {
           <Paper elevation={3} sx={{ mt: 1, mb: 2, ml: 1, p: 2 }}>
             <TokenInfo />
           </Paper>
-          {/*<Paper elevation={3} sx={{ mt: 1, mb: 2, ml: 1, p: 2 }}>*/}
-          {/*  <IdentityRegistryInfo />*/}
-          {/*</Paper>*/}
-          {/*<Paper elevation={3} sx={{ mt: 1, mb: 2, ml: 1, p: 2 }}>*/}
-          {/*  <ComplianceInfo />*/}
-          {/*</Paper>*/}
-          {/*<Paper elevation={3} sx={{ mt: 1, mb: 2, ml: 1, p: 2 }}>*/}
-          {/*  <EligibilityVerificationInfo />*/}
-          {/*</Paper>*/}
+          <Paper elevation={3} sx={{ mt: 1, mb: 2, ml: 1, p: 2 }}>
+            <IdentityRegistryInfo />
+          </Paper>
+          <Paper elevation={3} sx={{ mt: 1, mb: 2, ml: 1, p: 2 }}>
+            <ComplianceInfo />
+          </Paper>
+          <Paper elevation={3} sx={{ mt: 1, mb: 2, ml: 1, p: 2 }}>
+            <EligibilityVerificationInfo />
+          </Paper>
         </Grid>
-        {/*<Grid xs={6} item>*/}
-        {/*  <Paper elevation={3} sx={{ mt: 1, mb: 2, ml: 1, p: 2 }}>*/}
-        {/*    <TokenActions />*/}
-        {/*  </Paper>*/}
-        {/*</Grid>*/}
+        <Grid xs={6} item>
+          <Paper elevation={3} sx={{ mt: 1, mb: 2, ml: 1, p: 2 }}>
+            <TokenActions />
+          </Paper>
+        </Grid>
       </Grid>
     </Box>
   )

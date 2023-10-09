@@ -25,14 +25,6 @@ export interface Token {
   isEnoughSpendableBalance: (from: string, amount: number) => Promise<void>;
 }
 
-// export const useToken = (signer: Signer | undefined, debug = false) => {
-//   const [token, setToken] = useState<any>();
-//
-//   return {
-//     getToken: (tokenAddress: string): Promise<Token | null>=>Promise.resolve(null),
-//   };
-// };
-
 export const useToken = (signer: Signer | undefined, debug = false) => {
   const [token, setToken] = useState<any>();
 
@@ -78,28 +70,30 @@ export const useToken = (signer: Signer | undefined, debug = false) => {
       return;
     }
 
-    token.contract.on("Paused", () => {
-      setToken({ ...token, paused: true });
-    });
+    if (token.contract) {
+      token.contract.on("Paused", () => {
+        setToken({ ...token, paused: true });
+      });
 
-    token.contract.on("Unpaused", () => {
-      setToken({ ...token, paused: false });
-    });
+      token.contract.on("Unpaused", () => {
+        setToken({ ...token, paused: false });
+      });
 
-    token.contract.on(
-      "AddressFrozen",
-      (
-        walletAddressToFreeze: string,
-        isFrozen: boolean,
-        signerAddress: string
-      ) => {
-        console.log(walletAddressToFreeze, "is frozen", isFrozen);
-      }
-    );
+      token.contract.on(
+        "AddressFrozen",
+        (
+          walletAddressToFreeze: string,
+          isFrozen: boolean,
+          signerAddress: string
+        ) => {
+          console.log(walletAddressToFreeze, "is frozen", isFrozen);
+        }
+      );
 
-    token.contract.on("error", (error: Error) => {
-      console.log(error);
-    });
+      token.contract.on("error", (error: Error) => {
+        console.log(error);
+      });
+    }
 
     if (debug) {
       signer.provider?.on("debug", (data: any) => console.log(...data));
