@@ -1,3 +1,49 @@
+## Prerequsites
+
+The `@erc3643/core` library uses dependency injection. To make it work, the following libraries should be installed:
+
+```bash
+npm install --save-dev customize-cra
+npm install --save reflect-metadata
+```
+
+Configuration for the react:
+
+```javascript
+// config-overrides.js
+const babelTsTransformPlugin = require('babel-plugin-transform-typescript-metadata');
+
+
+const path = require('path');
+const { override, babelInclude, addBabelPlugin } = require('customize-cra');
+const babelTsTransformPlugin = require('babel-plugin-transform-typescript-metadata');
+
+module.exports = function (config, env) {
+    return Object.assign(
+        config,
+        override(
+            // ...
+            addBabelPlugin(babelTsTransformPlugin),
+            // ...
+        )(config, env)
+    );
+}
+```
+
+Example [config-overrides.js](./config-overrides.js)
+
+Update tsconfig.ts
+
+```json
+{
+  // ...
+  "experimentalDecorators": true,
+  "emitDecoratorMetadata": true,
+  // ...
+}
+```
+Example [tsconfig.ts](./tsconfig.ts)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

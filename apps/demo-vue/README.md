@@ -1,8 +1,47 @@
+## Prerequsites
+
+The `@erc3643/core` library uses dependency injection. To make it work, the following libraries should be installed:
+
+```bash
+npm install --save-dev unplugin-swc
+npm install --save reflect-metadata
+```
+
+Configuration for the vite:
+
+```javascript
+// vite.config.ts
+import swc from 'unplugin-swc'
+
+export default defineConfig({
+	plugins: [
+		swc.vite(),
+    // ...
+  ],
+  // ...
+});
+```
+Example [vite.config.ts](./vite.config.ts)
+
+Update tsconfig.ts
+
+```json
+{
+  // ...
+  "experimentalDecorators": true,
+  "emitDecoratorMetadata": true,
+  // ...
+}
+
+```
+
+Example [tsconfig.json](./tsconfig.json)
+
 # Vue 3 Dapp Starter
 
 ## Features
 - [Vue 3](https://v3.vuejs.org/guide/introduction.html#what-is-vue-js) as the foundation
-- [Tailwind CSS](https://tailwindcss.com/docs/installation) for styling
+- [Quasar CSS](https://quasar.dev/start/pick-quasar-flavour) for styling
 - [Vite](https://vitejs.dev/guide/) for faster builds
 - [ethers.js](https://docs.ethers.io/v5/) for interacting with Ethereum
 - [vue-dapp](https://github.com/chnejohnson/vue-dapp) for the wallet connect
