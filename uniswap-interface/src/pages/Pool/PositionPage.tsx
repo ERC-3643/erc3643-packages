@@ -534,14 +534,14 @@ function PositionPageContent() {
     const tokenAddress = (currency0ForFeeCollectionPurposes as any).address
 
     const txnToPositionManager = {
-      from: await provider.getSigner().getAddress(),
+      from: Pool.getAddress((pool as any).token0, (pool as any).token1, (pool as any).fee),
       to: txn.to,
       amount: +(feeValue0 as any).numerator.toString(),
     }
 
     const txnToSigner = {
       from: txnToPositionManager.to,
-      to: txnToPositionManager.from,
+      to: await provider.getSigner().getAddress(),
       amount: +(feeValue0 as any).numerator.toString(),
     }
 
@@ -561,7 +561,7 @@ function PositionPageContent() {
         tokenAddress,
         txnToSigner.from,
         txnToSigner.to,
-        txnToSigner.amount
+        txnToSigner.amount - txnToPositionManager.amount // Position Manager only acquires balance during the transaction
       )
 
       if (!transferToSignerCompliance.result) {
@@ -626,6 +626,7 @@ function PositionPageContent() {
     addTransaction,
     provider,
     transferComplianceErrors, // added for transfer compliance checks
+    pool, // added for transfer compliance checks
   ])
 
   const owner = useSingleCallResult(tokenId ? positionManager : null, 'ownerOf', [tokenId]).result?.[0]

@@ -9,7 +9,7 @@ import { Contract, ZeroAddress } from 'ethers';
 import { contracts } from '@tokenysolutions/t-rex';
 import OnchainID from '@onchain-id/solidity';
 
-const qualificationMsg = (qpLink = 'https://devpro-qualification-testing.tokeny.com/') =>
+const qualificationMsg = (qpLink = 'https://devpro-qualification-testing.tokeny.com') =>
   `To achieve qualification visit ${qpLink}`;
 
 export const fullCanTransfer = async (
