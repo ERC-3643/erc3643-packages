@@ -672,7 +672,12 @@ function PositionPageContent() {
         </ButtonPrimary>
         {
           transferComplianceErrors.length ? (
-            <Trans>{transferComplianceErrors.join()}</Trans>
+            <>
+              <RowFixed>{transferComplianceErrors.slice(0, transferComplianceErrors.length - 1).join(', ')}</RowFixed>
+              <ExternalLink href={transferComplianceErrors[transferComplianceErrors.length - 1].split(' ').pop() || ''}>
+                <RowFixed>{transferComplianceErrors[transferComplianceErrors.length - 1]}</RowFixed>
+              </ExternalLink>
+            </>
           ) : null /* this block was added for transfer compliance checks */
         }
       </AutoColumn>

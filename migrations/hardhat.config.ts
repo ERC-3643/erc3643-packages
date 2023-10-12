@@ -11,6 +11,7 @@ import { getLocalAccounts } from '../migrations/local-signers';
 const infuraProjectId = '023b5330349a4db19ed95c89fb835050';
 // const sepoliaAccounts = getAccounts();
 const sepoliaAccounts: any = [];
+const mumbaiAccounts: any = [];
 const localAccounts = getLocalAccounts();
 
 const config: HardhatUserConfig = {
@@ -32,6 +33,11 @@ const config: HardhatUserConfig = {
       accounts: sepoliaAccounts,
       gas: 7000000,
       gasPrice: 3500000000 // 3.5 Gwei
+    },
+    mumbai: {
+      url: `https://polygon-mumbai.infura.io/v3/${infuraProjectId}`,
+      accounts: mumbaiAccounts,
+      gas: 7000000
     },
     localhost: {
       url: 'http://localhost:8545',

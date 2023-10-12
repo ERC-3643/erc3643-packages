@@ -9,6 +9,9 @@ import { Contract, ZeroAddress } from 'ethers';
 import { contracts } from '@tokenysolutions/t-rex';
 import OnchainID from '@onchain-id/solidity';
 
+const qualificationMsg = (qpLink = 'https://devpro-qualification-testing.tokeny.com/') =>
+  `To achieve qualification visit ${qpLink}`;
+
 export const fullCanTransfer = async (
   providerOrSigner: any,
   tokenContract: any,
@@ -29,6 +32,8 @@ export const fullCanTransfer = async (
   const complianceErrors = await checkCompliance(providerOrSigner, tokenContract, from, to, amount);
 
   const errors = [frozenErrors, balanceErrors, receiverVerificationErrors, complianceErrors].flat();
+
+  errors.length && errors.push(qualificationMsg());
 
   return {
     result: errors.length === 0,
@@ -53,8 +58,19 @@ const checkSpendableBalance = async (tokenContract: any, from: string, amount: n
 
   const frozenTokens = await tokenContract.getFrozenTokens(from);
   const balance = await tokenContract.balanceOf(from);
+  const tokenDecimals = await tokenContract.decimals();
   const spendableBalance = balance - frozenTokens;
-  amount > spendableBalance && errors.push(`Insufficient balance. Current spendable balance is ${spendableBalance}`);
+
+  if (tokenDecimals) {
+    const amountWithDecimals = BigInt(amount * 10 ** Number(tokenDecimals));
+    amountWithDecimals > spendableBalance &&
+      errors.push(
+        `${from} has insufficient balance. Current spendable balance is ${Number(spendableBalance) / 10 ** Number(tokenDecimals)}`
+      );
+  } else {
+    amount > spendableBalance &&
+    errors.push(`${from} has insufficient balance. Current spendable balance is ${spendableBalance}`)
+  }
 
   return errors;
 }
@@ -128,8 +144,17 @@ const checkCompliance = async (
   const errors: string[] = [];
   const complianceContractAddress = await tokenContract.compliance();
   const complianceContract = new Contract(complianceContractAddress, contracts.ModularCompliance.abi, providerOrSigner);
+  const tokenDecimals = await tokenContract.decimals();
 
-  const isCompliant = await complianceContract.canTransfer(from, to, amount);
+  let amountWithDecimals;
+
+  if (tokenDecimals) {
+    amountWithDecimals = BigInt(amount * 10 ** Number(tokenDecimals));
+  } else {
+    amountWithDecimals = BigInt(amount);
+  }
+
+  const isCompliant = await complianceContract.canTransfer(from, to, amountWithDecimals);
 
   if (isCompliant) return [];
 
@@ -138,7 +163,7 @@ const checkCompliance = async (
   for (const moduleAddress of modules) {
     const moduleContract = new Contract(moduleAddress, contracts.AbstractModule.abi);
     try {
-      const isCompliantWithModule = await moduleContract.moduleCheck(from, to, amount, complianceContractAddress);
+      const isCompliantWithModule = await moduleContract.moduleCheck(from, to, amountWithDecimals, complianceContractAddress);
 
       !isCompliantWithModule && errors.push(`Transaction is not compliant with module at ${moduleAddress}`);
     } catch (e) {
