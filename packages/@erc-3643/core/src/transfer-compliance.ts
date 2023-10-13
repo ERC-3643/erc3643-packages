@@ -22,6 +22,7 @@ export class TransferCompliance {
     // TODO: Remove default value after feedback, fix tests accordingly
     qualificationPlatform = 'https://devpro-qualification-testing.tokeny.com'
   ): Promise<{ result: boolean, errors: string[], qualificationPlatform: string }> => {
+
     const token = await this.token.init(tokenAddress, signerOrProvider as Signer);
     const identityRegistryAddress = await token.identityRegistry();
     const complianceContractAddress = await token.compliance();

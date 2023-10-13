@@ -8,6 +8,7 @@ export const checkTransferCompliance = async (
   from: string,
   to: string,
   amount: number,
+  // TODO: Remove default value after feedback
   qualificationPlatform = 'https://devpro-qualification-testing.tokeny.com'
 ) => {
   const token = await getToken(tokenAddress, provider)

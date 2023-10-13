@@ -9,15 +9,14 @@ import { Contract, ZeroAddress } from 'ethers';
 import { contracts } from '@tokenysolutions/t-rex';
 import OnchainID from '@onchain-id/solidity';
 
-const qualificationMsg = (qpLink = 'https://devpro-qualification-testing.tokeny.com') =>
-  `To achieve qualification visit ${qpLink}`;
-
 export const fullCanTransfer = async (
   providerOrSigner: any,
   tokenContract: any,
   from: string,
   to: string,
-  amount: number
+  amount: number,
+  // TODO: Remove default value after feedback
+  qualificationPlatform = 'https://devpro-qualification-testing.tokeny.com'
 ) => {
   // Sender & Receiver wallets must not be frozen
   const frozenErrors = await checkIfFrozen(tokenContract, from, to);
@@ -33,11 +32,10 @@ export const fullCanTransfer = async (
 
   const errors = [frozenErrors, balanceErrors, receiverVerificationErrors, complianceErrors].flat();
 
-  errors.length && errors.push(qualificationMsg());
-
   return {
     result: errors.length === 0,
-    errors
+    errors,
+    qualificationPlatform
   };
 }
 
@@ -45,10 +43,10 @@ const checkIfFrozen = async (tokenContract: any, from: string, to: string): Prom
   const errors: string[] = [];
 
   const senderFrozen = await tokenContract.isFrozen(from);
-  senderFrozen && errors.push('Sender wallet is frozen');
+  senderFrozen && errors.push(`${from} is frozen`);
 
   const receiverFrozen = await tokenContract.isFrozen(to);
-  receiverFrozen && errors.push('Receiver wallet is frozen');
+  receiverFrozen && errors.push(`${to} is frozen`);
 
   return errors;
 }
@@ -128,8 +126,8 @@ const checkVerification = async (providerOrSigner: any, tokenContract: any, wall
     }
   }
 
-  missingClaimTopics.length && errors.push(`You have missing claims with topics ${missingClaimTopics.join()}`);
-  invalidClaimTopics.length && errors.push(`You have invalid claims with topics ${invalidClaimTopics.join()}`);
+  missingClaimTopics.length && errors.push(`${walletAddr} has missing claims with topics ${missingClaimTopics.join()}`);
+  invalidClaimTopics.length && errors.push(`${walletAddr} has invalid claims with topics ${invalidClaimTopics.join()}`);
 
   return errors;
 }
