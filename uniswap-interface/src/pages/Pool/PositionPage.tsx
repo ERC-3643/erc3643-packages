@@ -496,7 +496,7 @@ function PositionPageContent() {
   const addTransaction = useTransactionAdder()
   const positionManager = useV3NFTPositionManagerContract()
 
-  const transferComplianceErrors: string[] = useMemo(() => [], []) // added for transfer compliance checks
+  const transferCompliance: any = useMemo(() => ({ errors: [] }), []) // added for transfer compliance checks
 
   const collect = useCallback(async () => {
     if (
@@ -553,7 +553,9 @@ function PositionPageContent() {
       txnToPositionManager.amount
     )
 
-    transferComplianceErrors.length = 0
+    if (transferCompliance.errors.length) {
+      transferCompliance.errors.length = 0
+    }
 
     if (transferToPositionManagerCompliance.result) {
       const transferToSignerCompliance = await checkTransferCompliance(
@@ -565,12 +567,14 @@ function PositionPageContent() {
       )
 
       if (!transferToSignerCompliance.result) {
-        transferComplianceErrors.push(...transferToSignerCompliance.errors)
+        transferCompliance.errors.push(...transferToSignerCompliance.errors)
+        transferCompliance.qualificationPlatform = transferToSignerCompliance.qualificationPlatform
         setCollecting(false)
         console.error(transferToSignerCompliance.errors)
       }
     } else {
-      transferComplianceErrors.push(...transferToPositionManagerCompliance.errors)
+      transferCompliance.errors.push(...transferToPositionManagerCompliance.errors)
+      transferCompliance.qualificationPlatform = transferToPositionManagerCompliance.qualificationPlatform
       setCollecting(false)
       console.error(transferToPositionManagerCompliance.errors)
     }
@@ -625,7 +629,7 @@ function PositionPageContent() {
     tokenId,
     addTransaction,
     provider,
-    transferComplianceErrors, // added for transfer compliance checks
+    transferCompliance, // added for transfer compliance checks
     pool, // added for transfer compliance checks
   ])
 
@@ -672,14 +676,16 @@ function PositionPageContent() {
           <Trans>Collect</Trans>
         </ButtonPrimary>
         {
-          transferComplianceErrors.length ? (
+          /* this block was added for transfer compliance checks */
+          transferCompliance.errors.length ? (
             <>
-              <RowFixed>{transferComplianceErrors.slice(0, transferComplianceErrors.length - 1).join(', ')}</RowFixed>
-              <ExternalLink href={transferComplianceErrors[transferComplianceErrors.length - 1].split(' ').pop() || ''}>
-                <RowFixed>{transferComplianceErrors[transferComplianceErrors.length - 1]}</RowFixed>
+              <RowFixed>{transferCompliance.errors.join(', ')}</RowFixed>
+              <ExternalLink href={transferCompliance.qualificationPlatform}>
+                <RowFixed>Click here to achieve qualification</RowFixed>
               </ExternalLink>
             </>
-          ) : null /* this block was added for transfer compliance checks */
+          ) : null
+          /* this block was added for transfer compliance checks */
         }
       </AutoColumn>
     )

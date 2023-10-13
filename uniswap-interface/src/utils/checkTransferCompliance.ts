@@ -2,15 +2,13 @@ import OnchainID from '@onchain-id/solidity'
 import { contracts } from '@tokenysolutions/t-rex'
 import { Contract } from 'ethers/lib/ethers'
 
-const qualificationMsg = (qpLink = 'https://devpro-qualification-testing.tokeny.com') =>
-  `To achieve qualification visit ${qpLink}`
-
 export const checkTransferCompliance = async (
   provider: any,
   tokenAddress: string,
   from: string,
   to: string,
-  amount: number
+  amount: number,
+  qualificationPlatform = 'https://devpro-qualification-testing.tokeny.com'
 ) => {
   const token = await getToken(tokenAddress, provider)
 
@@ -29,11 +27,10 @@ export const checkTransferCompliance = async (
   // All compliance errors
   const errors = [frozenErrors, balanceErrors, eligibilityErrors, complianceErrors].flat()
 
-  errors.length && errors.push(qualificationMsg())
-
   return {
     result: errors.length === 0,
     errors,
+    qualificationPlatform,
   }
 }
 
