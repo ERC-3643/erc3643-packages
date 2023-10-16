@@ -496,7 +496,7 @@ function PositionPageContent() {
   const addTransaction = useTransactionAdder()
   const positionManager = useV3NFTPositionManagerContract()
 
-  const transferComplianceErrors: string[] = useMemo(() => [], []) // added for transfer compliance checks
+  const transferCompliance: any = useMemo(() => ({ errors: [] }), []) // added for transfer compliance checks
 
   const collect = useCallback(async () => {
     if (
@@ -534,14 +534,14 @@ function PositionPageContent() {
     const tokenAddress = (currency0ForFeeCollectionPurposes as any).address
 
     const txnToPositionManager = {
-      from: await provider.getSigner().getAddress(),
+      from: Pool.getAddress((pool as any).token0, (pool as any).token1, (pool as any).fee),
       to: txn.to,
       amount: +(feeValue0 as any).numerator.toString(),
     }
 
     const txnToSigner = {
       from: txnToPositionManager.to,
-      to: txnToPositionManager.from,
+      to: await provider.getSigner().getAddress(),
       amount: +(feeValue0 as any).numerator.toString(),
     }
 
@@ -553,7 +553,9 @@ function PositionPageContent() {
       txnToPositionManager.amount
     )
 
-    transferComplianceErrors.length = 0
+    if (transferCompliance.errors.length) {
+      transferCompliance.errors.length = 0
+    }
 
     if (transferToPositionManagerCompliance.result) {
       const transferToSignerCompliance = await checkTransferCompliance(
@@ -561,16 +563,18 @@ function PositionPageContent() {
         tokenAddress,
         txnToSigner.from,
         txnToSigner.to,
-        txnToSigner.amount
+        txnToSigner.amount - txnToPositionManager.amount // Position Manager only acquires balance during the transaction
       )
 
       if (!transferToSignerCompliance.result) {
-        transferComplianceErrors.push(...transferToSignerCompliance.errors)
+        transferCompliance.errors.push(...transferToSignerCompliance.errors)
+        transferCompliance.qualificationPlatform = transferToSignerCompliance.qualificationPlatform
         setCollecting(false)
         console.error(transferToSignerCompliance.errors)
       }
     } else {
-      transferComplianceErrors.push(...transferToPositionManagerCompliance.errors)
+      transferCompliance.errors.push(...transferToPositionManagerCompliance.errors)
+      transferCompliance.qualificationPlatform = transferToPositionManagerCompliance.qualificationPlatform
       setCollecting(false)
       console.error(transferToPositionManagerCompliance.errors)
     }
@@ -625,7 +629,8 @@ function PositionPageContent() {
     tokenId,
     addTransaction,
     provider,
-    transferComplianceErrors, // added for transfer compliance checks
+    transferCompliance, // added for transfer compliance checks
+    pool, // added for transfer compliance checks
   ])
 
   const owner = useSingleCallResult(tokenId ? positionManager : null, 'ownerOf', [tokenId]).result?.[0]
@@ -671,9 +676,16 @@ function PositionPageContent() {
           <Trans>Collect</Trans>
         </ButtonPrimary>
         {
-          transferComplianceErrors.length ? (
-            <Trans>{transferComplianceErrors.join()}</Trans>
-          ) : null /* this block was added for transfer compliance checks */
+          /* this block was added for transfer compliance checks */
+          transferCompliance.errors.length ? (
+            <>
+              <RowFixed>{transferCompliance.errors.join(', ')}</RowFixed>
+              <ExternalLink href={transferCompliance.qualificationPlatform}>
+                <RowFixed>Click here to achieve qualification</RowFixed>
+              </ExternalLink>
+            </>
+          ) : null
+          /* this block was added for transfer compliance checks */
         }
       </AutoColumn>
     )

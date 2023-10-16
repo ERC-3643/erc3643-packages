@@ -14,7 +14,9 @@ export const fullCanTransfer = async (
   tokenContract: any,
   from: string,
   to: string,
-  amount: number
+  amount: number,
+  // TODO: Remove default value after feedback
+  qualificationPlatform = 'https://devpro-qualification-testing.tokeny.com'
 ) => {
   // Sender & Receiver wallets must not be frozen
   const frozenErrors = await checkIfFrozen(tokenContract, from, to);
@@ -32,7 +34,8 @@ export const fullCanTransfer = async (
 
   return {
     result: errors.length === 0,
-    errors
+    errors,
+    qualificationPlatform
   };
 }
 
@@ -40,10 +43,10 @@ const checkIfFrozen = async (tokenContract: any, from: string, to: string): Prom
   const errors: string[] = [];
 
   const senderFrozen = await tokenContract.isFrozen(from);
-  senderFrozen && errors.push('Sender wallet is frozen');
+  senderFrozen && errors.push(`${from} is frozen`);
 
   const receiverFrozen = await tokenContract.isFrozen(to);
-  receiverFrozen && errors.push('Receiver wallet is frozen');
+  receiverFrozen && errors.push(`${to} is frozen`);
 
   return errors;
 }
@@ -53,8 +56,19 @@ const checkSpendableBalance = async (tokenContract: any, from: string, amount: n
 
   const frozenTokens = await tokenContract.getFrozenTokens(from);
   const balance = await tokenContract.balanceOf(from);
+  const tokenDecimals = await tokenContract.decimals();
   const spendableBalance = balance - frozenTokens;
-  amount > spendableBalance && errors.push(`Insufficient balance. Current spendable balance is ${spendableBalance}`);
+
+  if (tokenDecimals) {
+    const amountWithDecimals = BigInt(amount * 10 ** Number(tokenDecimals));
+    amountWithDecimals > spendableBalance &&
+      errors.push(
+        `${from} has insufficient balance. Current spendable balance is ${Number(spendableBalance) / 10 ** Number(tokenDecimals)}`
+      );
+  } else {
+    amount > spendableBalance &&
+    errors.push(`${from} has insufficient balance. Current spendable balance is ${spendableBalance}`)
+  }
 
   return errors;
 }
@@ -112,8 +126,8 @@ const checkVerification = async (providerOrSigner: any, tokenContract: any, wall
     }
   }
 
-  missingClaimTopics.length && errors.push(`You have missing claims with topics ${missingClaimTopics.join()}`);
-  invalidClaimTopics.length && errors.push(`You have invalid claims with topics ${invalidClaimTopics.join()}`);
+  missingClaimTopics.length && errors.push(`${walletAddr} has missing claims with topics ${missingClaimTopics.join()}`);
+  invalidClaimTopics.length && errors.push(`${walletAddr} has invalid claims with topics ${invalidClaimTopics.join()}`);
 
   return errors;
 }
@@ -128,8 +142,17 @@ const checkCompliance = async (
   const errors: string[] = [];
   const complianceContractAddress = await tokenContract.compliance();
   const complianceContract = new Contract(complianceContractAddress, contracts.ModularCompliance.abi, providerOrSigner);
+  const tokenDecimals = await tokenContract.decimals();
 
-  const isCompliant = await complianceContract.canTransfer(from, to, amount);
+  let amountWithDecimals;
+
+  if (tokenDecimals) {
+    amountWithDecimals = BigInt(amount * 10 ** Number(tokenDecimals));
+  } else {
+    amountWithDecimals = BigInt(amount);
+  }
+
+  const isCompliant = await complianceContract.canTransfer(from, to, amountWithDecimals);
 
   if (isCompliant) return [];
 
@@ -138,7 +161,7 @@ const checkCompliance = async (
   for (const moduleAddress of modules) {
     const moduleContract = new Contract(moduleAddress, contracts.AbstractModule.abi);
     try {
-      const isCompliantWithModule = await moduleContract.moduleCheck(from, to, amount, complianceContractAddress);
+      const isCompliantWithModule = await moduleContract.moduleCheck(from, to, amountWithDecimals, complianceContractAddress);
 
       !isCompliantWithModule && errors.push(`Transaction is not compliant with module at ${moduleAddress}`);
     } catch (e) {

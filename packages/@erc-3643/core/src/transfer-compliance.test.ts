@@ -63,7 +63,8 @@ describe('TransferCompliance', () => {
 
       expect(result).toEqual({
         result: true,
-        errors: []
+        errors: [],
+        qualificationPlatform: 'https://devpro-qualification-testing.tokeny.com'
       });
     });
 
@@ -83,11 +84,12 @@ describe('TransferCompliance', () => {
       expect(result).toEqual({
         result: false,
         errors: [
-          "to is frozen,from is frozen",
-          "Insufficient balance. Current spendable balance is 400",
-          "addr has missing claims with topics 0x222",
-          "Transfer is not compliant with module at 0x8977",
-        ]
+          'to is frozen,from is frozen',
+          'Insufficient balance. Current spendable balance is 400',
+          'addr has missing claims with topics 0x222',
+          'Transfer is not compliant with module at 0x8977',
+        ],
+        qualificationPlatform: 'https://devpro-qualification-testing.tokeny.com'
       });
     });
   })

@@ -7,7 +7,9 @@ export const checkTransferCompliance = async (
   tokenAddress: string,
   from: string,
   to: string,
-  amount: number
+  amount: number,
+  // TODO: Remove default value after feedback
+  qualificationPlatform = 'https://devpro-qualification-testing.tokeny.com'
 ) => {
   const token = await getToken(tokenAddress, provider)
 
@@ -29,6 +31,7 @@ export const checkTransferCompliance = async (
   return {
     result: errors.length === 0,
     errors,
+    qualificationPlatform,
   }
 }
 
@@ -171,7 +174,13 @@ const checkCompliance = async (provider: any, tokenContract: any, from: string, 
   const complianceContractAddress = await tokenContract.compliance()
   const complianceContract = new Contract(complianceContractAddress, contracts.ModularCompliance.abi, provider)
 
-  const isCompliant = await complianceContract.canTransfer(from, to, amount)
+  const decimals = await tokenContract.decimals()
+  let updatedAmount = amount
+  if (decimals) {
+    updatedAmount = amount / 10 ** Number(decimals)
+  }
+
+  const isCompliant = await complianceContract.canTransfer(from, to, updatedAmount)
 
   if (isCompliant) return []
 
@@ -180,7 +189,7 @@ const checkCompliance = async (provider: any, tokenContract: any, from: string, 
   for (const moduleAddress of modules) {
     const moduleContract = new Contract(moduleAddress, contracts.AbstractModule.abi)
     try {
-      const isCompliantWithModule = await moduleContract.moduleCheck(from, to, amount, complianceContractAddress)
+      const isCompliantWithModule = await moduleContract.moduleCheck(from, to, updatedAmount, complianceContractAddress)
 
       !isCompliantWithModule && errors.push(`Transaction is not compliant with module at ${moduleAddress}`)
     } catch (e) {

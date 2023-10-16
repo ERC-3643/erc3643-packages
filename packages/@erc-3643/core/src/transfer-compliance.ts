@@ -13,13 +13,16 @@ export class TransferCompliance {
     private readonly eligibilityVerification: EligibilityVerification
   ) {}
 
-  isTransferCompliant = async (
+  public isTransferCompliant = async (
     signerOrProvider: Signer | providers.Web3Provider,
     tokenAddress: string,
     from: string,
     to: string,
-    amount: number
-  ): Promise<{ result: boolean, errors: string[] }> => {
+    amount: number,
+    // TODO: Remove default value after feedback, fix tests accordingly
+    qualificationPlatform = 'https://devpro-qualification-testing.tokeny.com'
+  ): Promise<{ result: boolean, errors: string[], qualificationPlatform: string }> => {
+
     const token = await this.token.init(tokenAddress, signerOrProvider as Signer);
     const identityRegistryAddress = await token.identityRegistry();
     const complianceContractAddress = await token.compliance();
@@ -33,7 +36,7 @@ export class TransferCompliance {
       if (Array.isArray((error as Error).cause)) {
         errors.push(((error as Error).cause as string[]).join());
       } else {
-        errors.push(error.message)
+        errors.push(error.message);
       }
     }
 
@@ -44,7 +47,7 @@ export class TransferCompliance {
       if (Array.isArray((error as Error).cause)) {
         errors.push(((error as Error).cause as string[]).join());
       } else {
-        errors.push(error.message)
+        errors.push(error.message);
       }
     }
 
@@ -54,12 +57,12 @@ export class TransferCompliance {
         identityRegistryAddress,
         signerOrProvider as Signer,
         to
-      )
+      );
     } catch (error) {
       if (Array.isArray((error as Error).cause)) {
         errors.push(((error as Error).cause as string[]).join());
       } else {
-        errors.push(error.message)
+        errors.push(error.message);
       }
     }
 
@@ -70,13 +73,14 @@ export class TransferCompliance {
       if (Array.isArray((error as Error).cause)) {
         errors.push(((error as Error).cause as string[]).join());
       } else {
-        errors.push(error.message)
+        errors.push(error.message);
       }
     }
 
     return {
       result: errors.length === 0,
-      errors: errors.flat()
+      errors: errors.flat(),
+      qualificationPlatform
     };
   }
 }
