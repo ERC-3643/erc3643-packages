@@ -15,6 +15,6 @@ Dev.Pro <info@dev.pro> — developed interoperable native TypeScript, React, and
 Individual Contributors:
 
 - Vladyslav Khymenko <vladyslav.khymenko@dev.pro> — TBD
-- Valeriy Ilihmetov <valeriy.ilihmetov@dev.pro> — Cre library. Vue components and preview.
+- Valeriy Ilihmetov <valeriy.ilihmetov@dev.pro> — Core library, Vue components and preview.
 - Oleksii Sirochenko <oleksii.sirochenko@dev.pro> — React hooks and a preview.
 - Kostiantyn Dmitriiev <kostiantyn.dmitriiev@dev.pro> — managed product side of ERC-3643 library and integration with Uniswap UI.
