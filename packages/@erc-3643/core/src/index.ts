@@ -8,6 +8,7 @@ import { IdentityRegistry } from './identity-registry';
 import { OnchainIDIdentity } from './onchain-id-identity';
 import { Token } from './token';
 import { TransferCompliance } from './transfer-compliance';
+import { HolderEligibilityVerification } from './holder-eligibility-verification';
 
 export * from './token';
 export * from './compliance';
@@ -19,6 +20,7 @@ export * from './onchain-id-identity';
 export * from './claim-issuer';
 export * from './transfer-compliance';
 export * from './eligibility-verification';
+export * from './holder-eligibility-verification';
 
 export const ClaimIssuerContract = Container.get(ClaimIssuer);
 export const ClaimTopicsRegistryContract = Container.get(ClaimTopicsRegistry);
@@ -29,3 +31,4 @@ export const IdentityRegistryContract = Container.get(IdentityRegistry);
 export const OnchainIDIdentityContract = Container.get(OnchainIDIdentity);
 export const TokenContract = Container.get(Token);
 export const getTransferCompliance = Container.get(TransferCompliance);
+export const getHolderEligibilityVerification = Container.get(HolderEligibilityVerification);
