@@ -7,3 +7,4 @@ export * from "./useClaimIssuer";
 export * from "./useOnchainIDIdentity";
 export * from "./useTransferCompliance";
 export * from "./useEligibilityVerification";
+export * from "./useEligibilityVerificationHolder";

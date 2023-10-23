@@ -5,6 +5,7 @@ import EligibilityVerificationInfo from './EligibilityVerificationInfo/Eligibili
 import TokenActions from './TokenActions/TokenActions'
 import { Box, Grid, Paper } from '@mui/material'
 import React from 'react'
+import EligibilityVerificationHolderInfo from './EligibilityVerificationHolderInfo/EligibilityVerificationHolderInfo'
 
 const Content = () => {
   return (
@@ -22,6 +23,9 @@ const Content = () => {
           </Paper>
           <Paper elevation={3} sx={{ mt: 1, mb: 2, ml: 1, p: 2 }}>
             <EligibilityVerificationInfo />
+          </Paper>
+          <Paper elevation={3} sx={{ mt: 1, mb: 2, ml: 1, p: 2 }}>
+            <EligibilityVerificationHolderInfo />
           </Paper>
         </Grid>
         <Grid xs={6} item>
