@@ -37,6 +37,6 @@ jobs:
           registry-url: https://npm.pkg.github.com/
           scope: '@erc-3643'
       - run: npm ci
-      - run: npx lerna publish from-package --no-private
+      - run: npx lerna publish from-package --yes --no-private
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
