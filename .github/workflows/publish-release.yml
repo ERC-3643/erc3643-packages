@@ -37,6 +37,23 @@ jobs:
           registry-url: https://npm.pkg.github.com/
           scope: '@erc-3643'
       - run: npm ci
+      - run: npx lerna run build
       - run: npx lerna publish from-package --yes --no-private
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+  publish-npm:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org/
+          scope: '@erc-3643'
+      - run: npm ci
+      - run: npx lerna run build
+      - run: npx lerna publish from-package --yes --no-private
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
