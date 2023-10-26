@@ -24,5 +24,6 @@
   "peerDependencies": {
     "@usedapp/core": "^1.2.12",
     "react": "^18.2.0"
-  }
+  },
+  "gitHead": "35b8bd29352ce6be21264c8fb52a235e72b45217"
 }
