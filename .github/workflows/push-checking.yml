@@ -20,6 +20,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN_FOR_GPR}}
       - name: Build application
-        run: npx lerna build
+        run: npx lerna run build
       - name: Run tests
-        run: npx lerna test
+        run: npx lerna run test
