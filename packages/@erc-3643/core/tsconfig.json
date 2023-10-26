@@ -13,6 +13,7 @@
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "declaration": true,
     "outDir": "dist"
   },
   "include": [
