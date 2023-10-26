@@ -14,5 +14,9 @@
     "packages/@erc-3643/vue-useDapp",
     "apps/demo-vue",
     "apps/demo-react"
-  ]
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "lerna": "^7.4.1"
+  }
 }
