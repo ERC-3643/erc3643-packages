@@ -5,8 +5,7 @@
   "keywords": ["ERC3643", "DeFi", "React"],
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0",
-    "build": "tsc"
+    "test": "echo \"Error: no test specified\" && exit 0"
   },
   "files": [
     "dist"
