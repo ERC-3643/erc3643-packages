@@ -15,6 +15,9 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "author": "ERC 3643 association <contact@erc3643.org>",
   "license": "MIT",
   "peerDependencies": {
@@ -34,5 +37,5 @@
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.1"
   },
-  "gitHead": "09e5c9ec78070ac6943bf22249abe5238566e2fc"
+  "gitHead": "ed0e5e9156c8d33654515bd53f0336102fe1ea84"
 }
