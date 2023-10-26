@@ -1,6 +1,6 @@
 {
   "name": "@erc-3643/vue-usedapp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "VueJS components for ERC3643 interaction",
   "keywords": [
     "ERC3643",
@@ -21,7 +21,7 @@
   "author": "ERC 3643 association <contact@erc3643.org>",
   "license": "MIT",
   "dependencies": {
-    "@erc-3643/core": "^1.0.0",
+    "@erc-3643/core": "^1.0.1",
     "reflect-metadata": "^0.1.13"
   },
   "peerDependencies": {
