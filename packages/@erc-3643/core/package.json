@@ -1,14 +1,19 @@
 {
   "name": "@erc-3643/core",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Core library for ERC 3643 UI components.",
+  "keywords": ["ERC3643", "DeFi"],
+  "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc"
   },
-  "author": "",
-  "license": "ISC",
+  "files": [
+    "dist"
+  ],
+  "author": "ERC 3643 association <contact@erc3643.org>",
+  "license": "MIT",
   "peerDependencies": {
     "@onchain-id/solidity": ">=2.1.0",
     "@tokenysolutions/t-rex": ">=4.0.1",

@@ -1,13 +1,18 @@
 {
   "name": "@erc-3643/react-usedapp",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "React components for ERC3643 interaction",
+  "keywords": ["ERC3643", "DeFi", "React"],
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0"
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "build": "tsc"
   },
-  "author": "",
-  "license": "ISC",
+  "files": [
+    "dist"
+  ],
+  "author": "ERC 3643 association <contact@erc3643.org>",
+  "license": "MIT",
   "dependencies": {
     "@erc-3643/core": "*",
     "reflect-metadata": "^0.1.13"

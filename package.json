@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "ERC 3643 association <contact@erc3643.org>",
+  "license": "MIT",
   "workspaces": [
     "packages/@erc-3643/core",
     "packages/@erc-3643/react-useDapp",
