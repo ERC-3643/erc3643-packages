@@ -5,7 +5,8 @@
   "keywords": ["ERC3643", "DeFi", "VueJS"],
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0"
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "build": "tsc"
   },
   "files": [
     "dist"
