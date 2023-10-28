@@ -137,6 +137,13 @@ module.exports = {
         exclude: /node_modules/,
       }
 
+      webpackConfig.module.rules.push({
+        test: /\.m?js$/,
+        resolve: {
+            fullySpecified: false,
+        },
+      })
+
       // Configure webpack transpilation (create-react-app specifies transpilation rules in a oneOf):
       webpackConfig.module.rules[1].oneOf = webpackConfig.module.rules[1].oneOf.map((rule) => {
         if (rule.loader && rule.loader.match(/babel-loader/)) {

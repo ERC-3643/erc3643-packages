@@ -5,6 +5,7 @@ import { InterfacePageName, LiquidityEventName, LiquiditySource } from '@uniswap
 import { Currency, CurrencyAmount, Fraction, Percent, Price, Token } from '@uniswap/sdk-core'
 import { NonfungiblePositionManager, Pool, Position } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
+import { useTransferCompliance } from '@erc-3643/react-usedapp'
 import { sendAnalyticsEvent, Trace } from 'analytics'
 import Badge from 'components/Badge'
 import { ButtonConfirmed, ButtonGray, ButtonPrimary } from 'components/Button'
@@ -49,7 +50,6 @@ import { SwitchLocaleLink } from '../../components/SwitchLocaleLink'
 import { usePositionTokenURI } from '../../hooks/usePositionTokenURI'
 import { TransactionType } from '../../state/transactions/types'
 import { calculateGasMargin } from '../../utils/calculateGasMargin'
-import { checkTransferCompliance } from '../../utils/checkTransferCompliance' // added for transfer compliance checks
 import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
 import { LoadingRows } from './styled'
 
@@ -391,6 +391,8 @@ function PositionPageContent() {
   const { chainId, account, provider } = useWeb3React()
   const theme = useTheme()
 
+  const { isTransferCompliant } = useTransferCompliance()
+
   const parsedTokenId = tokenIdFromUrl ? BigNumber.from(tokenIdFromUrl) : undefined
   const { loading, position: positionDetails } = useV3PositionFromTokenId(parsedTokenId)
 
@@ -545,7 +547,7 @@ function PositionPageContent() {
       amount: +(feeValue0 as any).numerator.toString(),
     }
 
-    const transferToPositionManagerCompliance = await checkTransferCompliance(
+    const transferToPositionManagerCompliance = await isTransferCompliant(
       provider,
       tokenAddress,
       txnToPositionManager.from,
@@ -558,7 +560,7 @@ function PositionPageContent() {
     }
 
     if (transferToPositionManagerCompliance.result) {
-      const transferToSignerCompliance = await checkTransferCompliance(
+      const transferToSignerCompliance = await isTransferCompliant(
         provider,
         tokenAddress,
         txnToSigner.from,
@@ -631,6 +633,7 @@ function PositionPageContent() {
     provider,
     transferCompliance, // added for transfer compliance checks
     pool, // added for transfer compliance checks
+    isTransferCompliant, // added for transfer compliance checks
   ])
 
   const owner = useSingleCallResult(tokenId ? positionManager : null, 'ownerOf', [tokenId]).result?.[0]
