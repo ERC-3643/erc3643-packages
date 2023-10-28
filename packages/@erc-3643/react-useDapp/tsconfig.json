@@ -1,8 +1,13 @@
 {
   "compilerOptions": {
-    "target": "ES2018",
-    "lib": ["es2022"],
-    "module": "commonjs",
+    "target": "esnext",
+    "lib": [
+      "esnext",
+      "DOM"
+    ],
+    "types": [
+      "reflect-metadata"
+    ],
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "esModuleInterop": true,

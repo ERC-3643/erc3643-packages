@@ -16,6 +16,7 @@ const isEnoughSpendableBalance: any = jest.fn();
 const implToken = {
   identityRegistry: jest.fn(),
   compliance: jest.fn(),
+  decimals: jest.fn(),
   areTransferPartiesFrozen,
   isEnoughSpendableBalance
 };

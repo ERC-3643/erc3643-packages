@@ -1,13 +1,12 @@
 {
   "name": "@erc-3643/core",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Core library for ERC 3643 UI components.",
   "keywords": [
     "ERC3643",
     "DeFi"
   ],
   "main": "dist/index.js",
-  "type": "module",
   "scripts": {
     "test": "jest",
     "build": "tsc"
