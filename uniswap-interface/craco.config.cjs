@@ -1,7 +1,6 @@
 /* eslint-env node */
 const { VanillaExtractPlugin } = require('@vanilla-extract/webpack-plugin')
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
-const { execSync } = require('child_process')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const path = require('path')
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin')
@@ -9,7 +8,8 @@ const TerserPlugin = require('terser-webpack-plugin')
 const { IgnorePlugin, ProvidePlugin } = require('webpack')
 const { RetryChunkLoadPlugin } = require('webpack-retry-chunk-load-plugin')
 
-const commitHash = execSync('git rev-parse HEAD').toString().trim()
+// https://github.com/Uniswap/interface/tree/6798bf3cf1a4bb28ba0f629cc6a48167d7b8bee9
+const commitHash = '6798bf3cf1a4bb28ba0f629cc6a48167d7b8bee9'
 const isProduction = process.env.NODE_ENV === 'production'
 
 process.env.REACT_APP_GIT_COMMIT_HASH = commitHash
