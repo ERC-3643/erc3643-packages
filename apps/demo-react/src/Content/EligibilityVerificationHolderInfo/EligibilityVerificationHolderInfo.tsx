@@ -1,4 +1,4 @@
-import EligibilityVerificationHolder from '@erc-3643/react-usedapp/src/components/EligibilityVerification/EligibilityVerification'
+import { EligibilityVerificationHolder } from '@erc-3643/react-usedapp'
 import { useSigner } from '@usedapp/core'
 import { Signer } from '@ethersproject/abstract-signer'
 import { useEffect, useState } from 'react'

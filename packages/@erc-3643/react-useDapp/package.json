@@ -1,6 +1,6 @@
 {
   "name": "@erc-3643/react-usedapp",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "React components for ERC3643 interaction",
   "keywords": [
     "ERC3643",
@@ -21,7 +21,7 @@
   "author": "ERC 3643 association <contact@erc3643.org>",
   "license": "MIT",
   "dependencies": {
-    "@erc-3643/core": "^1.0.1",
+    "@erc-3643/core": "^1.0.3",
     "reflect-metadata": "^0.1.13"
   },
   "peerDependencies": {
