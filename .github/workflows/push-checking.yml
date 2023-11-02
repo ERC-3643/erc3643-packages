@@ -1,0 +1,25 @@
+name: Test workflow
+on: push
+
+jobs:
+  test:
+    name: "Build and Test"
+    runs-on: ubuntu-latest
+    container: node:18
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+      - name: Install dependencies
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN_FOR_GPR}}
+      - name: Build application
+        run: npx lerna run build
+      - name: Run tests
+        run: npx lerna run test

@@ -29,6 +29,13 @@ export class TransferCompliance {
     const compliance = this.complianceContract.init(complianceContractAddress, signerOrProvider as Signer);
     const errors = [];
 
+    const decimals = await token.decimals();
+    let amountWithRegardsToDecimals = amount;
+
+    if (decimals) {
+      amountWithRegardsToDecimals = amount / 10 ** Number(decimals);
+    }
+
     // Sender & Receiver wallets must not be frozen
     try {
       await token.areTransferPartiesFrozen(from, to);
@@ -68,7 +75,7 @@ export class TransferCompliance {
 
     // Sender & Receiver must be compliant
     try {
-      await compliance.canTransferWithReasons(from, to, amount);
+      await compliance.canTransferWithReasons(from, to, amountWithRegardsToDecimals);
     } catch (error) {
       if (Array.isArray((error as Error).cause)) {
         errors.push(((error as Error).cause as string[]).join());

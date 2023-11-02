@@ -1,19 +1,32 @@
 {
   "name": "@erc-3643/vue-usedapp",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "1.0.3",
+  "description": "VueJS components for ERC3643 interaction",
+  "keywords": [
+    "ERC3643",
+    "DeFi",
+    "VueJS"
+  ],
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "build": "tsc"
   },
-  "author": "",
-  "license": "ISC",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "ERC 3643 association <contact@erc3643.org>",
+  "license": "MIT",
   "dependencies": {
-    "@erc-3643/core": "*",
+    "@erc-3643/core": "^1.0.3",
     "reflect-metadata": "^0.1.13"
   },
   "peerDependencies": {
     "vue": ">=3.2.0",
     "vue-dapp": ">=0.9.2"
-  }
+  },
+  "gitHead": "ed0e5e9156c8d33654515bd53f0336102fe1ea84"
 }

@@ -2,7 +2,7 @@ import { providers, Signer } from "ethers";
 import { useEligibilityVerificationHolder } from "../../hooks";
 import { useEffect, useState } from "react";
 
-const EligibilityVerificationHolder = ({
+export const EligibilityVerificationHolder = ({
   tokenAddress,
   walletAddress,
   signer,
@@ -58,5 +58,3 @@ const EligibilityVerificationHolder = ({
     </div>
   );
 };
-
-export default EligibilityVerificationHolder;

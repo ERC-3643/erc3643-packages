@@ -1,16 +1,22 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "esnext",
     "lib": [
       "esnext",
       "DOM"
     ],
     "types": [
-      "reflect-metadata"
+      "reflect-metadata",
+      "jest"
     ],
-    "module": "commonjs",
     "moduleResolution": "node",
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
-  }
+    "emitDecoratorMetadata": true,
+    "declaration": true,
+    "outDir": "dist"
+  },
+  "include": [
+    "src",
+    "index.ts"
+  ]
 }

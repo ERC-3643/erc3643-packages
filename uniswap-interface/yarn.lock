@@ -1714,6 +1714,22 @@
   resolved "https://registry.npmjs.org/@emotion/weak-memoize/-/weak-memoize-0.2.5.tgz"
   integrity sha512-6U71C2Wp7r5XtFtQzYrW5iKFT67OixrSxjI4MptCHzdSVlgabczzqLe0ZSgnub/5Kp4hSbpDB1tMytZY9pwxxA==
 
+"@erc-3643/core@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@erc-3643/core/-/core-1.0.1.tgz#82a67f12018c084ff5e4191271ca7928876a8e89"
+  integrity sha512-5c+sufQESdSFUZb3ubC3fT+wlG01lvAl/33X/5b6Q4Wipk7VoIixk/JMjNKD9g67B5X3/4MtvkJhGCtcb8Ly8g==
+  dependencies:
+    reflect-metadata "^0.1.13"
+    typedi "^0.10.0"
+
+"@erc-3643/react-usedapp@*":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@erc-3643/react-usedapp/-/react-usedapp-1.0.1.tgz#3a42cc9e4d0ad71b66eca497ed842a4befadb290"
+  integrity sha512-ShYIQ6chlQWV2iWV8S9YlaOJlFPmvHkqCIGZXi0XK6wGI5wCNL0CfwkJuC61D91vkpb9gPar1CZnwgDLQKKQ1g==
+  dependencies:
+    "@erc-3643/core" "^1.0.1"
+    reflect-metadata "^0.1.13"
+
 "@esbuild-plugins/node-globals-polyfill@^0.2.3":
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/@esbuild-plugins/node-globals-polyfill/-/node-globals-polyfill-0.2.3.tgz#0e4497a2b53c9e9485e149bc92ddb228438d6bcf"
@@ -17789,6 +17805,11 @@ redux@^4.0.0, redux@^4.1.2, redux@^4.2.1:
   dependencies:
     "@babel/runtime" "^7.9.2"
 
+reflect-metadata@^0.1.13:
+  version "0.1.13"
+  resolved "https://registry.yarnpkg.com/reflect-metadata/-/reflect-metadata-0.1.13.tgz#67ae3ca57c972a2aa1642b10fe363fe32d49dc08"
+  integrity sha512-Ts1Y/anZELhSsjMcU605fU9RE4Oi3p5ORujwbIKXfWa+0Zxs510Qrmrce5/Jowq3cHSZSJqBjypxmHarc+vEWg==
+
 reflexbox@^4.0.6:
   version "4.0.6"
   resolved "https://registry.npmjs.org/reflexbox/-/reflexbox-4.0.6.tgz"
@@ -19942,6 +19963,11 @@ typedarray-to-buffer@^3.1.5:
   integrity sha512-zdu8XMNEDepKKR+XYOXAVPtWui0ly0NtohUscw+UmaHiAWT8hrV1rr//H6V+0DvJ3OQ19S979M0laLfX8rm82Q==
   dependencies:
     is-typedarray "^1.0.0"
+
+typedi@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/typedi/-/typedi-0.10.0.tgz#e8f9a5ee100b84addbdfb57fe90d8d9ed2a21dea"
+  integrity sha512-v3UJF8xm68BBj6AF4oQML3ikrfK2c9EmZUyLOfShpJuItAqVBHWP/KtpGinkSsIiP6EZyyb6Z3NXyW9dgS9X1w==
 
 typescript@^4.9.4:
   version "4.9.5"
