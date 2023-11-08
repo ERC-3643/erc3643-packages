@@ -5,10 +5,11 @@
 [![NPM Downloads](https://img.shields.io/npm/dt/@erc-3643%2Fcore.svg)](https://www.npmjs.com/package/@erc-3643%2Fcore)
 
 ## Table of contents
-- [What is @erc-3643/core](#what-is-erc-3643-core)
+- [What is @erc-3643/core](#what-is-erc-3643core)
 - [Installation](#installation)
 - [Usage examples](#usage-examples)
   - [React hooks](#react-hooks)
+  - [Vue composables](#vue-composables)
 
 ## What is @erc-3643/core
 The `@erc-3643/core` package provides an API for ERC3643 tokens.
