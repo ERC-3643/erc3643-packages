@@ -5,14 +5,14 @@
 [![NPM Downloads](https://img.shields.io/npm/dt/@erc-3643%2Freact-usedapp.svg)](https://www.npmjs.com/package/@erc-3643%2Freact-usedapp)
 
 ## Table of contents
-- [What is @erc-3643/react-usedapp](#what-is-erc-3643react-usedapp)
-- [Installation](#installation)
-- [Usage examples](#usage-examples)
-  - [Hooks](#hooks)
+- [What is @erc-3643/react-usedapp](#what-is-erc-3643react-usedapp-⬆)
+- [Installation](#installation-⬆)
+- [Usage examples](#usage-examples-⬆)
+  - [Hooks](#hooks-⬆)
     - [Token API](#token-api)
     - [Eligibility verification info](#eligibility-verification-info)
-  - [Components](#components)
-    -[Holder eligibility verification](#holder-eligibility-verification)
+  - [Components](#components-⬆)
+    - [Holder eligibility verification](#holder-eligibility-verification)
 
 ## What is @erc-3643/react-usedapp [⬆](#table-of-contents)
 The `@erc-3643/react-usedapp` package provides a set of React hooks and components for ERC3643 tokens.
