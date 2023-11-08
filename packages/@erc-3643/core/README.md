@@ -9,13 +9,17 @@
 - [Installation](#installation)
 - [Usage examples](#usage-examples)
   - [React hooks](#react-hooks)
+    - [Token API](#token-api)
+    - [Transfer compliance](#transfer-compliance)
   - [Vue composables](#vue-composables)
+    - [Token API](#token-api-1)
+    - [Transfer compliance](#transfer-compliance-1)
 
-## What is @erc-3643/core
+## What is @erc-3643/core [⬆](#table-of-contents)
 The `@erc-3643/core` package provides an API for ERC3643 tokens.
 The ERC3643 protocol is an open-source suite of smart contracts that enables the issuance, management, and transfer of permissioned tokens.
 
-## Installation
+## Installation [⬆](#table-of-contents)
 1. Install module
 
     `npm i @erc-3643/core --save`
@@ -29,10 +33,9 @@ The ERC3643 protocol is an open-source suite of smart contracts that enables the
    import 'reflect-metadata';
    ```
 
-## Usage examples
-
-### React hooks
-Token API
+## Usage examples [⬆](#table-of-contents)
+### React hooks [⬆](#table-of-contents)
+#### Token API
 ```typescript
 import { TokenContract } from "@erc-3643/core";
 import { useEffect, useState } from "react";
@@ -141,7 +144,7 @@ export const useToken = (signer: Signer | undefined, debug = false) => {
   };
 };
 ```
-Transfer compliance
+#### Transfer compliance
 ```typescript
 import { getTransferCompliance } from '@erc-3643/core'
 
@@ -156,8 +159,8 @@ export const useTransferCompliance = () => {
 };
 ```
 
-### Vue composables
-Token API
+### Vue composables [⬆](#table-of-contents)
+#### Token API
 ```typescript
 import 'reflect-metadata';
 import { ref } from 'vue';
@@ -194,7 +197,7 @@ export async function useToken(tokenAddress: string, signer: Signer) {
 }
 ```
 
-Transfer compliance
+#### Transfer compliance
 ```typescript
 import { getTransferCompliance } from '@erc-3643/core';
 
