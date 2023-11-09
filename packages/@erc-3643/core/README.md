@@ -16,7 +16,7 @@
     - [Transfer compliance](#transfer-compliance-1)
 
 ## What is @erc-3643/core [⬆](#table-of-contents)
-The `@erc-3643/core` package provides an API for ERC3643 tokens.
+The `@erc-3643/core` package provides a set of building blocks for integration with ERC3643 tokens.
 The ERC3643 protocol is an open-source suite of smart contracts that enables the issuance, management, and transfer of permissioned tokens.
 
 ## Installation [⬆](#table-of-contents)
