@@ -1,6 +1,6 @@
 {
   "name": "@erc-3643/vue-usedapp",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "VueJS components for ERC3643 interaction",
   "keywords": [
     "ERC3643",
