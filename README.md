@@ -32,3 +32,4 @@ Individual Contributors:
 - Oleksii Sirochenko <oleksii.sirochenko@dev.pro> — React hooks and a preview.
 - Kostiantyn Dmitriiev <kostiantyn.dmitriiev@dev.pro> — managed product side of ERC-3643 library and integration with Uniswap UI.
 - Kevin Thizy <kevin@thizy.eu> - ERC 3643 co-author and package publication configuration.
+- Joachim Lebrun <joachim@tokeny.com> - Main author of ERC-3643 - expertise on the standard and product specifications.
