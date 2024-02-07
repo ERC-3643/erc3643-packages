@@ -555,6 +555,10 @@ function PositionPageContent() {
       txnToPositionManager.amount
     )
 
+    const newErrors = transferToPositionManagerCompliance.errors.filter((err: string) => !err.includes('underflow'))
+    transferToPositionManagerCompliance.errors = newErrors
+    transferToPositionManagerCompliance.result = newErrors.length === 0
+
     if (transferCompliance.errors.length) {
       transferCompliance.errors.length = 0
     }

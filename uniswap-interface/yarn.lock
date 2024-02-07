@@ -1714,20 +1714,20 @@
   resolved "https://registry.npmjs.org/@emotion/weak-memoize/-/weak-memoize-0.2.5.tgz"
   integrity sha512-6U71C2Wp7r5XtFtQzYrW5iKFT67OixrSxjI4MptCHzdSVlgabczzqLe0ZSgnub/5Kp4hSbpDB1tMytZY9pwxxA==
 
-"@erc-3643/core@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@erc-3643/core/-/core-1.0.1.tgz#82a67f12018c084ff5e4191271ca7928876a8e89"
-  integrity sha512-5c+sufQESdSFUZb3ubC3fT+wlG01lvAl/33X/5b6Q4Wipk7VoIixk/JMjNKD9g67B5X3/4MtvkJhGCtcb8Ly8g==
+"@erc-3643/core@^1.0.3":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@erc-3643/core/-/core-1.0.4.tgz#58b3ec3ff06de1f7d0fce59c628afd09269afefc"
+  integrity sha512-xauirvXGmZyt84LhiaHZw9Ivt3O/y+ywRyV1+NI1+Gfu7om5nM0QCfMLg+a4mVBoZZVW6Lkq6tw1OIsN2FV5Qw==
   dependencies:
     reflect-metadata "^0.1.13"
     typedi "^0.10.0"
 
-"@erc-3643/react-usedapp@*":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@erc-3643/react-usedapp/-/react-usedapp-1.0.1.tgz#3a42cc9e4d0ad71b66eca497ed842a4befadb290"
-  integrity sha512-ShYIQ6chlQWV2iWV8S9YlaOJlFPmvHkqCIGZXi0XK6wGI5wCNL0CfwkJuC61D91vkpb9gPar1CZnwgDLQKKQ1g==
+"@erc-3643/react-usedapp@^1.0.3":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@erc-3643/react-usedapp/-/react-usedapp-1.0.4.tgz#96db2eeb4cd2f36c78035a8b6c2d5a17317eb016"
+  integrity sha512-aKnWC20LT0t8L8ZnpphjspS+hsnq0kP4YerOqOwctqBR31Xy2jOh4crwwj+oyNjbOv3HITpGekMGrnzKDBnyFQ==
   dependencies:
-    "@erc-3643/core" "^1.0.1"
+    "@erc-3643/core" "^1.0.3"
     reflect-metadata "^0.1.13"
 
 "@esbuild-plugins/node-globals-polyfill@^0.2.3":
